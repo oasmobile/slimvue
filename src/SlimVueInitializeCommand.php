@@ -9,10 +9,12 @@
 namespace Oasis\SlimVue;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
 
 class SlimVueInitializeCommand extends Command
@@ -28,40 +30,46 @@ class SlimVueInitializeCommand extends Command
     {
         parent::configure();
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
-        $this->addArgument('project-name', InputArgument::REQUIRED, "name of project");
+        $this->addArgument('project-name', InputArgument::OPTIONAL, "name of project");
         $this->addOption(
             'directory',
             'd',
             InputOption::VALUE_REQUIRED,
-            'slimvue directory',
-            'slimvue'
+            'directory to install slimvue framework',
+            './slimvue'
         );
         $this->addOption(
             'assets',
             'a',
             InputOption::VALUE_REQUIRED,
             'assets directory of project, will be linked to slimvue directory',
-            'assets'
+            './assets'
         );
         $this->addOption(
             'twig',
             't',
             InputOption::VALUE_REQUIRED,
             'twig templates base directory',
-            'templates'
+            './templates'
         );
         $this->addOption(
             'service-dir',
             null,
             InputOption::VALUE_REQUIRED,
-            'service file dir for twig-bridge service',
-            'config'
+            'directory containing service files; a twig-bridge service file will be created here',
+            './config'
         );
         $this->addOption(
             'web-dir',
             'w',
             InputOption::VALUE_REQUIRED,
-            'service file dir for twig-bridge service',
+            'web directory into which project specific files will be linked;'
+            . \PHP_EOL
+            . ' all project files will be put under a sub-directory named by project name;'
+            . \PHP_EOL
+            . '<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
+            . \PHP_EOL
+            ,
             '/data/htdocs'
         );
     }
@@ -69,8 +77,11 @@ class SlimVueInitializeCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('project-name');
-        if (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $name)) {
-            throw new \InvalidArgumentException("Name of project invalid, must match pattern $pattern");
+        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $name)) {
+            $q = new Question("Please provide a project name:");
+            /** @var QuestionHelper $helper */
+            $helper = $this->getHelper('question');
+            $name   = $helper->ask($input, $output, $q);
         }
         $dir        = $input->getOption('directory');
         $assetsOrig = $input->getOption('assets');
@@ -113,6 +124,8 @@ YAML;
         $fs->dumpFile($serviceFile, $serviceYaml);
         \usleep(200 * 1000);
         
+        $output->writeln("");
+        \usleep(500 * 1000);
         $output->writeln("<info>Slim Vue framework has been initialized for your project.</info> ");
         \usleep(500 * 1000);
         $output->writeln("");
@@ -155,7 +168,6 @@ YAML;
         $output->writeln("\tnpm run make-htmlonly     <comment>(for html only debugging)</comment>");
         $output->writeln("\tnpm run make              <comment>(for routed debugging)</comment>");
         $output->writeln("\tnpm run make-production   <comment>(for routed and compressed production build)</comment>");
-        $output->writeln("\tnpm run make-install      <comment>(install resource files to HTTP path)</comment>");
         $output->writeln("");
     }
     

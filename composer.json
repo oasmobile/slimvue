@@ -16,6 +16,9 @@
             "email": "minhao.zhang@qq.com"
         }
     ],
+    "bin": [
+        "bin/slimvue"
+    ],
     "autoload" : {
         "psr-4" : {
             "Oasis\\SlimVue\\": "src/"

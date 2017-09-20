@@ -1,0 +1,41 @@
+#! /usr/bin/env php
+<?php
+/**
+ * Created by PhpStorm.
+ * User: minhao
+ * Date: 2017-09-20
+ * Time: 21:41
+ */
+
+use Oasis\SlimVue\SlimVueInitializeCommand;
+use Symfony\Component\Console\Application;
+
+$autoloadFiles = [
+    __DIR__ . '/../../../../bootstrap.php',
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+/** @var SlimApp $app */
+$app        = null;
+$autoloaded = false;
+foreach ($autoloadFiles as $autoloadFile) {
+    if (file_exists($autoloadFile)) {
+        /** @noinspection PhpIncludeInspection */
+        require_once $autoloadFile;
+        $autoloaded = true;
+        break;
+    }
+}
+
+if (!$autoloaded) {
+    echo <<<ERROR
+{$_SERVER['argv'][0]} is put under a wrong directory. No bootstrap (bootstrap.php/autoload.php ...) file can be found.
+
+ERROR;
+    exit(1);
+}
+
+$app = new Application('slimvue', "1.0");
+$app->addCommands([new SlimVueInitializeCommand('initialize')]);
+$app->run();
