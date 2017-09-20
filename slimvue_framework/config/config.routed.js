@@ -12,7 +12,7 @@ module.exports = {
     outputBasePath,
     publicBasePath,
     routeGenerator(index) {
-        // return real web path
+        // TODO: write your own rule to generate route according to index
         return "http://my.project.com" + index;
     },
 };

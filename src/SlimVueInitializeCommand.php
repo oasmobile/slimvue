@@ -9,6 +9,7 @@
 namespace Oasis\SlimVue;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,6 +28,7 @@ class SlimVueInitializeCommand extends Command
     {
         parent::configure();
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
+        $this->addArgument('project-name', InputArgument::REQUIRED, "name of project");
         $this->addOption(
             'directory',
             'd',
@@ -55,14 +57,26 @@ class SlimVueInitializeCommand extends Command
             'service file dir for twig-bridge service',
             'config'
         );
+        $this->addOption(
+            'web-dir',
+            'w',
+            InputOption::VALUE_REQUIRED,
+            'service file dir for twig-bridge service',
+            '/data/htdocs'
+        );
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $name = $input->getArgument('project-name');
+        if (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $name)) {
+            throw new \InvalidArgumentException("Name of project invalid, must match pattern $pattern");
+        }
         $dir        = $input->getOption('directory');
         $assetsOrig = $input->getOption('assets');
         $twigTarget = $input->getOption('twig');
         $serviceDir = $input->getOption('service-dir');
+        $webDir     = $input->getOption('web-dir');
         
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($dir) ? $dir : (\getcwd() . "/" . $dir);
@@ -71,6 +85,8 @@ class SlimVueInitializeCommand extends Command
         $twigTargetDir    .= "/slimvue";
         $serviceFile      = $fs->isAbsolutePath($serviceDir) ? $serviceDir : (\getcwd() . "/" . $serviceDir);
         $serviceFile      .= "/slimvue.services.yml";
+        $webDir           = $fs->isAbsolutePath($webDir) ? $webDir : (\getcwd() . "/" . $webDir);
+        $webDir           .= "/$name";
         $output->writeln("Will create slimvue directory at: <info>$targetSlimvueDir</info>");
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
         \usleep(200 * 1000);
@@ -79,6 +95,11 @@ class SlimVueInitializeCommand extends Command
         \usleep(200 * 1000);
         $output->writeln("Will link twig directory to: <info>$twigTargetDir</info>");
         $fs->symlink($targetSlimvueDir . "/dist/twigs", $twigTargetDir);
+        \usleep(200 * 1000);
+        $output->writeln("Will link resource directories to: <info>$webDir</info>");
+        $fs->symlink($targetSlimvueDir . "/dist/js", $webDir . "/js");
+        $fs->symlink($targetSlimvueDir . "/dist/assets", $webDir . "/assets");
+        $fs->symlink($targetSlimvueDir . "/dist/img", $webDir . "/img");
         \usleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
         $serviceYaml = <<<YAML
@@ -134,6 +155,7 @@ YAML;
         $output->writeln("\tnpm run make-htmlonly     <comment>(for html only debugging)</comment>");
         $output->writeln("\tnpm run make              <comment>(for routed debugging)</comment>");
         $output->writeln("\tnpm run make-production   <comment>(for routed and compressed production build)</comment>");
+        $output->writeln("\tnpm run make-install      <comment>(install resource files to HTTP path)</comment>");
         $output->writeln("");
     }
     
