@@ -1,0 +1,4 @@
+{% extends "generated/slimvue.twig" %}
+{% block exec %}
+    {{ include(bridge.getExecTwig(_self)) }}
+{% endblock %}
