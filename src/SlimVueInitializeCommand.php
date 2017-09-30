@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SlimVueInitializeCommand extends Command
 {
-    const SLIMVUE_DIR = __DIR__ . "/../slimvue_framework";
+    const SLIMVUE_DIR = __DIR__ . "/../slimvue-template";
     
     public function __construct($name)
     {
@@ -37,13 +37,6 @@ class SlimVueInitializeCommand extends Command
             InputOption::VALUE_REQUIRED,
             'directory to install slimvue framework',
             './slimvue'
-        );
-        $this->addOption(
-            'assets',
-            'a',
-            InputOption::VALUE_REQUIRED,
-            'assets directory of project, will be linked to slimvue directory',
-            './assets'
         );
         $this->addOption(
             'twig',
@@ -83,34 +76,49 @@ class SlimVueInitializeCommand extends Command
             $helper = $this->getHelper('question');
             $name   = $helper->ask($input, $output, $q);
         }
-        $dir        = $input->getOption('directory');
-        $assetsOrig = $input->getOption('assets');
-        $twigTarget = $input->getOption('twig');
-        $serviceDir = $input->getOption('service-dir');
-        $webDir     = $input->getOption('web-dir');
+        $dir                 = $input->getOption('directory');
+        $twigTemplateBaseDir = $input->getOption('twig');
+        $serviceDir          = $input->getOption('service-dir');
+        $webDir              = $input->getOption('web-dir');
         
+        $cwd              = \getcwd();
         $fs               = new Filesystem();
-        $targetSlimvueDir = $fs->isAbsolutePath($dir) ? $dir : (\getcwd() . "/" . $dir);
-        $originAssetsDir  = $fs->isAbsolutePath($assetsOrig) ? $assetsOrig : (\getcwd() . "/" . $assetsOrig);
-        $twigTargetDir    = $fs->isAbsolutePath($twigTarget) ? $twigTarget : (\getcwd() . "/" . $twigTarget);
-        $twigTargetDir    .= "/slimvue";
-        $serviceFile      = $fs->isAbsolutePath($serviceDir) ? $serviceDir : (\getcwd() . "/" . $serviceDir);
-        $serviceFile      .= "/slimvue.services.yml";
-        $webDir           = $fs->isAbsolutePath($webDir) ? $webDir : (\getcwd() . "/" . $webDir);
-        $webDir           .= "/$name";
-        $output->writeln("Will create slimvue directory at: <info>$targetSlimvueDir</info>");
+        $targetSlimvueDir = $fs->isAbsolutePath($dir) ? $fs->makePathRelative(
+            $dir,
+            $cwd
+        ) : $dir;
+        $relativeDistDir  = $targetSlimvueDir . "/dist";
+        $absoluteDistDir  = $cwd . "/" . $targetSlimvueDir . "/dist";
+        $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
+            $fs->makePathRelative($twigTemplateBaseDir, $cwd)
+            : $twigTemplateBaseDir . "/slimvue";
+        $twigAsDir        = $fs->makePathRelative($relativeDistDir . "/twigs", \dirname($twigToDir));
+        $serviceFile      = $serviceDir . "/slimvue.services.yml";
+        $webDir           = $webDir . "/$name";
+        $output->writeln(
+            \sprintf(
+                "Will create slimvue directory at: <info>%s</info>",
+                $targetSlimvueDir
+            )
+        );
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
         \usleep(200 * 1000);
-        $output->writeln("Will link assets directory from: <info>$originAssetsDir</info>");
-        $fs->symlink($originAssetsDir, $targetSlimvueDir . "/src/assets");
-        \usleep(200 * 1000);
-        $output->writeln("Will link twig directory to: <info>$twigTargetDir</info>");
-        $fs->symlink($targetSlimvueDir . "/dist/twigs", $twigTargetDir);
+        $output->writeln(
+            \sprintf(
+                "Will link twig directory to: <info>%s</info>, as <info>%s</info>",
+                $twigToDir,
+                $twigAsDir
+            )
+        );
+        $fs->symlink(
+            $twigAsDir,
+            $twigToDir
+        );
         \usleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
-        $fs->symlink($targetSlimvueDir . "/dist/js", $webDir . "/js");
-        $fs->symlink($targetSlimvueDir . "/dist/assets", $webDir . "/assets");
-        $fs->symlink($targetSlimvueDir . "/dist/img", $webDir . "/img");
+        foreach (['js', 'assets', 'static'] as $subdir) {
+            $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
+        }
         \usleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
         $serviceYaml = <<<YAML
@@ -165,9 +173,15 @@ YAML;
         $output->writeln("");
         $output->writeln("<info>To build your slimvue front-end, switch to $targetSlimvueDir, and run:</info>");
         $output->writeln("");
-        $output->writeln("\tnpm run make-htmlonly     <comment>(for html only debugging)</comment>");
-        $output->writeln("\tnpm run make              <comment>(for routed debugging)</comment>");
-        $output->writeln("\tnpm run make-production   <comment>(for routed and compressed production build)</comment>");
+        $output->writeln(
+            "\tnpm run dev               <comment>(use webpack dev server)</comment>"
+        );
+        $output->writeln(
+            "\tnpm run build             <comment>(build for debug environment)</comment>"
+        );
+        $output->writeln(
+            "\tnpm run make-production   <comment>(build for production environment, with optional compression feature)</comment>"
+        );
         $output->writeln("");
     }
     
