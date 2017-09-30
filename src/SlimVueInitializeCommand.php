@@ -36,7 +36,7 @@ class SlimVueInitializeCommand extends Command
             'd',
             InputOption::VALUE_REQUIRED,
             'directory to install slimvue framework',
-            './slimvue'
+            null
         );
         $this->addOption(
             'twig',
@@ -71,22 +71,22 @@ class SlimVueInitializeCommand extends Command
     {
         $name = $input->getArgument('project-name');
         while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $name)) {
-            $q = new Question("Please provide a project name:");
+            $q = new Question("Please provide a project name: ");
             /** @var QuestionHelper $helper */
             $helper = $this->getHelper('question');
             $name   = $helper->ask($input, $output, $q);
         }
-        $dir                 = $input->getOption('directory');
+        $projectDir          = $input->getOption('directory') ? : "./slimvue-$name";
         $twigTemplateBaseDir = $input->getOption('twig');
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
         
         $cwd              = \getcwd();
         $fs               = new Filesystem();
-        $targetSlimvueDir = $fs->isAbsolutePath($dir) ? $fs->makePathRelative(
-            $dir,
+        $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
+            $projectDir,
             $cwd
-        ) : $dir;
+        ) : $projectDir;
         $relativeDistDir  = $targetSlimvueDir . "/dist";
         $absoluteDistDir  = $cwd . "/" . $targetSlimvueDir . "/dist";
         $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
