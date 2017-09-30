@@ -22,7 +22,7 @@
 </template>
 
 <script>
-    import slimvue from '../slimvue.js';
+    import slimvue from 'slimvue';
 
     export default {
         name : 'hello',

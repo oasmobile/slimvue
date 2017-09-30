@@ -8,10 +8,13 @@
 
 namespace Oasis\SlimVue;
 
-class TwigBridgeInfo
+class TwigBridgeInfo implements SlimVueBridgeInterface
 {
-    public function __construct()
+    private $data = [];
+    
+    public function __construct($data)
     {
+        $this->data = $data;
     }
     
     public function getExecTwig($pageTwig)
@@ -23,6 +26,11 @@ class TwigBridgeInfo
     
     public function render()
     {
-        return \json_encode([]);
+        $result = \json_encode([$this->data]);
+        if ($result === false) {
+            throw new \InvalidArgumentException(\json_last_error_msg());
+        }
+        
+        return $result;
     }
 }
