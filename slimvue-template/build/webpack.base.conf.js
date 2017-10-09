@@ -1,13 +1,11 @@
-const path = require('path');
 const utils = require('./utils');
 const config = require('../config');
 const vueLoaderConfig = require('./vue-loader.conf');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
+const resolveConfig = require('./resolve.conf');
+// const webpack = require('webpack');
+// const merge = require('webpack-merge');
 
-function resolve(dir) {
-    return path.join(__dirname, '..', dir)
-}
+let resolve = resolveConfig.resolve;
 
 let entries = config.getEntries();
 // noinspection JSUnresolvedFunction
@@ -19,16 +17,7 @@ let webpackConfig = {
         filename      : 'js/[name].js?h=[chunkhash:7]',
         publicPath    : config.build.assetsPublicPath,
     },
-    resolve : {
-        extensions : ['.js', '.vue', '.json'],
-        alias      : {
-            'vue$'       : 'vue/dist/vue.esm.js',
-            '@'          : resolve('src'),
-            'assets'     : resolve('src/assets'),
-            'components' : resolve('src/components'),
-            'slimvue$'   : resolve('src/slimvue.js'),
-        }
-    },
+    resolve : resolveConfig.config,
     module  : {
         rules : [
             {

@@ -5,12 +5,18 @@
         <div class="test">
             GOOD Day 3
         </div>
+        <el-button title="Hello" type="plain">Wow</el-button>
         <img src="/static/pic.png"/>
     </div>
 </template>
 
 <script>
     import Hello from 'components/Hello';
+    import locale from 'element-ui/lib/locale/lang/en';
+    import ElementUI from 'element-ui';
+    import Vue from 'vue';
+
+    Vue.use(ElementUI, {locale});
 
     export default {
         name       : 'app',
