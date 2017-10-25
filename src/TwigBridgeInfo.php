@@ -26,7 +26,7 @@ class TwigBridgeInfo implements SlimVueBridgeInterface
     
     public function render()
     {
-        $result = \json_encode([$this->data]);
+        $result = \json_encode($this->data);
         if ($result === false) {
             throw new \InvalidArgumentException(\json_last_error_msg());
         }

@@ -31,9 +31,14 @@ $silex->get(
         $twig = $kernel['twig'];
         
         return $twig->render(
-            'slimvue/pages/index.twig',
+            'zxc.twig',
             [
-                'bridge' => new TwigBridgeInfo(),
+                'name'   => 'Zhang Xu Chang',
+                'bridge' => new TwigBridgeInfo(
+                    [
+                        'user' => 'yangyi',
+                    ]
+                ),
             ]
         );
     }
