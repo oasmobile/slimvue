@@ -174,6 +174,10 @@ YAML;
         $output->writeln("<info>To build your slimvue front-end, switch to $targetSlimvueDir, and run:</info>");
         $output->writeln("");
         $output->writeln(
+            "\tnpm install               <comment>(RUN ONCE, install node packages accordingly)</comment>"
+        );
+        $output->writeln("");
+        $output->writeln(
             "\tnpm run dev               <comment>(use webpack dev server)</comment>"
         );
         $output->writeln(
