@@ -177,10 +177,16 @@ YAML;
             "\tnpm run dev               <comment>(use webpack dev server)</comment>"
         );
         $output->writeln(
+            "\tnpm run start             <comment>(alias to dev)</comment>"
+        );
+        $output->writeln(
             "\tnpm run build             <comment>(build for debug environment)</comment>"
         );
         $output->writeln(
-            "\tnpm run make-production   <comment>(build for production environment, with optional compression feature)</comment>"
+            "\tnpm run watch             <comment>(build for debug environment, and watch for file changes)</comment>"
+        );
+        $output->writeln(
+            "\tnpm run publish           <comment>(build for production environment)</comment>"
         );
         $output->writeln("");
     }
