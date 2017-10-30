@@ -11,7 +11,6 @@ use Oasis\SlimVue\SlimVueInitializeCommand;
 use Symfony\Component\Console\Application;
 
 $autoloadFiles = [
-    __DIR__ . '/../../../../bootstrap.php',
     __DIR__ . '/../vendor/autoload.php',
     __DIR__ . '/../../../autoload.php',
 ];
