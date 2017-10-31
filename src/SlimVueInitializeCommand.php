@@ -140,7 +140,7 @@ YAML;
         $output->writeln("<info>To use the twig template, render your page using the following statement:</info>");
         $renderSample = <<<PHP
     \$kernel->render(
-        "slimvue/slimvue-\$yourControllerName.twig",
+        "slimvue/pages/\$yourControllerName.twig",
         [
             "title" => \$yourPageTitle,
             "bridge" => \$theBridgeObject, <comment>// It is recommended to inject the bridge object into global twig vars</comment>

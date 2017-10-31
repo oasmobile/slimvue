@@ -12,5 +12,7 @@ interface SlimVueBridgeInterface
 {
     public function getExecTwig($pageTwig);
     
+    public function add($key, $value);
+
     public function render();
 }

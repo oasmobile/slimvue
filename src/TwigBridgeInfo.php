@@ -17,6 +17,11 @@ class TwigBridgeInfo implements SlimVueBridgeInterface
         $this->data = $data;
     }
     
+    public function add($key, $value)
+    {
+        $this->data[$key] = $value;
+    }
+    
     public function getExecTwig($pageTwig)
     {
         $exec = preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', (string)$pageTwig);
