@@ -10,7 +10,7 @@ Object.keys(baseWebpackConfig.entry).forEach(function (name) {
     baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
 });
 // noinspection JSUnresolvedVariable
-baseWebpackConfig.output.chunkFilename = baseWebpackConfig.output.filename = 'js/[name].js';
+baseWebpackConfig.output.chunkFilename = baseWebpackConfig.output.filename = utils.assetsPath('js/[name].js');
 // noinspection JSUnresolvedFunction
 module.exports = merge(baseWebpackConfig, {
     module  : {

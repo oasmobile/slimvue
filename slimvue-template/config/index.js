@@ -3,19 +3,19 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const rreaddir = require('recursive-readdir-sync');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    build        : {
+    build            : {
         buildOutputRoot      : path.resolve(__dirname, '../dist'),
         assetsSubDirectory   : 'assets',
         assetsPublicPath     : '/',
         entryDirectory       : path.resolve(__dirname, '../src/entries'),
         packingTemplatesPath : path.resolve(__dirname, '../build/pack-templates'),
     },
-    prod         : {
+    prod             : {
         env                      : require('./prod.env'),
         cssSourceMap             : true,
+        productionHtml           : false,
         // Gzip off by default as many popular static hosts such as
         // Surge or Netlify already gzip all static assets for you.
         // Before setting to `true`, make sure to:
@@ -28,7 +28,7 @@ module.exports = {
         // Set to `true` or `false` to always turn it on or off
         bundleAnalyzerReport     : process.env.npm_config_report
     },
-    dev          : {
+    dev              : {
         env             : require('./dev.env'),
         // index entry for debugging server
         index           : 'index',
@@ -42,18 +42,26 @@ module.exports = {
         // just be aware of this issue when enabling this option.
         cssSourceMap    : false
     },
-    _debug       : true,
-    setDebug     : function (debug = true) {
+    _debug           : true,
+    setDebug         : function (debug = true) {
         this._debug = debug;
         this.build = merge(this.build, debug ? this.dev : this.prod);
     },
-    isDebug      : function () {
+    isDebug          : function () {
         return this._debug;
     },
-    isProduction : function () {
+    isProduction     : function () {
         return !this.isDebug();
     },
-    getEntries   : function () {
+    shouldOutputHtml : function () {
+        if (this.isDebug()) {
+            return true;
+        }
+        else {
+            return this.prod.productionHtml;
+        }
+    },
+    getEntries       : function () {
         let entries = {};
         let entryFiles = rreaddir(this.build.entryDirectory);
         // noinspection JSUnresolvedFunction

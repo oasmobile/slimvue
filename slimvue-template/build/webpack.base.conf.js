@@ -13,8 +13,8 @@ let webpackConfig = {
     entry   : entries,
     output  : {
         path          : config.build.buildOutputRoot,
-        chunkFilename : "js/[name].[chunkhash:7].js",
-        filename      : 'js/[name].js?h=[chunkhash:7]',
+        chunkFilename : utils.assetsPath("js/[name].[chunkhash:7].js"),
+        filename      : utils.assetsPath('js/[name].js?h=[chunkhash:7]'),
         publicPath    : config.build.assetsPublicPath,
     },
     resolve : resolveConfig.config,
