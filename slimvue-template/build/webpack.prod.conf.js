@@ -14,8 +14,8 @@ let webpackConfig = merge(baseWebpackConfig, {
     devtool : config.build.cssSourceMap ? '#source-map' : false,
     output  : {
         path          : config.build.buildOutputRoot,
-        filename      : utils.assetsPath('js/[name].[chunkhash:7].js'),
-        chunkFilename : utils.assetsPath('js/[id].[chunkhash:7].js')
+        filename      : 'js/[name].[chunkhash:7].js',
+        chunkFilename : 'js/[id].[chunkhash:7].js',
     },
     plugins : ([]).concat(
         require('./plugins/clean-plugin'),
