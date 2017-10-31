@@ -8,6 +8,7 @@
  */
 
 use Oasis\SlimVue\SlimVueInitializeCommand;
+use Oasis\SlimVue\SlimVueUpgradeCommand;
 use Symfony\Component\Console\Application;
 
 $autoloadFiles = [
@@ -29,12 +30,17 @@ foreach ($autoloadFiles as $autoloadFile) {
 
 if (!$autoloaded) {
     echo <<<ERROR
-{$_SERVER['argv'][0]} is put under a wrong directory. No bootstrap (bootstrap.php/autoload.php ...) file can be found.
+{$_SERVER['argv'][0]} is put under a wrong directory. No autoload file can be found.
 
 ERROR;
     exit(1);
 }
 
-$app = new Application('slimvue', "1.0");
-$app->addCommands([new SlimVueInitializeCommand('initialize')]);
+$app = new Application('slimvue', "1.3");
+$app->addCommands(
+    [
+        new SlimVueInitializeCommand('initialize'),
+        new SlimVueUpgradeCommand('upgrade'),
+    ]
+);
 $app->run();
