@@ -124,7 +124,7 @@ class SlimVueInitializeCommand extends Command
         );
         \usleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
-        foreach (['js', 'assets', 'static'] as $subdir) {
+        foreach (['htmls', 'js', 'assets', 'static'] as $subdir) {
             $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
             $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/slimvue-$projectName/dist/$subdir");
         }
