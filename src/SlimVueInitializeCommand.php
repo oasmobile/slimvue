@@ -69,14 +69,14 @@ class SlimVueInitializeCommand extends Command
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('project-name');
-        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $name)) {
+        $projectName = $input->getArgument('project-name');
+        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $projectName)) {
             $q = new Question("Please provide a project name: ");
             /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $name   = $helper->ask($input, $output, $q);
+            $helper      = $this->getHelper('question');
+            $projectName = $helper->ask($input, $output, $q);
         }
-        $projectDir          = $input->getOption('directory') ? : "./slimvue-$name";
+        $projectDir          = $input->getOption('directory') ? : "./slimvue-$projectName";
         $twigTemplateBaseDir = $input->getOption('twig');
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
@@ -94,7 +94,7 @@ class SlimVueInitializeCommand extends Command
             : $twigTemplateBaseDir . "/slimvue";
         $twigAsDir        = $fs->makePathRelative($relativeDistDir . "/twigs", \dirname($twigToDir));
         $serviceFile      = $serviceDir . "/slimvue.services.yml";
-        $webDir           = $webDir . "/$name";
+        $webDir           = $webDir . "/$projectName";
         $output->writeln(
             \sprintf(
                 "Will create slimvue directory at: <info>%s</info>",
@@ -102,6 +102,14 @@ class SlimVueInitializeCommand extends Command
             )
         );
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
+        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
+        $content              = \file_get_contents($webpackDevConfigFile);
+        $content              = \str_replace(
+            '/slimvue-template/dist/',
+            '/slimvue-' . $projectName . '/dist/',
+            $content
+        );
+        \file_put_contents($webpackDevConfigFile, $content);
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(
@@ -118,6 +126,7 @@ class SlimVueInitializeCommand extends Command
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
         foreach (['js', 'assets', 'static'] as $subdir) {
             $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
+            $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/slimvue-$projectName/dist/$subdir");
         }
         \usleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");

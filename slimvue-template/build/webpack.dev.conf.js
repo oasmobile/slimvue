@@ -5,6 +5,9 @@ const baseWebpackConfig = require('./webpack.base.conf');
 
 // noinspection JSUnresolvedFunction
 module.exports = merge(baseWebpackConfig, {
+    output  : {
+        publicPath : "/slimvue-template/dist/",
+    },
     module  : {
         rules : utils.styleLoaders({sourceMap : config.build.cssSourceMap}),
     },
