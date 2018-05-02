@@ -6,3 +6,4 @@
 /templates/
 /slimvue-test/
 /slimvue-zxdemo/
+*.DS_Store
