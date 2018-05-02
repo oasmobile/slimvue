@@ -1,4 +1,4 @@
 import slimvue from 'slimvue';
-import App from 'components/App.vue';
+import App     from 'src/components/App.vue';
 
 slimvue.mount(App);

@@ -7,19 +7,19 @@ const baseWebpackConfig = require('./webpack.base.conf');
 // noinspection JSUnresolvedVariable
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
     // noinspection JSUnresolvedVariable
-    baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name])
+    baseWebpackConfig.entry[name] = ['./build/dev-client'].concat(baseWebpackConfig.entry[name]);
 });
 // noinspection JSUnresolvedVariable
 baseWebpackConfig.output.chunkFilename = baseWebpackConfig.output.filename = 'js/[name].js';
 // noinspection JSUnresolvedFunction
 module.exports = merge(baseWebpackConfig, {
     module  : {
-        rules : utils.styleLoaders({sourceMap : config.build.cssSourceMap})
+        rules : utils.styleLoaders({sourceMap : config.build.cssSourceMap}),
     },
     // cheap-module-eval-source-map is faster for development
     devtool : '#cheap-module-eval-source-map',
     plugins : ([]).concat(
         require('./plugins/dev-plugin'),
         require('./plugins/hmr-plugin')
-    )
+    ),
 });

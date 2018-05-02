@@ -8,8 +8,8 @@ let webpackConfig = merge(baseWebpackConfig, {
     module  : {
         rules : utils.styleLoaders({
             sourceMap : config.build.cssSourceMap,
-            extract   : true
-        })
+            extract   : true,
+        }),
     },
     devtool : config.build.cssSourceMap ? '#source-map' : false,
     output  : {
@@ -20,7 +20,7 @@ let webpackConfig = merge(baseWebpackConfig, {
     plugins : ([]).concat(
         require('./plugins/clean-plugin'),
         require('./plugins/optimize-plugin')
-    )
+    ),
 });
 
 module.exports = webpackConfig;

@@ -1,18 +1,19 @@
+// noinspection NpmUsedModulesInstalled
 let chalk = require('chalk');
 let semver = require('semver');
 let packageConfig = require('../package.json');
 let shell = require('shelljs');
 
 function exec(cmd) {
-    return require('child_process').execSync(cmd).toString().trim()
+    return require('child_process').execSync(cmd).toString().trim();
 }
 
 let versionRequirements = [
     {
         name               : 'node',
         currentVersion     : semver.clean(process.version),
-        versionRequirement : packageConfig.engines.node
-    }
+        versionRequirement : packageConfig.engines.node,
+    },
 ];
 
 // noinspection JSUnresolvedFunction
@@ -20,8 +21,8 @@ if (shell.which('npm')) {
     versionRequirements.push({
         name               : 'npm',
         currentVersion     : exec('npm --version'),
-        versionRequirement : packageConfig.engines.npm
-    })
+        versionRequirement : packageConfig.engines.npm,
+    });
 }
 
 module.exports = function () {
@@ -33,7 +34,7 @@ module.exports = function () {
             warnings.push(mod.name + ': ' +
                 chalk.red(mod.currentVersion) + ' should be ' +
                 chalk.green(mod.versionRequirement)
-            )
+            );
         }
     }
 
@@ -44,9 +45,9 @@ module.exports = function () {
         console.log();
         for (let i = 0; i < warnings.length; i++) {
             let warning = warnings[i];
-            console.log('  ' + warning)
+            console.log('  ' + warning);
         }
         console.log();
-        process.exit(1)
+        process.exit(1);
     }
 };

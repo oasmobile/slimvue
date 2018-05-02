@@ -17,6 +17,7 @@ config.setDebug(isDebug);
 const ora = require('ora');
 // const rm = require('rimraf');
 // const path = require('path');
+// noinspection NpmUsedModulesInstalled
 const chalk = require('chalk');
 const webpack = require('webpack');
 const webpackConfigFile = isDebug ? './webpack.dev.conf' : './webpack.prod.conf';
@@ -41,7 +42,7 @@ webpack(
             modules      : false,
             children     : false,
             chunks       : false,
-            chunkModules : false
+            chunkModules : false,
         };
         // noinspection JSCheckFunctionSignatures
         process.stdout.write(stats.toString(format) + '\n\n');
@@ -49,7 +50,7 @@ webpack(
         if (stats.hasErrors()) {
             // noinspection JSUnresolvedFunction
             console.log(chalk.red('  Build failed with errors.\n'));
-            process.exit(1)
+            process.exit(1);
         }
 
         // noinspection JSUnresolvedFunction
@@ -58,7 +59,7 @@ webpack(
         console.log(chalk.yellow(
             '  Tip: built files are meant to be served over an HTTP server.\n' +
             '  Opening index.html over file:// won\'t work.\n'
-        ))
+        ));
     }
 );
 //     }

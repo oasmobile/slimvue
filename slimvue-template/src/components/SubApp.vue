@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import Hello from 'components/Hello';
+    import Hello from 'src/components/Hello';
     import locale from 'element-ui/lib/locale/lang/en';
     import ElementUI from 'element-ui';
     import Vue from 'vue';

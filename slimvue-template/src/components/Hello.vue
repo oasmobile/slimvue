@@ -42,20 +42,20 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1, h2 {
-        font-weight : normal;
+        font-weight: normal;
     }
 
     ul {
-        list-style-type : none;
-        padding         : 0;
+        list-style-type: none;
+        padding: 0;
     }
 
     li {
-        display : inline-block;
-        margin  : 0 10px;
+        display: inline-block;
+        margin: 0 10px;
     }
 
     a {
-        color : #42B983;
+        color: #42B983;
     }
 </style>

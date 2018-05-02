@@ -2,6 +2,7 @@
 "use strict";
 const path = require('path');
 const merge = require('webpack-merge');
+// noinspection NpmUsedModulesInstalled
 const rreaddir = require('recursive-readdir-sync');
 
 module.exports = {
@@ -26,7 +27,7 @@ module.exports = {
         // View the bundle analyzer report after build finishes:
         // `npm run build --report`
         // Set to `true` or `false` to always turn it on or off
-        bundleAnalyzerReport     : process.env.npm_config_report
+        bundleAnalyzerReport     : process.env.npm_config_report,
     },
     dev              : {
         env             : require('./dev.env'),
@@ -40,7 +41,7 @@ module.exports = {
         // (https://github.com/webpack/css-loader#sourcemaps)
         // In our experience, they generally work as expected,
         // just be aware of this issue when enabling this option.
-        cssSourceMap    : false
+        cssSourceMap    : false,
     },
     _debug           : true,
     setDebug         : function (debug = true) {
@@ -71,12 +72,12 @@ module.exports = {
             if (result) {
                 let name = `${result[1]}`;
                 if (name === 'manifest' || name === 'vendor' || name === 'commons') {
-                    throw "entry named " + name + " uses a reserved name";
+                    throw new Error("entry named " + name + " uses a reserved name");
                 }
                 entries[name] = path.join(this.build.entryDirectory, entryFile);
             }
         });
-
+        
         return entries;
     },
 };

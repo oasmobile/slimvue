@@ -8,7 +8,7 @@ const webpack = require('webpack');
 let config = require('../config');
 config.setDebug();
 if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = JSON.parse(config.build.env.NODE_ENV)
+    process.env.NODE_ENV = JSON.parse(config.build.env.NODE_ENV);
 }
 let webpackConfig = require('./webpack.hmr.conf');
 // console.log(webpackConfig);
@@ -25,31 +25,31 @@ let app = express();
 let compiler = webpack(webpackConfig);
 let devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath : webpackConfig.output.publicPath,
-    quiet      : true
+    quiet      : true,
 });
 let hotMiddleware = require('webpack-hot-middleware')(compiler, {
     log       : false,
-    heartbeat : 2000
+    heartbeat : 2000,
 });
 let proxyMiddleware = require('http-proxy-middleware');
 
 // force page reload when html-webpack-plugin template changes
-// noinspection JSUnresolvedFunction
+// noinspection JSDeprecatedSymbols
 compiler.plugin('compilation', function (compilation) {
     compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
         // noinspection JSUnresolvedFunction
         hotMiddleware.publish({action : 'reload'});
         cb();
-    })
+    });
 });
 
 // proxy api requests
 Object.keys(proxyTable).forEach(function (context) {
     let options = proxyTable[context];
     if (typeof options === 'string') {
-        options = {target : options}
+        options = {target : options};
     }
-    app.use(proxyMiddleware(options.filter || context, options))
+    app.use(proxyMiddleware(options.filter || context, options));
 });
 
 // handle fallback for HTML5 history API
@@ -88,6 +88,6 @@ let server = app.listen(port);
 module.exports = {
     ready : readyPromise,
     close : () => {
-        server.close()
-    }
+        server.close();
+    },
 };

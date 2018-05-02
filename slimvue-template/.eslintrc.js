@@ -4,7 +4,7 @@ module.exports = {
     root          : true,
     parser        : 'babel-eslint',
     parserOptions : {
-        sourceType : 'module'
+        sourceType : 'module',
     },
     env           : {
         browser : true,
@@ -13,7 +13,7 @@ module.exports = {
     extends       : 'standard',
     // required to lint *.vue files
     plugins       : [
-        'html'
+        'html',
     ],
     // add your custom rules here
     'rules'       : {
@@ -31,6 +31,7 @@ module.exports = {
         'no-unused-vars'              : 0,
         'quotes'                      : 0,
         'no-trailing-spaces'          : 0,
+        'no-multi-spaces'             : 0,
         'brace-style'                 : [2, 'stroustrup'],
-    }
+    },
 };

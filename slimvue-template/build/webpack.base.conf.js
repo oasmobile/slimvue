@@ -8,7 +8,7 @@ const resolveConfig = require('./resolve.conf');
 let resolve = resolveConfig.resolve;
 
 let entries = config.getEntries();
-// noinspection JSUnresolvedFunction
+// noinspection NpmUsedModulesInstalled
 let webpackConfig = {
     entry   : entries,
     output  : {
@@ -26,46 +26,45 @@ let webpackConfig = {
                 enforce : 'pre',
                 include : [resolve('src'), resolve('test')],
                 options : {
-                    formatter : require('eslint-friendly-formatter')
-                }
+                    formatter : require('eslint-friendly-formatter'),
+                },
             },
             {
                 test    : /\.vue$/,
                 loader  : 'vue-loader',
-                options : vueLoaderConfig
+                options : vueLoaderConfig,
             },
             {
                 test    : /\.js$/,
                 loader  : 'babel-loader',
-                include : [resolve('src'), resolve('test')]
+                include : [resolve('src'), resolve('test')],
             },
             {
                 test    : /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 loader  : 'url-loader',
                 options : {
                     limit : 100,
-                    name  : utils.assetsPath('img/[name].[hash:7].[ext]')
-                }
+                    name  : utils.assetsPath('img/[name].[hash:7].[ext]'),
+                },
             },
             {
                 test    : /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
                 loader  : 'url-loader',
                 options : {
                     limit : 10000,
-                    name  : utils.assetsPath('media/[name].[hash:7].[ext]')
-                }
+                    name  : utils.assetsPath('media/[name].[hash:7].[ext]'),
+                },
             },
             {
                 test    : /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader  : 'url-loader',
                 options : {
                     limit : 10000,
-                    name  : utils.assetsPath('fonts/[name].[hash:7].[ext]')
-                }
-            }
-        ]
-    }
-    ,
+                    name  : utils.assetsPath('fonts/[name].[hash:7].[ext]'),
+                },
+            },
+        ],
+    },
     plugins : ([]).concat(
         require('./plugins/define-plugin'),
         require('./plugins/common-trunks-plugin')
