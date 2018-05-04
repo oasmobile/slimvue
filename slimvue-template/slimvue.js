@@ -14,7 +14,7 @@ export default {
             return window.bridge;
         }
     },
-    mount : function (vueComponent) {
+    mount                : function (vueComponent) {
         console.log("Will start to mount component to slimvue app", vueComponent);
         let div = document.getElementById('slimvue-app');
         if (div === null) {
@@ -26,14 +26,22 @@ export default {
         else {
             console.warn("Div element already exists, will replace existing content.");
         }
-
+        
         let app = window.slimvue = new Vue({
             components : {
                 "slimvue-page" : vueComponent,
             },
             el         : "#slimvue-app",
         });
-
+        
         return app;
     },
+    toCssUrl             : function (imageUrl) {
+        return "url(" + imageUrl + ")";
+    },
+    toCssBackgroundImage : function (imageUrl) {
+        return {
+            backgroundImage : this.toCssUrl(imageUrl),
+        };
+    }
 };
