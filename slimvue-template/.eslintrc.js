@@ -18,7 +18,7 @@ module.exports = {
     // add your custom rules here
     'rules'       : {
         'semi'                        : [2, "always", {"omitLastInOneLineBlock" : false}],
-        'comma-dangle'                : [2, 'always-multiline'],
+        'comma-dangle'                : [2, 'only-multiline'],
         // allow paren-less arrow functions
         'arrow-parens'                : 0,
         // allow async-await
@@ -33,5 +33,6 @@ module.exports = {
         'no-trailing-spaces'          : 0,
         'no-multi-spaces'             : 0,
         'brace-style'                 : [2, 'stroustrup'],
+        'padded-blocks'               : 0,
     },
 };
