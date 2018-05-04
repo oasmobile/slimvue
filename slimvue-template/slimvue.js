@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 
+// noinspection JSUnresolvedVariable
 Vue.config.productionTip = (process.env.NODE_ENV !== "production");
 
 export default {
