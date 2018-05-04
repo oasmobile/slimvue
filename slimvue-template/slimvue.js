@@ -5,6 +5,15 @@ import Vue from 'vue';
 // noinspection JSUnresolvedVariable
 Vue.config.productionTip = (process.env.NODE_ENV !== "production");
 
+Vue.prototype.$toCssUrl = function (imageUrl) {
+    return "url(" + imageUrl + ")";
+};
+Vue.prototype.$toCssBackgroundImage = function (imageUrl) {
+    return {
+        backgroundImage : this.$toCssUrl(imageUrl),
+    };
+};
+
 export default {
     get bridge() {
         if (undefined === window.bridge) {
@@ -14,7 +23,7 @@ export default {
             return window.bridge;
         }
     },
-    mount                : function (vueComponent) {
+    mount : function (vueComponent) {
         console.log("Will start to mount component to slimvue app", vueComponent);
         let div = document.getElementById('slimvue-app');
         if (div === null) {
@@ -36,12 +45,4 @@ export default {
         
         return app;
     },
-    toCssUrl             : function (imageUrl) {
-        return "url(" + imageUrl + ")";
-    },
-    toCssBackgroundImage : function (imageUrl) {
-        return {
-            backgroundImage : this.toCssUrl(imageUrl),
-        };
-    }
 };
