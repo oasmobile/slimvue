@@ -37,7 +37,7 @@ let webpackConfig = {
             {
                 test    : /\.js$/,
                 loader  : 'babel-loader',
-                include : [resolve('src'), resolve('test')],
+                include : [resolve('src'), resolve('test'), resolve('slimvue.js')],
             },
             {
                 test    : /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -67,7 +67,6 @@ let webpackConfig = {
     },
     plugins : ([]).concat(
         require('./plugins/define-plugin'),
-        require('./plugins/common-trunks-plugin')
     ),
 };
 module.exports = webpackConfig;

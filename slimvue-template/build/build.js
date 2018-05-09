@@ -1,37 +1,44 @@
 require('./check-versions')();
-// noinspection JSUnusedGlobalSymbols
-const argv = require('minimist')(process.argv.slice(2), {
-    boolean : ['p', 'w'],
-    default : {p : false, w : false},
-    alias   : {
-        'p' : ['production', 'prod'],
-        'w' : ['watch'],
-    },
-    unknown : () => false,
-});
-// noinspection JSUnresolvedVariable
+const webpack = require('webpack');
+const ora = require('ora');
+const chalk = require('chalk');
+
+const argv = function (args) {
+    let result = require('minimist')(args, {
+        boolean : ['p', 'w', 'l'],
+        default : {l : false, p : false, w : false},
+        alias   : {
+            'p' : ['production', 'prod', 'release'],
+            'w' : ['watch'],
+            'l' : ['lib', 'library', 'pack'],
+        },
+        unknown : () => false,
+    });
+    if (result.l) result.p = true;
+    
+    return result;
+}(process.argv.slice(2));
+
 const isDebug = !argv.p;
 process.env.NODE_ENV = isDebug ? 'development' : 'production';
+
 let config = require('../config');
 config.setDebug(isDebug);
-const ora = require('ora');
-// const rm = require('rimraf');
-// const path = require('path');
-// noinspection NpmUsedModulesInstalled
-const chalk = require('chalk');
-const webpack = require('webpack');
-const webpackConfigFile = isDebug ? './webpack.dev.conf' : './webpack.prod.conf';
+
+const webpackConfigFile = argv.l
+                          ? './webpack.lib.conf' // build as library
+                          : (
+                              isDebug
+                              ? './webpack.dev.conf' // build for development env
+                              : './webpack.prod.conf' // build as production release
+                          );
 const webpackConfig = require(webpackConfigFile);
-// noinspection JSUnresolvedVariable
 webpackConfig['watch'] = argv.w;
-// console.log(webpackConfig);
+
+
 let spinner = ora(`building for ${process.env.NODE_ENV}...`);
 spinner.start();
 
-// rm(
-//     path.join(config.build.buildOutputRoot, config.build.assetsSubDirectory),
-//     err => {
-//         if (err) throw err;
 webpack(
     webpackConfig,
     function (err, stats) {
@@ -46,13 +53,13 @@ webpack(
         };
         // noinspection JSCheckFunctionSignatures
         process.stdout.write(stats.toString(format) + '\n\n');
-
+        
         if (stats.hasErrors()) {
             // noinspection JSUnresolvedFunction
             console.log(chalk.red('  Build failed with errors.\n'));
             process.exit(1);
         }
-
+        
         // noinspection JSUnresolvedFunction
         console.log(chalk.cyan('  Build complete.\n'));
         // noinspection JSUnresolvedFunction
@@ -62,5 +69,3 @@ webpack(
         ));
     }
 );
-//     }
-// );

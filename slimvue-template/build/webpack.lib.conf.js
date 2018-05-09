@@ -5,21 +5,25 @@ const baseWebpackConfig = require('./webpack.base.conf');
 
 // noinspection JSUnresolvedFunction
 let webpackConfig = merge(baseWebpackConfig, {
-    module  : {
+    module    : {
         rules : utils.styleLoaders({
             sourceMap : config.build.cssSourceMap,
             extract   : true,
         }),
     },
-    devtool : config.build.cssSourceMap ? '#source-map' : false,
-    output  : {
+    devtool   : config.build.cssSourceMap ? '#source-map' : false,
+    entry     : resolveConfig.resolve('src/publish.js'),
+    output    : {
         path          : config.build.buildOutputRoot,
-        filename      : 'js/[name].[chunkhash:7].js',
-        chunkFilename : 'js/[id].[chunkhash:7].js',
+        filename      : 'publish.js',
+        publicPath    : config.build.assetsPublicPath,
+        libraryTarget : 'umd',
     },
-    plugins : ([]).concat(
+    externals : {
+        moment : 'moment',
+    },
+    plugins   : ([]).concat(
         require('./plugins/clean-plugin'),
-        require('./plugins/common-trunks-plugin'),
         require('./plugins/optimize-plugin')
     ),
 });

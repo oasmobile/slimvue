@@ -15,6 +15,7 @@ module.exports = merge(baseWebpackConfig, {
     devtool : '#cheap-module-eval-source-map',
     plugins : ([]).concat(
         require('./plugins/clean-plugin'),
+        require('./plugins/common-trunks-plugin'),
         require('./plugins/dev-plugin')
     ),
 });

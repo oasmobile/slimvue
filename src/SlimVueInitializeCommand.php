@@ -110,6 +110,12 @@ class SlimVueInitializeCommand extends Command
             $content
         );
         \file_put_contents($webpackDevConfigFile, $content);
+        $packageJsonFile        = $targetSlimvueDir . "/package.json";
+        $content                = \file_get_contents($packageJsonFile);
+        $packageJson            = \json_decode($content, true);
+        $packageJson['name']    = "slimvue-$projectName";
+        $packageJson['version'] = '0.1.0';
+        \file_put_contents($packageJsonFile, \json_encode($content, \JSON_PRETTY_PRINT));
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(
@@ -199,7 +205,13 @@ YAML;
             "\tnpm run watch             <comment>(build for debug environment, and watch for file changes)</comment>"
         );
         $output->writeln(
-            "\tnpm run publish           <comment>(build for production environment)</comment>"
+            "\tnpm run release           <comment>(build for production/release environment)</comment>"
+        );
+        $output->writeln(
+            "\tnpm run library           <comment>(build as a library, which is to be published to npm repo)</comment>"
+        );
+        $output->writeln(
+            "\tnpm run prepack           <comment>(alias to library)</comment>"
         );
         $output->writeln("");
     }
