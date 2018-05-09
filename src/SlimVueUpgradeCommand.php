@@ -45,6 +45,8 @@ class SlimVueUpgradeCommand extends Command
         $packageJson     = \json_decode($content, true);
         $oldName         = $packageJson['name'];
         $oldVersion      = $packageJson['version'];
+        $oldDep          = $packageJson['dependencies'];
+        $oldDevDep       = $packageJson['devDependencies'];
         
         $output->writeln(
             \sprintf(
@@ -63,11 +65,13 @@ class SlimVueUpgradeCommand extends Command
         
         // restore package.json name&version
         \file_put_contents($webpackDevConfigFile, $content);
-        $packageJsonFile        = $targetSlimvueDir . "/package.json";
-        $content                = \file_get_contents($packageJsonFile);
-        $packageJson            = \json_decode($content, true);
-        $packageJson['name']    = $oldName;
-        $packageJson['version'] = $oldVersion;
+        $packageJsonFile                = $targetSlimvueDir . "/package.json";
+        $content                        = \file_get_contents($packageJsonFile);
+        $packageJson                    = \json_decode($content, true);
+        $packageJson['name']            = $oldName;
+        $packageJson['version']         = $oldVersion;
+        $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies']);
+        $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies']);
         \file_put_contents($packageJsonFile, \json_encode($content, \JSON_PRETTY_PRINT));
         
         \usleep(200 * 1000);
