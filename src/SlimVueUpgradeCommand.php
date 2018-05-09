@@ -38,6 +38,14 @@ class SlimVueUpgradeCommand extends Command
             $projectDir,
             $cwd
         ) : $projectDir;
+        
+        // get old package info, which will be set back to package.json after upgrade
+        $packageJsonFile = $targetSlimvueDir . "/package.json";
+        $content         = \file_get_contents($packageJsonFile);
+        $packageJson     = \json_decode($content, true);
+        $oldName         = $packageJson['name'];
+        $oldVersion      = $packageJson['version'];
+        
         $output->writeln(
             \sprintf(
                 "Will update slimvue directory at: <info>%s</info>",
@@ -45,6 +53,23 @@ class SlimVueUpgradeCommand extends Command
             )
         );
         $fs->mirror(SlimVueInitializeCommand::SLIMVUE_DIR, $targetSlimvueDir);
+        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
+        $content              = \file_get_contents($webpackDevConfigFile);
+        $content              = \str_replace(
+            '/slimvue-template/dist/',
+            '/' . $projectDir . '/dist/',
+            $content
+        );
+        
+        // restore package.json name&version
+        \file_put_contents($webpackDevConfigFile, $content);
+        $packageJsonFile        = $targetSlimvueDir . "/package.json";
+        $content                = \file_get_contents($packageJsonFile);
+        $packageJson            = \json_decode($content, true);
+        $packageJson['name']    = $oldName;
+        $packageJson['version'] = $oldVersion;
+        \file_put_contents($packageJsonFile, \json_encode($content, \JSON_PRETTY_PRINT));
+        
         \usleep(200 * 1000);
         $output->writeln("Project upgraded, remember to check your git working-tree for detailed changes.");
     }
