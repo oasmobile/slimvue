@@ -2,6 +2,7 @@ const utils = require('./utils');
 const config = require('../config');
 const merge = require('webpack-merge');
 const baseWebpackConfig = require('./webpack.base.conf');
+const resolveConfig = require('./resolve.conf');
 
 // noinspection JSUnresolvedFunction
 let webpackConfig = merge(baseWebpackConfig, {
