@@ -72,7 +72,7 @@ class SlimVueUpgradeCommand extends Command
         $packageJson['version']         = $oldVersion;
         $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies']);
         $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies']);
-        \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT));
+        \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         
         \usleep(200 * 1000);
         $output->writeln("Project upgraded, remember to check your git working-tree for detailed changes.");

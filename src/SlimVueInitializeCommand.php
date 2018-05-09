@@ -115,7 +115,7 @@ class SlimVueInitializeCommand extends Command
         $packageJson            = \json_decode($content, true);
         $packageJson['name']    = "slimvue-$projectName";
         $packageJson['version'] = '0.1.0';
-        \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT));
+        \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(
