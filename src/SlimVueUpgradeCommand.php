@@ -43,10 +43,10 @@ class SlimVueUpgradeCommand extends Command
         $packageJsonFile = $targetSlimvueDir . "/package.json";
         $content         = \file_get_contents($packageJsonFile);
         $packageJson     = \json_decode($content, true);
-        $oldName         = $packageJson['name'];
-        $oldVersion      = $packageJson['version'];
-        $oldDep          = $packageJson['dependencies'];
-        $oldDevDep       = $packageJson['devDependencies'];
+        $oldName         = $packageJson['name'] ?? 'slimvue-template';
+        $oldVersion      = $packageJson['version'] ?? '0.1.0';
+        $oldDep          = $packageJson['dependencies'] ?? [];
+        $oldDevDep       = $packageJson['devDependencies'] ?? [];
         
         $output->writeln(
             \sprintf(
