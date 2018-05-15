@@ -122,7 +122,7 @@ class SlimVueInitializeCommand extends Command
         $packageJson['name']    = "slimvue-$projectName";
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
-        $efs     = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
+        $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
         $finder = $efs->getFinder();
         $finder->path('src/')->files()->name('/\.(js|vue)$/');
         /** @var SplFileInfo $splFileInfo */
@@ -224,10 +224,10 @@ YAML;
             "\tnpm run release           <comment>(build for production/release environment)</comment>"
         );
         $output->writeln(
-            "\tnpm run library           <comment>(build as a library, which is to be published to npm repo)</comment>"
+            "\tnpm run prepare-library   <comment>(prepare current project to work as a library, which can then be published to npm repo)</comment>"
         );
         $output->writeln(
-            "\tnpm run prepack           <comment>(alias to library)</comment>"
+            "\tnpm run library           <comment>(alias to prepare-library)</comment>"
         );
         $output->writeln("");
     }
