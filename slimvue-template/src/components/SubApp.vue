@@ -10,6 +10,7 @@
     </div>
 </template>
 
+<!--suppress JSUnresolvedFunction -->
 <script>
     import Hello from 'src/components/Hello';
     import locale from 'element-ui/lib/locale/lang/en';
