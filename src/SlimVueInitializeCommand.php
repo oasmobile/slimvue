@@ -8,6 +8,8 @@
 
 namespace Oasis\SlimVue;
 
+use Oasis\Mlib\FlysystemWrappers\ExtendedFilesystem;
+use Oasis\Mlib\FlysystemWrappers\ExtendedLocal;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,6 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\SplFileInfo;
 
 class SlimVueInitializeCommand extends Command
 {
@@ -71,7 +74,9 @@ class SlimVueInitializeCommand extends Command
     {
         $projectName = $input->getArgument('project-name');
         while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $projectName)) {
-            $q = new Question("Please provide a project name: ");
+            $q = new Question(
+                "Please provide a project name, which may conatin only lowercase letters, numbers and hyphen: "
+            );
             /** @var QuestionHelper $helper */
             $helper      = $this->getHelper('question');
             $projectName = $helper->ask($input, $output, $q);
@@ -102,6 +107,7 @@ class SlimVueInitializeCommand extends Command
             )
         );
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
+        $output->writeln(\sprintf("Will customize for this project by changing some generated file content"));
         $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
         $content              = \file_get_contents($webpackDevConfigFile);
         $content              = \str_replace(
@@ -116,6 +122,16 @@ class SlimVueInitializeCommand extends Command
         $packageJson['name']    = "slimvue-$projectName";
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
+        $efs     = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
+        $finder = $efs->getFinder();
+        $finder->path('src/')->files()->name('/\.(js|vue)$/');
+        /** @var SplFileInfo $splFileInfo */
+        foreach ($finder as $splFileInfo) {
+            $path    = $splFileInfo->getRealPath();
+            $content = \file_get_contents($path);
+            $content = \preg_replace('#([\'"])src/#', '$1' . $projectName, $content);
+            \file_put_contents($path, $content);
+        }
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(

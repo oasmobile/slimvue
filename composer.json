@@ -6,7 +6,8 @@
         "php"               : ">=7.0",
         "oasis/utils"       : "^1.7",
         "symfony/console"   : "^3.3",
-        "symfony/filesystem": "^3.3"
+        "symfony/filesystem": "^3.3",
+        "oasis/flysystem-wrappers": "^1.3"
     },
     "require-dev": {
         "silex/silex": "^2.2",

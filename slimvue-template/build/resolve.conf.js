@@ -18,10 +18,9 @@ let alias = {
 
 let includedDir = resolve('build/resolve-deps');
 if (fs.existsSync(includedDir)) {
-    let resolveDeps = rread();
+    let resolveDeps = rread(includedDir);
     // noinspection JSUnresolvedFunction
     resolveDeps.forEach(filename => {
-        // noinspection JSUnresolvedFunction
         let fileContent = fs.readJsonSync(filename);
         console.log(fileContent);
         for (let key in fileContent) {

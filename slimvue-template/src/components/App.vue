@@ -10,13 +10,13 @@
     </div>
 </template>
 
-<!--suppress JSUnresolvedFunction -->
 <script>
     import Hello from 'src/components/Hello';
     import locale from 'element-ui/lib/locale/lang/en';
     import ElementUI from 'element-ui';
     import Vue from 'vue';
 
+    // noinspection JSUnresolvedFunction
     Vue.use(ElementUI, {locale});
 
     export default {
