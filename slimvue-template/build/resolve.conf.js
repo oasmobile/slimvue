@@ -10,9 +10,7 @@ function resolve(dir) {
 
 let alias = {
     'vue$'     : 'vue/dist/vue.esm.js',
-    'src'      : resolve('src'),
     'slimvue$' : resolve('slimvue.js'),
-    'assets'   : resolve('src/assets'),
     // 'components' : resolve('src/components'),
 };
 

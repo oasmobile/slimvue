@@ -132,6 +132,7 @@ class SlimVueInitializeCommand extends Command
             $content = \preg_replace('#([\'"])src/#', '$1' . $projectName . "/", $content);
             \file_put_contents($path, $content);
         }
+        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/$projectName");
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(

@@ -5,12 +5,13 @@ const resolveConfig = require('./resolve.conf');
 
 let inHomeDir = (fs.pathExistsSync(resolveConfig.resolve('node_modules')));
 let packageInfo = fs.readJsonSync(resolveConfig.resolve('package.json'));
-let depFilePath, depSrcPath;
+let resolves = {};
 
 if (inHomeDir) {
     console.log("Will update self resolve dependency file ...");
     depFilePath = resolveConfig.resolve('build/resolve-deps/' + packageInfo.name + '.json');
-    depSrcPath = "src";
+    resolves[packageInfo.name] = packageInfo.name;
+    resolves.assets = packageInfo.name + "/assets";
 }
 else {
     let transformToRequireFilePath = resolveConfig.resolve('config/transform-settings.json');
@@ -23,14 +24,12 @@ else {
     
     console.log("Will generate resolve dependency file ...");
     depFilePath = resolveConfig.resolve('../../build/resolve-deps/' + packageInfo.name + '.json');
-    depSrcPath = "node_modules/" + packageInfo.name + "/src";
+    resolves[packageInfo.name] = "node_modules/" + packageInfo.name + "/" + packageInfo.name;
 }
 
 fs.outputJsonSync(
     depFilePath,
-    {
-        [packageInfo.name] : depSrcPath
-    },
+    resolves,
     {spaces : 4}
 );
 console.log("Resolve dependency file updated for " + packageInfo.name);
