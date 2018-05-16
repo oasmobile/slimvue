@@ -1,8 +1,11 @@
 const utils = require('./utils');
-const config = require('../config');
+const resolveConfig = require('./resolve.conf');
+let config = require('../config');
+
+config.build.assetsSubDirectory = resolveConfig.projectName + "/" + config.build.assetsSubDirectory;
+
 const merge = require('webpack-merge');
 const baseWebpackConfig = require('./webpack.base.conf');
-const resolveConfig = require('./resolve.conf');
 
 // noinspection JSUnresolvedFunction
 let webpackConfig = merge(baseWebpackConfig, {
@@ -13,11 +16,11 @@ let webpackConfig = merge(baseWebpackConfig, {
         }),
     },
     devtool   : config.build.cssSourceMap ? '#source-map' : false,
-    entry     : resolveConfig.resolve('src/publish.js'),
+    entry     : resolveConfig.resolve(resolveConfig.projectName + '/publish.js'),
     output    : {
         path          : config.build.buildOutputRoot,
         filename      : 'publish.js',
-        publicPath    : config.build.assetsPublicPath,
+        publicPath    : "/" + resolveConfig.projectName + "/",
         libraryTarget : 'umd',
     },
     externals : {

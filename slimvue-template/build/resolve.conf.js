@@ -8,10 +8,11 @@ function resolve(dir) {
     return path.join(__dirname, '..', dir);
 }
 
+let projectName = fs.readJsonSync(resolve('package.json')).name;
+
 let alias = {
     'vue$'     : 'vue/dist/vue.esm.js',
     'slimvue$' : resolve('slimvue.js'),
-    // 'components' : resolve('src/components'),
 };
 
 let includedDir = resolve('build/resolve-deps');
@@ -32,8 +33,9 @@ if (fs.existsSync(includedDir)) {
 // console.log(alias);
 
 module.exports = {
-    resolve : resolve,
-    config  : {
+    resolve     : resolve,
+    projectName : projectName,
+    config      : {
         extensions : ['.js', '.vue', '.json'],
         alias      : alias,
     },

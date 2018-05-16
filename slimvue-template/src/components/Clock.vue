@@ -1,5 +1,6 @@
 <template>
     <div>
+        <img src="~src/assets/logo.png"/>
         <div>{{ display }}</div>
     </div>
 </template>

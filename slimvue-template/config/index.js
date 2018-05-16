@@ -7,7 +7,6 @@ const fs = require('fs-extra');
 
 let packageInfo = fs.readJsonSync(path.resolve(__dirname, '../package.json'));
 
-
 module.exports = {
     build            : {
         buildOutputRoot      : path.resolve(__dirname, '../dist'),
