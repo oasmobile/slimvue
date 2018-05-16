@@ -119,7 +119,7 @@ class SlimVueInitializeCommand extends Command
         $packageJsonFile        = $targetSlimvueDir . "/package.json";
         $content                = \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
-        $packageJson['name']    = "slimvue-$projectName";
+        $packageJson['name']    = "$projectName";
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
