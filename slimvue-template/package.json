@@ -3,7 +3,6 @@
     "version"        : "1.5.1",
     "description"    : "A Vue.js project for Oasis Games",
     "author"         : "Minhao Zhang <minhao.zhang@qq.com>",
-    "main"           : "dist/publish.js",
     "private"        : true,
     "scripts"        : {
         "dev"            : "node build/dev-server.js",
