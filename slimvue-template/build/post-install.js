@@ -24,6 +24,7 @@ else {
     
     console.log("Will generate resolve dependency file ...");
     depFilePath = resolveConfig.resolve('../../build/resolve-deps/' + packageInfo.name + '.json');
+    resolves[packageInfo.name + '$'] = "node_modules/" + packageInfo.name + "/" + packageInfo.name + "/publish.js";
     resolves[packageInfo.name] = "node_modules/" + packageInfo.name + "/" + packageInfo.name;
 }
 
