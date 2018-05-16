@@ -1,5 +1,6 @@
 const merge = require('webpack-merge');
 const utils = require('./utils');
+const resolveConfig = require('./resolve.conf');
 const config = require('../config');
 const rread = require('recursive-readdir-sync');
 const fs = require("fs-extra");
@@ -11,7 +12,7 @@ let transformToRequire = {
     image  : 'xlink:href',
 };
 
-let includedDir = resolve('build/custom-transform-to-require-settings');
+let includedDir = resolveConfig.resolve('build/custom-transform-to-require-settings');
 if (fs.existsSync(includedDir)) {
     let resolveDeps = rread(includedDir);
     // noinspection JSUnresolvedFunction
