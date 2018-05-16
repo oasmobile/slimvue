@@ -2,15 +2,18 @@
 "use strict";
 const path = require('path');
 const merge = require('webpack-merge');
-// noinspection NpmUsedModulesInstalled
 const rreaddir = require('recursive-readdir-sync');
+const fs = require('fs-extra');
+
+let packageInfo = fs.readJsonSync(path.resolve(__dirname, '../package.json'));
+
 
 module.exports = {
     build            : {
         buildOutputRoot      : path.resolve(__dirname, '../dist'),
         assetsSubDirectory   : 'assets',
         assetsPublicPath     : '/',
-        entryDirectory       : path.resolve(__dirname, '../src/entries'),
+        entryDirectory       : path.resolve(__dirname, '../' + packageInfo.name + '/entries'),
         packingTemplatesPath : path.resolve(__dirname, '../build/pack-templates'),
     },
     prod             : {
