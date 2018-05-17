@@ -21,7 +21,6 @@ if (fs.existsSync(includedDir)) {
     // noinspection JSUnresolvedFunction
     resolveDeps.forEach(filename => {
         let fileContent = fs.readJsonSync(filename);
-        console.log(fileContent);
         for (let key in fileContent) {
             // noinspection JSUnfilteredForInLoop
             let path = fileContent[key];
@@ -30,7 +29,6 @@ if (fs.existsSync(includedDir)) {
         }
     });
 }
-// console.log(alias);
 
 module.exports = {
     resolve     : resolve,

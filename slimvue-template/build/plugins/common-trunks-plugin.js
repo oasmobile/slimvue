@@ -1,7 +1,6 @@
 const path = require('path');
 const config = require('../../config');
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // noinspection JSUnresolvedFunction
@@ -32,15 +31,6 @@ let plugins = [
             minChunks : Infinity,
         }
     ),
-    // copy custom static assets
-    new CopyWebpackPlugin([
-        {
-            from   : path.resolve(__dirname, '../../static'),
-            to     : path.join(config.build.buildOutputRoot, 'static'),
-            ignore : ['.*'],
-        },
-    ]),
-
 ];
 // noinspection JSUnresolvedVariable
 plugins.push(new HtmlWebpackPlugin({

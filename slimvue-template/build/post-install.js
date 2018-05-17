@@ -1,5 +1,4 @@
-// console.log("This is run as POST INSTALL!");
-
+require('./check-versions')();
 const fs = require('fs-extra');
 const resolveConfig = require('./resolve.conf');
 
@@ -25,6 +24,17 @@ else {
     depFilePath = resolveConfig.resolve('../../build/resolve-deps/' + resolveConfig.projectName + '.json');
     resolves[resolveConfig.projectName + '$'] = "node_modules/" + resolveConfig.projectName + "/" + resolveConfig.projectName + "/publish.js";
     resolves[resolveConfig.projectName] = "node_modules/" + resolveConfig.projectName + "/" + resolveConfig.projectName;
+    
+    console.log("Will generate copy-file-setting file ...");
+    settingFilePath = resolveConfig.resolve('../../build/copy-file-settings/' + resolveConfig.projectName + '.json');
+    fs.outputJsonSync(
+        settingFilePath,
+        {
+            name    : resolveConfig.projectName,
+            ignores : [".*"],
+        },
+        {spaces : 4}
+    );
 }
 
 fs.outputJsonSync(

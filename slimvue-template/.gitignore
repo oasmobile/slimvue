@@ -1,6 +1,7 @@
 .DS_Store
 build/resolve-deps/*.json
 build/custom-transform-to-require-settings/*.json
+build/copy-file-settings/*.json
 node_modules/
 dist/
 npm-debug.log*

@@ -24,7 +24,7 @@ let webpackConfig = {
                 test    : /\.(js|vue)$/,
                 loader  : 'eslint-loader',
                 enforce : 'pre',
-                include : [resolve('src'), resolve('test')],
+                include : [resolve(resolveConfig.projectName), resolve('test')],
                 options : {
                     formatter : require('eslint-friendly-formatter'),
                 },
@@ -37,7 +37,7 @@ let webpackConfig = {
             {
                 test    : /\.js$/,
                 loader  : 'babel-loader',
-                include : [resolve('src'), resolve('test'), resolve('slimvue.js')],
+                include : [resolve(resolveConfig.projectName), resolve('test'), resolve('slimvue.js')],
             },
             {
                 test    : /\.(png|jpe?g|gif|svg)(\?.*)?$/,

@@ -21,6 +21,7 @@ module.exports = merge(baseWebpackConfig, {
     plugins : ([]).concat(
         require('./plugins/dev-plugin'),
         require('./plugins/common-trunks-plugin'),
+        require('./plugins/copy-files-plugin'),
         require('./plugins/hmr-plugin')
     ),
 });
