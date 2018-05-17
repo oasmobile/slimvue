@@ -30,7 +30,8 @@ else {
     fs.outputJsonSync(
         settingFilePath,
         {
-            name    : resolveConfig.projectName,
+            module  : resolveConfig.projectName,
+            from    : "dist",
             ignores : [".*"],
         },
         {spaces : 4}

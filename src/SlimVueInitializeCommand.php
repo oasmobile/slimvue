@@ -213,7 +213,7 @@ YAML;
             "\tnpm run dev               <comment>(use webpack dev server)</comment>"
         );
         $output->writeln(
-            "\tnpm run start             <comment>(alias to dev)</comment>"
+            "\tnpm run start             <comment>(alias to <info>dev</info>)</comment>"
         );
         $output->writeln(
             "\tnpm run build             <comment>(build for debug environment)</comment>"
@@ -225,10 +225,10 @@ YAML;
             "\tnpm run release           <comment>(build for production/release environment)</comment>"
         );
         $output->writeln(
-            "\tnpm run prepare-library   <comment>(prepare current project to work as a library, which can then be published to npm repo)</comment>"
+            "\tnpm run setup-library     <comment>(prepare current project to work as a library, which can then be published to npm repo)</comment>"
         );
         $output->writeln(
-            "\tnpm run library           <comment>(alias to prepare-library)</comment>"
+            "\tnpm run library           <comment>(pack current project as library. <info>NOTE:</info> this is only an experimental feature)</comment>"
         );
         $output->writeln("");
     }

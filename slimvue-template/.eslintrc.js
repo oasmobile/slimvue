@@ -34,5 +34,6 @@ module.exports = {
         'no-multi-spaces'             : 0,
         'brace-style'                 : [2, 'stroustrup'],
         'padded-blocks'               : 0,
+        'one-var'                     : 0,
     },
 };

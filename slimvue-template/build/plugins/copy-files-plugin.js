@@ -19,11 +19,11 @@ if (fs.existsSync(includedDir)) {
     // noinspection JSUnresolvedFunction
     copyFileSettings.forEach(filename => {
         let fileContent = fs.readJsonSync(filename);
-        patterns.push = {
-            from   : path.join(resolveConfig.resolve("node_modules"), fileContent.name, 'dist/', fileContent.name),
-            to     : path.join(config.build.buildOutputRoot, fileContent.name),
-            ignore : fileContent.ignores,
-        };
+        let from   = path.join(resolveConfig.resolve("node_modules"), fileContent.module, fileContent.from),
+            to     = path.join(config.build.buildOutputRoot, fileContent.module),
+            ignore = fileContent.ignores;
+        patterns.push = {from, to, ignore};
+        console.log("Copy from " + from + " to " + to + " , ignores " + ignore);
     });
 }
 
