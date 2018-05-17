@@ -129,7 +129,7 @@ class SlimVueInitializeCommand extends Command
         foreach ($finder as $splFileInfo) {
             $path    = $splFileInfo->getRealPath();
             $content = \file_get_contents($path);
-            $content = \preg_replace('#([\'"])src/#', '$1' . $projectName . "/", $content);
+            $content = \preg_replace('#([\'"~])src/#', '$1' . $projectName . "/", $content);
             \file_put_contents($path, $content);
         }
         $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/$projectName");
