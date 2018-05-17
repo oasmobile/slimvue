@@ -24,7 +24,7 @@ if (fs.existsSync(includedDir)) {
 
 const customTransforms = require('../config/transform-settings');
 transformToRequire = merge(transformToRequire, customTransforms);
-console.log("transform-to-require: ", transformToRequire);
+// console.log("transform-to-require: ", transformToRequire);
 
 module.exports = {
     loaders            : utils.cssLoaders({

@@ -44,8 +44,8 @@ plugins.push(new HtmlWebpackPlugin({
 Object.keys(config.getEntries()).forEach((entry) => {
     let file = path.basename(entry);
     let subPath = path.dirname(entry);
-    console.log(`Adding html plugin for ${entry}, file = ${file}, subPath= ${subPath}`);
-
+    // console.log(`Adding html plugin for ${entry}, file = ${file}, subPath= ${subPath}`);
+    
     // // noinspection JSUnresolvedVariable
     // plugins.push(new HtmlWebpackPlugin({
     //     chunksSortMode : 'manual',
