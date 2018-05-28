@@ -2,7 +2,7 @@ require('./check-versions')();
 const fs = require('fs-extra');
 const resolveConfig = require('./resolve.conf');
 
-let inHomeDir = (fs.pathExistsSync(resolveConfig.resolve('node_modules')));
+let inHomeDir = !(fs.pathExistsSync(resolveConfig.resolve('../../node_modules')));
 let resolves = {};
 
 if (inHomeDir) {
