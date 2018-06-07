@@ -35,6 +35,13 @@ class SlimVueInitializeCommand extends Command
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
         $this->addArgument('project-name', InputArgument::OPTIONAL, "name of project");
         $this->addOption(
+            'scope',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'scope of project',
+            null
+        );
+        $this->addOption(
             'directory',
             'd',
             InputOption::VALUE_REQUIRED,
@@ -82,6 +89,8 @@ class SlimVueInitializeCommand extends Command
             $projectName = $helper->ask($input, $output, $q);
         }
         $projectDir          = $input->getOption('directory') ? : "./slimvue-$projectName";
+        $scope               = $input->getOption('scope');
+        $fullProjectName     = ($scope ? "@$scope/" : "") . $projectName;
         $twigTemplateBaseDir = $input->getOption('twig');
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
@@ -119,7 +128,7 @@ class SlimVueInitializeCommand extends Command
         $packageJsonFile        = $targetSlimvueDir . "/package.json";
         $content                = \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
-        $packageJson['name']    = "$projectName";
+        $packageJson['name']    = $fullProjectName;
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
@@ -129,10 +138,17 @@ class SlimVueInitializeCommand extends Command
         foreach ($finder as $splFileInfo) {
             $path    = $splFileInfo->getRealPath();
             $content = \file_get_contents($path);
-            $content = \preg_replace('#([\'"~])src/#', '$1' . $projectName . "/", $content);
+            $content = \preg_replace('#([\'"~])src/#', '$1' . $fullProjectName . "/", $content);
             \file_put_contents($path, $content);
         }
-        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/$projectName");
+        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/" . $fullProjectName);
+        if ($scope) {
+            $fs->symlink("@" . $scope, $targetSlimvueDir . "/~@" . $scope);
+        }
+        else {
+            $fs->symlink($fullProjectName, $targetSlimvueDir . "/~" . $fullProjectName);
+        }
+        $fs->symlink("$fullProjectName/assets", $targetSlimvueDir . "/~assets");
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(

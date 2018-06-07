@@ -23,6 +23,7 @@ else {
     console.log("Will generate resolve dependency file ...");
     depFilePath = resolveConfig.resolve('../../build/resolve-deps/' + resolveConfig.projectName + '.json');
     resolves[resolveConfig.projectName + '$'] = "node_modules/" + resolveConfig.projectName + "/" + resolveConfig.projectName + "/publish.js";
+    resolves[resolveConfig.projectName + "/" + resolveConfig.projectName] = "node_modules/" + resolveConfig.projectName + "/" + resolveConfig.projectName;
     resolves[resolveConfig.projectName] = "node_modules/" + resolveConfig.projectName + "/" + resolveConfig.projectName;
     
     console.log("Will generate copy-file-setting file ...");
