@@ -8,7 +8,7 @@ packageInfo.main = packageInfo.name + '/publish.js';
 // packageInfo.main = 'dist/publish.js';
 // delete packageInfo.main; // main entry is defined in post-install as package-name$ for resolve config
 packageInfo.scripts.postinstall = "node build/post-install.js";
-packageInfo.private = false; // TODO: remove this line when private NPM publishing is available
+// packageInfo.private = false; // TODO: remove this line when private NPM publishing is available
 fs.outputJsonSync(
     resolveConfig.resolve('package.json'),
     packageInfo,
