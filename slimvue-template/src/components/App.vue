@@ -3,7 +3,7 @@
         <img src="~assets/logo.png">
         <hello></hello>
         <div class="test">
-            GOOD Day 4
+            GOOD Day 5
         </div>
         <el-button title="Hello" type="plain">Wow</el-button>
         <img src="/static/pic.png"/>
