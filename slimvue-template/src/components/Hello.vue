@@ -34,6 +34,14 @@
         mounted() {
             console.log('hello');
             console.log(slimvue.bridge);
+            slimvue.log("log: ", slimvue.bridge);
+            slimvue.debug("debug: ", slimvue.bridge);
+            slimvue.info("info: ", slimvue.bridge);
+            slimvue.warn("warn: ", slimvue.bridge);
+            slimvue.error("err: ", slimvue.bridge);
+            slimvue.logLevel = slimvue.ERROR_LOG_LEVEL;
+            slimvue.info("not to show");
+            slimvue.error("must show");
             if (process.env.bridge) console.log('process.env.bridge');
         },
     };
@@ -42,20 +50,20 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     h1, h2 {
-        font-weight: normal;
+        font-weight : normal;
     }
 
     ul {
-        list-style-type: none;
-        padding: 0;
+        list-style-type : none;
+        padding         : 0;
     }
 
     li {
-        display: inline-block;
-        margin: 0 10px;
+        display : inline-block;
+        margin  : 0 10px;
     }
 
     a {
-        color: #42B983;
+        color : #42B983;
     }
 </style>
