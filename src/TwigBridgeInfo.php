@@ -17,11 +17,35 @@ class TwigBridgeInfo implements SlimVueBridgeInterface
         $this->data = $data;
     }
     
-    public function add($key, $value)
+    protected function put($key, $value)
     {
         $this->data[$key] = $value;
     }
-    
+
+    public function add($key, $value)
+    {
+        if (is_array($value)) {
+            $arrVal = [];
+            foreach ($value as $k => $item) {
+                if ($item instanceof \JsonSerializable) {
+                    $arrVal[$k] = $item->jsonSerialize();
+                }
+                else {
+                    $arrVal[$k] = $item;
+                }
+            }
+            $this->put($key, $arrVal);
+        }
+        else {
+            if ($value instanceof \JsonSerializable) {
+                $this->put($key, $value->jsonSerialize());
+            }
+            else {
+                $this->put($key, $value);
+            }
+        }
+    }
+
     public function getExecTwig($pageTwig)
     {
         $exec = preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', (string)$pageTwig);
