@@ -106,7 +106,7 @@ class SlimVueInitializeCommand extends Command
         $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
             $fs->makePathRelative($twigTemplateBaseDir, $cwd)
             : $twigTemplateBaseDir . "/slimvue";
-        $twigAsDir        = $fs->makePathRelative($relativeDistDir . "/twigs", \dirname($twigToDir));
+        $twigAsDir        = $fs->makePathRelative($relativeDistDir . "/pages", \dirname($twigToDir));
         $serviceFile      = $serviceDir . "/slimvue.services.yml";
         $webDir           = $webDir . "/$projectName";
         $output->writeln(
@@ -116,39 +116,39 @@ class SlimVueInitializeCommand extends Command
             )
         );
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
-        $output->writeln(\sprintf("Will customize for this project by changing some generated file content"));
-        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
-        $content              = \file_get_contents($webpackDevConfigFile);
-        $content              = \str_replace(
-            '/slimvue-template/dist/',
-            '/slimvue-' . $projectName . '/dist/',
-            $content
-        );
-        \file_put_contents($webpackDevConfigFile, $content);
+//        $output->writeln(\sprintf("Will customize for this project by changing some generated file content"));
+//        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
+//        $content              = \file_get_contents($webpackDevConfigFile);
+//        $content              = \str_replace(
+//            '/slimvue-template/dist/',
+//            '/slimvue-' . $projectName . '/dist/',
+//            $content
+//        );
+//        \file_put_contents($webpackDevConfigFile, $content);
         $packageJsonFile        = $targetSlimvueDir . "/package.json";
         $content                = \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
         $packageJson['name']    = $fullProjectName;
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
-        $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
-        $finder = $efs->getFinder();
-        $finder->path('src/')->files()->name('/\.(js|vue)$/');
-        /** @var SplFileInfo $splFileInfo */
-        foreach ($finder as $splFileInfo) {
-            $path    = $splFileInfo->getRealPath();
-            $content = \file_get_contents($path);
-            $content = \preg_replace('#([\'"~])src/#', '$1' . $fullProjectName . "/", $content);
-            \file_put_contents($path, $content);
-        }
-        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/" . $fullProjectName);
-        if ($scope) {
-            $fs->symlink("@" . $scope, $targetSlimvueDir . "/~@" . $scope);
-        }
-        else {
-            $fs->symlink($fullProjectName, $targetSlimvueDir . "/~" . $fullProjectName);
-        }
-        $fs->symlink("$fullProjectName/assets", $targetSlimvueDir . "/~assets");
+//        $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
+//        $finder = $efs->getFinder();
+//        $finder->path('src/')->files()->name('/\.(js|vue)$/');
+//        /** @var SplFileInfo $splFileInfo */
+//        foreach ($finder as $splFileInfo) {
+//            $path    = $splFileInfo->getRealPath();
+//            $content = \file_get_contents($path);
+//            $content = \preg_replace('#([\'"~])src/#', '$1' . $fullProjectName . "/", $content);
+//            \file_put_contents($path, $content);
+//        }
+//        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/" . $fullProjectName);
+//        if ($scope) {
+//            $fs->symlink("@" . $scope, $targetSlimvueDir . "/~@" . $scope);
+//        }
+//        else {
+//            $fs->symlink($fullProjectName, $targetSlimvueDir . "/~" . $fullProjectName);
+//        }
+//        $fs->symlink("$fullProjectName/assets", $targetSlimvueDir . "/~assets");
         \usleep(200 * 1000);
         $output->writeln(
             \sprintf(
@@ -163,7 +163,7 @@ class SlimVueInitializeCommand extends Command
         );
         \usleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
-        foreach (['htmls', 'js', 'assets', 'static'] as $subdir) {
+        foreach (['fonts', 'js', 'img', 'css'] as $subdir) {
             $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
             $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/slimvue-$projectName/dist/$subdir");
         }
@@ -188,7 +188,7 @@ YAML;
         $output->writeln("<info>To use the twig template, render your page using the following statement:</info>");
         $renderSample = <<<PHP
     \$kernel->render(
-        "slimvue/pages/\$yourControllerName.twig",
+        "slimvue/\$yourControllerName.twig",
         [
             "title" => \$yourPageTitle,
             "bridge" => \$theBridgeObject, <comment>// It is recommended to inject the bridge object into global twig vars</comment>
