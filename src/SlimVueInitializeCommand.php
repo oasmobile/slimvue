@@ -22,13 +22,13 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SlimVueInitializeCommand extends Command
 {
-    const SLIMVUE_DIR = __DIR__ . "/../slimvue-template";
-    
+    const SLIMVUE_DIR = __DIR__."/../slimvue-template";
+
     public function __construct($name)
     {
         parent::__construct($name);
     }
-    
+
     protected function configure()
     {
         parent::configure();
@@ -67,16 +67,16 @@ class SlimVueInitializeCommand extends Command
             'w',
             InputOption::VALUE_REQUIRED,
             'web directory into which project specific files will be linked;'
-            . \PHP_EOL
-            . ' all project files will be put under a sub-directory named by project name;'
-            . \PHP_EOL
-            . '<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
-            . \PHP_EOL
+            .\PHP_EOL
+            .' all project files will be put under a sub-directory named by project name;'
+            .\PHP_EOL
+            .'<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
+            .\PHP_EOL
             ,
             '/data/htdocs'
         );
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $projectName = $input->getArgument('project-name');
@@ -88,27 +88,27 @@ class SlimVueInitializeCommand extends Command
             $helper      = $this->getHelper('question');
             $projectName = $helper->ask($input, $output, $q);
         }
-        $projectDir          = $input->getOption('directory') ? : "./slimvue-$projectName";
+        $projectDir          = $input->getOption('directory') ?: "./slimvue-$projectName";
         $scope               = $input->getOption('scope');
-        $fullProjectName     = ($scope ? "@$scope/" : "") . $projectName;
+        $fullProjectName     = ($scope ? "@$scope/" : "").$projectName;
         $twigTemplateBaseDir = $input->getOption('twig');
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
-        
+
         $cwd              = \getcwd();
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
             $projectDir,
             $cwd
         ) : $projectDir;
-        $relativeDistDir  = $targetSlimvueDir . "/dist";
-        $absoluteDistDir  = $cwd . "/" . $targetSlimvueDir . "/dist";
+        $relativeDistDir  = $targetSlimvueDir."/dist";
+        $absoluteDistDir  = $cwd."/".$targetSlimvueDir."/dist";
         $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
             $fs->makePathRelative($twigTemplateBaseDir, $cwd)
-            : $twigTemplateBaseDir . "/slimvue";
-        $twigAsDir        = $fs->makePathRelative($relativeDistDir . "/pages", \dirname($twigToDir));
-        $serviceFile      = $serviceDir . "/slimvue.services.yml";
-        $webDir           = $webDir . "/$projectName";
+            : $twigTemplateBaseDir."/slimvue";
+        $twigAsDir        = $fs->makePathRelative($relativeDistDir."/pages", \dirname($twigToDir));
+        $serviceFile      = $serviceDir."/slimvue.services.yml";
+        $webDir           = $webDir."/$projectName";
         $output->writeln(
             \sprintf(
                 "Will create slimvue directory at: <info>%s</info>",
@@ -125,7 +125,7 @@ class SlimVueInitializeCommand extends Command
 //            $content
 //        );
 //        \file_put_contents($webpackDevConfigFile, $content);
-        $packageJsonFile        = $targetSlimvueDir . "/package.json";
+        $packageJsonFile        = $targetSlimvueDir."/package.json";
         $content                = \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
         $packageJson['name']    = $fullProjectName;
@@ -164,8 +164,8 @@ class SlimVueInitializeCommand extends Command
         \usleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
         foreach (['fonts', 'js', 'img', 'css'] as $subdir) {
-            $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
-            $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/slimvue-$projectName/dist/$subdir");
+            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/$subdir");
+            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/slimvue-$projectName/dist/$subdir");
         }
         \usleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
@@ -179,7 +179,7 @@ services:
 YAML;
         $fs->dumpFile($serviceFile, $serviceYaml);
         \usleep(200 * 1000);
-        
+
         $output->writeln("");
         \usleep(500 * 1000);
         $output->writeln("<info>Slim Vue framework has been initialized for your project.</info> ");
@@ -226,10 +226,7 @@ YAML;
         );
         $output->writeln("");
         $output->writeln(
-            "\tnpm run dev               <comment>(use webpack dev server)</comment>"
-        );
-        $output->writeln(
-            "\tnpm run start             <comment>(alias to <info>dev</info>)</comment>"
+            "\tnpm run serve               <comment>(use webpack dev server)</comment>"
         );
         $output->writeln(
             "\tnpm run build             <comment>(build for debug environment)</comment>"
@@ -240,13 +237,7 @@ YAML;
         $output->writeln(
             "\tnpm run release           <comment>(build for production/release environment)</comment>"
         );
-        $output->writeln(
-            "\tnpm run setup-library     <comment>(prepare current project to work as a library, which can then be published to npm repo)</comment>"
-        );
-        $output->writeln(
-            "\tnpm run library           <comment>(pack current project as library. <info>NOTE:</info> this is only an experimental feature)</comment>"
-        );
         $output->writeln("");
     }
-    
+
 }
