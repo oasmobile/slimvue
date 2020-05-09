@@ -34,16 +34,13 @@ export default {
     },
     get bridge() {
         if (undefined === window.bridge) {
-            return process.env.bridge;
+            return process.env.VUE_APP_BRIDGE;
         } else {
             return window.bridge;
         }
     },
     mount(vueComponent) {
-        this.log(
-            "Will start to mount component to slimvue app",
-            vueComponent
-        );
+        this.log("Will start to mount component to slimvue app", vueComponent);
         let app = (window.slimvue = new Vue({
             render: h => h(vueComponent)
         }).$mount("#app"));
