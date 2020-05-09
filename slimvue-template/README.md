@@ -9,21 +9,20 @@ npm install
 ```
 npm run serve
 ```
-
+### Compiles and watch for development with slimapp
+```
+npm run watch
+```
 ### Compiles and minifies for production
 ```
 npm run release
-```
-
-### Run your tests
-```
-npm run test
 ```
 
 ### Lints and fixes files
 ```
 npm run lint
 ```
+
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
