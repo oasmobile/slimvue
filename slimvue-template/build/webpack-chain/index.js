@@ -1,5 +1,5 @@
 const resolve = require("./resolve"),
-    plugin = require("./plugins");
+    plugin = require("./plugin");
 
 module.exports = {
     resolve,
