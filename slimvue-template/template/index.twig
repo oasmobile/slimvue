@@ -7,7 +7,7 @@
         <link rel="icon" href="<%= BASE_URL %>static/favicon.ico" />
         <title><%= htmlWebpackPlugin.options.title %></title>
         <script>
-            window.bridge = JSON.parse("{{ bridge.render()|raw }}");
+            window.bridge = {{ bridge.render()|raw }};
         </script>
     </head>
     <body>
