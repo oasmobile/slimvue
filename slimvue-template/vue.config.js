@@ -1,7 +1,7 @@
-let pages = require("./build/entries"),
-    slimvueConfig = require("./build/config"),
-    webpackConfig = require("./build/webpack.conf.js"),
-    transformAssetUrls = require("./build/transformAssetUrls");
+let pages = require("./build/entries.js"),
+    slimvueConfig = require("./build/config.js"),
+    webpackConfig = require("./build/webpack-chain/index.js"),
+    transformAssetUrls = require("./build/transformAssetUrls.js");
 
 module.exports = {
     publicPath: slimvueConfig.publicPath,
