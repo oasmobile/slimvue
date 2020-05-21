@@ -34,7 +34,7 @@ export default {
     },
     get bridge() {
         if (undefined === window.bridge) {
-            return process.env.VUE_APP_BRIDGE;
+            return JSON.parse(process.env.VUE_APP_BRIDGE);
         } else {
             return window.bridge;
         }

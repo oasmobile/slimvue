@@ -6,7 +6,7 @@
         "serve": "vue-cli-service serve --mode serve",
         "build": "vue-cli-service build --mode development",
         "watch": "vue-cli-service build --mode development --watch",
-        "release": "vue-cli-service build",
+        "release": "vue-cli-service build --modern",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {

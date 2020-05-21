@@ -1,5 +1,4 @@
-let path = require("path"),
-    pages = require("./build/entries.js"),
+let pages = require("./build/entries.js"),
     devServer = require("./build/devServer.js"),
     slimvueConfig = require("./build/config.js"),
     modifyWebpackConfig = require("./build/webpack-modify/index.js");
