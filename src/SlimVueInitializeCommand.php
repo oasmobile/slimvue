@@ -73,7 +73,7 @@ class SlimVueInitializeCommand extends Command
             .'<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
             .\PHP_EOL
             ,
-            '/data/htdocs'
+            './web'
         );
     }
 
@@ -108,7 +108,7 @@ class SlimVueInitializeCommand extends Command
             : $twigTemplateBaseDir."/slimvue";
         $twigAsDir        = $fs->makePathRelative($relativeDistDir."/pages", \dirname($twigToDir));
         $serviceFile      = $serviceDir."/slimvue.services.yml";
-        $webDir           = $webDir."/$projectName";
+//        $webDir           = $webDir."/$projectName";
         $output->writeln(
             \sprintf(
                 "Will create slimvue directory at: <info>%s</info>",
@@ -165,7 +165,7 @@ class SlimVueInitializeCommand extends Command
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
         foreach (['fonts', 'js', 'img', 'css', 'static'] as $subdir) {
             $fs->symlink($absoluteDistDir."/$subdir", $webDir."/$subdir");
-            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/slimvue-$projectName/dist/$subdir");
+//            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/slimvue-$projectName/dist/$subdir");
         }
         \usleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
