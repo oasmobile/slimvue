@@ -7,7 +7,7 @@
         "build": "vue-cli-service build --mode development",
         "watch": "vue-cli-service build --mode development --watch",
         "release": "vue-cli-service build --modern",
-        "lib": "vue-cli-service build --target lib --name MyClock publish.js",
+        "lib": "vue-cli-service build --target lib --name MyClock src/publish.js",
         "lint": "vue-cli-service lint"
     },
     "dependencies": {
