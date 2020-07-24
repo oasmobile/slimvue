@@ -55,16 +55,16 @@ class SlimVueUpgradeCommand extends Command
             )
         );
         $fs->mirror(SlimVueInitializeCommand::SLIMVUE_DIR, $targetSlimvueDir);
-        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
-        $content              = \file_get_contents($webpackDevConfigFile);
-        $content              = \str_replace(
-            '/slimvue-template/dist/',
-            '/' . $projectDir . '/dist/',
-            $content
-        );
-        
-        // restore package.json name&version
-        \file_put_contents($webpackDevConfigFile, $content);
+//        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
+//        $content              = \file_get_contents($webpackDevConfigFile);
+//        $content              = \str_replace(
+//            '/slimvue-template/dist/',
+//            '/' . $projectDir . '/dist/',
+//            $content
+//        );
+//
+//        // restore package.json name&version
+//        \file_put_contents($webpackDevConfigFile, $content);
         $packageJsonFile                = $targetSlimvueDir . "/package.json";
         $content                        = \file_get_contents($packageJsonFile);
         $packageJson                    = \json_decode($content, true);

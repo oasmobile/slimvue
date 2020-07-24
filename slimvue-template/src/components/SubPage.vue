@@ -1,22 +1,14 @@
 <template>
     <div id="app">
-        <img alt="Vue logo" src="@/assets/logo.png" />
-        <HelloWorld msg="Welcome to Your Vue.js App" />
         <div class="logo"></div>
+        <div class="text">this is subpage</div>
     </div>
 </template>
-
 <script>
-import HelloWorld from "./HelloWorld.vue";
-
 export default {
-    name: "App",
-    components: {
-        HelloWorld
-    }
+    name: "SubPage"
 };
 </script>
-
 <style lang="scss">
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -29,7 +21,11 @@ export default {
         width: 200px;
         height: 200px;
         margin: 0 auto;
-        background: url("~@/assets/logo.png") no-repeat;
+        background: url("~assets/logo.png") no-repeat;
+    }
+    .text {
+        font-size: 20px;
+        text-align: center;
     }
 }
 </style>
