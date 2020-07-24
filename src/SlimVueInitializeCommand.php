@@ -106,7 +106,7 @@ class SlimVueInitializeCommand extends Command
         $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
             $fs->makePathRelative($twigTemplateBaseDir, $cwd)
             : $twigTemplateBaseDir."/slimvue";
-        $twigAsDir        = $fs->makePathRelative($relativeDistDir."/pages", \dirname($twigToDir));
+        $twigAsDir        = $fs->makePathRelative("{$cwd}{$relativeDistDir}/pages", dirname("{$cwd}{$twigToDir}"));
         $serviceFile      = $serviceDir."/slimvue.services.yml";
 //        $webDir           = $webDir."/$projectName";
         $output->writeln(
