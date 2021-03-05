@@ -6,6 +6,6 @@ module.exports = merge(prodEnv, {
     // add bridge object here for debug env
     // NOTE: bridge object must be JSON.stringified because webpack will simply string-replace the occurence
     bridge   : JSON.stringify({
-        name : "feixiong",
+        name : "lisa",
     }),
 });
