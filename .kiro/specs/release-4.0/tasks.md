@@ -163,7 +163,7 @@
 
 ### 前端 — 阶段 1: 升级依赖（允许 red）
 
-- [-] 5. 升级前端依赖
+- [x] 5. 升级前端依赖
   - [x] 5.1 更新 `slimvue-template/package.json` 依赖声明
     - 将 `vue` 从 `^2.6.11` 升级到 `^3`
     - 移除 `core-js`
@@ -203,7 +203,7 @@
     - 支持 `BUILD_FILE_TYPE`、`PUBLIC_PATH`、`OUTPUT_DIR`、`EXCLUED_ENTRIES` 环境变量
     - 配置 resolve alias（`@`、`slimvue`、`assets`）
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
-  - [-] 5.6 Checkpoint — 前端依赖安装成功
+  - [x] 5.6 Checkpoint — 前端依赖安装成功
     - 在 `slimvue-template/` 下运行 `npm install`，确认无错误
     - 此阶段允许测试 red（Vitest 尚未配置、源码尚未迁移）
     - 通过后 commit
@@ -211,12 +211,12 @@
 
 ### 前端 — 阶段 2: 升级测试（结束时必须 green）
 
-- [~] 6. Jest → Vitest 迁移与测试修复
-  - [ ] 6.1 编写 Vitest 配置（RED）
+- [x] 6. Jest → Vitest 迁移与测试修复
+  - [x] 6.1 编写 Vitest 配置（RED）
     - 在 `vite.config.js` 中添加 Vitest 配置（或创建独立 `vitest.config.js`）
     - 配置测试环境（jsdom）、覆盖率工具
     - _Requirements: 9.1_
-  - [ ] 6.2 迁移测试文件到 Vitest API（RED）
+  - [x] 6.2 迁移测试文件到 Vitest API（RED）
     - 更新 `tests/slimvue.test.js`：`jest.fn()` → `vi.fn()`、`jest.spyOn()` → `vi.spyOn()` 等
     - 更新 `tests/build-entries.test.js`：适配 ESM 导入和 Vitest API
     - 更新 `tests/build-config.test.js`：适配 Vite 配置结构
@@ -225,7 +225,7 @@
     - 移除或重写不再适用的测试文件（`build-devServer.test.js`、`build-resolve.test.js`、`build-transformAssetUrls.test.js`、`build-webpack-add.test.js`、`build-webpack-modify.test.js`）
     - 此时测试可能因源码尚未迁移而 fail
     - _Requirements: 9.2, 9.3_
-  - [ ] 6.3 迁移 `slimvue.js` 到 Vue 3 API（GREEN）
+  - [x] 6.3 迁移 `slimvue.js` 到 Vue 3 API（GREEN）
     - 按 design.md 中的 `slimvue.js` 设计实现：
       - `import Vue from 'vue'` → `import { createApp } from 'vue'`
       - `new Vue().$mount()` → `createApp().mount()`
@@ -235,13 +235,13 @@
       - `process.env.VUE_APP_BRIDGE` → `import.meta.env.VITE_BRIDGE`
     - 运行 `npx vitest run` 确认 `slimvue.test.js` 通过
     - _Requirements: 8.1_
-  - [ ] 6.4 迁移构建配置测试（GREEN）
+  - [x] 6.4 迁移构建配置测试（GREEN）
     - 确保 `tests/build-entries.test.js` 测试 `scripts/entries.js` 的入口扫描逻辑
     - 确保 `tests/build-tdk.test.js` 测试 `scripts/tdk.js` 的 TDK 注入逻辑
     - 确保 `tests/build-config.test.js` 测试 `vite.config.js` 的配置结构
     - 运行 `npx vitest run` 确认通过
     - _Requirements: 9.5_
-  - [ ] 6.5 Checkpoint — Vitest 测试全部通过
+  - [x] 6.5 Checkpoint — Vitest 测试全部通过
     - 在 `slimvue-template/` 下运行 `npx vitest run`，确认 zero failures
     - 确认输出无 warning
     - 通过后 commit
@@ -249,8 +249,8 @@
 
 ### 前端 — 阶段 3: 升级语法与组件（保持 green）
 
-- [~] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
-  - [ ] 7.1 重新设计 Vue 3 模板组件
+- [-] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
+  - [x] 7.1 重新设计 Vue 3 模板组件
     - 按 design.md 中的组件设计实现：
       - 重写 `App.vue`：使用 `<script setup>`、`computed`、bridge 数据展示
       - 重写 `HelloWorld.vue`：使用 `defineProps`、`defineEmits`
@@ -261,23 +261,23 @@
     - 更新 `template/index.html` 和 `template/index.twig` 兼容 Vite HTML 入口机制
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8_
-  - [ ] 7.2 更新组件测试
+  - [x] 7.2 更新组件测试
     - 更新 `tests/components.test.js`：适配 Vue 3 组件（`<script setup>`、Composition API）
     - 使用 `@vue/test-utils` ^2 的 `mount`/`shallowMount` API
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 9.5_
-  - [ ] 7.3 创建 ESLint flat config
+  - [x] 7.3 创建 ESLint flat config
     - 创建 `slimvue-template/eslint.config.js`：按 design.md 中的 flat config 结构实现
     - 使用 `eslint-plugin-vue` 的 Vue 3 recommended config（`flat/recommended`）
     - 集成 `eslint-config-prettier` 关闭冲突规则
     - _Requirements: 11.1, 11.2, 11.3_
-  - [ ] 7.4 更新 Prettier 配置
+  - [x] 7.4 更新 Prettier 配置
     - 更新 `slimvue-template/prettier.config.js`：适配 Prettier 最新大版本选项
     - _Requirements: 11.4_
-  - [ ] 7.5 运行 lint 并修复
+  - [x] 7.5 运行 lint 并修复
     - 在 `slimvue-template/` 下运行 `npm run lint`，修复所有 lint 错误
     - _Requirements: 11.5_
-  - [ ] 7.6 Checkpoint — 前端语法升级完成
+  - [-] 7.6 Checkpoint — 前端语法升级完成
     - 运行 `npx vitest run`，确认全部通过
     - 运行 `npm run lint`，确认 zero errors
     - 通过后 commit

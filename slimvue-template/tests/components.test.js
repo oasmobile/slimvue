@@ -1,9 +1,9 @@
 /**
- * Tests for Vue components.
+ * Tests for Vue 3 components using <script setup> and Composition API.
  *
  * Uses @vue/test-utils ^2 (Vue 3 compatible) with Vitest.
- * Components are currently Vue 2 Options API — these tests will be
- * updated in Task 7 when components are migrated to Vue 3 <script setup>.
+ * Components use <script setup> — internal state is not exposed on wrapper.vm.
+ * Composable logic (useClock) is tested via direct import.
  */
 
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
@@ -12,6 +12,11 @@ import App from '@/components/App.vue';
 import HelloWorld from '@/components/HelloWorld.vue';
 import MyClock from '@/components/MyClock.vue';
 import SubPage from '@/components/SubPage.vue';
+import {
+    prefixDateNum,
+    formatDateTime,
+    useClock,
+} from '@/composables/useClock';
 
 // ── App ──
 
@@ -35,6 +40,11 @@ describe('App.vue', () => {
     test('renders Vue logo image', () => {
         const wrapper = shallowMount(App);
         expect(wrapper.find('img').exists()).toBe(true);
+    });
+
+    test('renders MyClock component', () => {
+        const wrapper = shallowMount(App);
+        expect(wrapper.findComponent(MyClock).exists()).toBe(true);
     });
 });
 
@@ -61,6 +71,22 @@ describe('HelloWorld.vue', () => {
         });
         expect(wrapper.text()).toContain('Ecosystem');
     });
+
+    test('renders Vite documentation link', () => {
+        const wrapper = shallowMount(HelloWorld, {
+            props: { msg: 'Hello' },
+        });
+        expect(wrapper.text()).toContain('Vite documentation');
+    });
+
+    test('emits greet event when button is clicked', async () => {
+        const wrapper = mount(HelloWorld, {
+            props: { msg: 'Hello' },
+        });
+        await wrapper.find('button').trigger('click');
+        expect(wrapper.emitted('greet')).toBeTruthy();
+        expect(wrapper.emitted('greet')[0]).toEqual(['World']);
+    });
 });
 
 // ── MyClock ──
@@ -76,50 +102,50 @@ describe('MyClock.vue', () => {
 
     test('renders a date-time string', () => {
         const wrapper = shallowMount(MyClock);
-        // Should match pattern like "2024-01-15 10:30:45"
         expect(wrapper.text()).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
     });
+});
 
-    test('prefixDateNum pads single digit', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.prefixDateNum(5)).toBe('05');
+// ── useClock composable ──
+
+describe('useClock composable', () => {
+    describe('prefixDateNum', () => {
+        test('pads single digit', () => {
+            expect(prefixDateNum(5)).toBe('05');
+        });
+
+        test('does not pad double digit', () => {
+            expect(prefixDateNum(12)).toBe('12');
+        });
+
+        test('handles 0', () => {
+            expect(prefixDateNum(0)).toBe('00');
+        });
+
+        test('handles 10 (boundary)', () => {
+            expect(prefixDateNum(10)).toBe('10');
+        });
+
+        test('handles 9 (boundary)', () => {
+            expect(prefixDateNum(9)).toBe('09');
+        });
     });
 
-    test('prefixDateNum does not pad double digit', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.prefixDateNum(12)).toBe('12');
-    });
+    describe('formatDateTime', () => {
+        test('returns formatted string', () => {
+            const result = formatDateTime(new Date());
+            expect(result).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
+        });
 
-    test('prefixDateNum handles 0', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.prefixDateNum(0)).toBe('00');
-    });
+        test('formats a known date correctly', () => {
+            const date = new Date(2025, 0, 5, 8, 3, 7); // Jan 5, 2025 08:03:07
+            expect(formatDateTime(date)).toBe('2025-01-05 08:03:07');
+        });
 
-    test('prefixDateNum handles 10 (boundary)', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.prefixDateNum(10)).toBe('10');
-    });
-
-    test('prefixDateNum handles 9 (boundary)', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.prefixDateNum(9)).toBe('09');
-    });
-
-    test('getFullDateTime returns formatted string', () => {
-        const wrapper = shallowMount(MyClock);
-        const result = wrapper.vm.getFullDateTime();
-        expect(result).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
-    });
-
-    test('fullDateTime computed property matches getFullDateTime', () => {
-        const wrapper = shallowMount(MyClock);
-        expect(wrapper.vm.fullDateTime).toBe(wrapper.vm.getFullDateTime());
-    });
-
-    test('initial time is close to Date.now()', () => {
-        const now = Date.now();
-        const wrapper = shallowMount(MyClock);
-        expect(Math.abs(wrapper.vm.time - now)).toBeLessThan(100);
+        test('formats midnight correctly', () => {
+            const date = new Date(2025, 11, 31, 0, 0, 0); // Dec 31, 2025 00:00:00
+            expect(formatDateTime(date)).toBe('2025-12-31 00:00:00');
+        });
     });
 });
 
