@@ -1,0 +1,17 @@
+# 主页路由
+home:
+    path: /
+    defaults:
+        _controller: DemoController::homeAction
+
+# 子页面路由
+subpage:
+    path: /subpage
+    defaults:
+        _controller: DemoController::subpageAction
+
+# 应用层错误处理演示路由
+error_demo:
+    path: /error-demo
+    defaults:
+        _controller: DemoController::errorDemoAction

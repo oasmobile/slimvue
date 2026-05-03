@@ -28,5 +28,11 @@
         "psr-4": {
             "Oasis\\SlimVue\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Oasis\\SlimVue\\Demo\\": "demo/",
+            "Oasis\\SlimVue\\Tests\\": "tests/"
+        }
     }
 }

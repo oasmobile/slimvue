@@ -1,11 +1,5 @@
 #! /usr/bin/env php
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 2017-09-20
- * Time: 21:41
- */
 
 use Oasis\SlimVue\SlimVueInitializeCommand;
 use Oasis\SlimVue\SlimVueUpgradeCommand;
@@ -16,12 +10,9 @@ $autoloadFiles = [
     __DIR__ . '/../../../autoload.php',
 ];
 
-/** @var SlimApp $app */
-$app        = null;
 $autoloaded = false;
 foreach ($autoloadFiles as $autoloadFile) {
     if (file_exists($autoloadFile)) {
-        /** @noinspection PhpIncludeInspection */
         require_once $autoloadFile;
         $autoloaded = true;
         break;
@@ -36,11 +27,9 @@ ERROR;
     exit(1);
 }
 
-$app = new Application('slimvue', "4.0");
-$app->addCommands(
-    [
-        new SlimVueInitializeCommand('initialize'),
-        new SlimVueUpgradeCommand('upgrade'),
-    ]
-);
+$app = new Application('slimvue', '4.0');
+$app->addCommands([
+    new SlimVueInitializeCommand('initialize'),
+    new SlimVueUpgradeCommand('upgrade'),
+]);
 $app->run();

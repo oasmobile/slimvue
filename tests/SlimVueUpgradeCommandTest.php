@@ -174,9 +174,13 @@ class SlimVueUpgradeCommandTest extends TestCase
         $tester->execute(['project-dir' => $projDir]);
 
         $this->assertFileExists($projDir . '/slimvue.js');
-        $this->assertFileExists($projDir . '/vue.config.js');
         $this->assertDirectoryExists($projDir . '/src');
-        $this->assertDirectoryExists($projDir . '/build');
+        // Obsolete files should be removed after upgrade
+        $this->assertFileDoesNotExist($projDir . '/vue.config.js');
+        $this->assertFileDoesNotExist($projDir . '/babel.config.js');
+        $this->assertFileDoesNotExist($projDir . '/jest.config.js');
+        $this->assertFileDoesNotExist($projDir . '/.eslintrc.js');
+        $this->assertDirectoryDoesNotExist($projDir . '/build');
     }
 
     public function testUpgradeOutputContainsUpgradedMessage(): void
@@ -191,7 +195,7 @@ class SlimVueUpgradeCommandTest extends TestCase
         $this->assertStringContainsString('upgraded', \strtolower($output));
     }
 
-    public function testUpgradeHandlesMissingDependenciesKeyGracefully(): void
+    public function testUpgradeFailsWhenDependenciesKeyMissing(): void
     {
         $projDir = $this->tmpDir . '/nodepproj';
         \mkdir($projDir, 0755, true);
@@ -204,15 +208,13 @@ class SlimVueUpgradeCommandTest extends TestCase
         $tester = $this->createUpgradeTester();
         $tester->execute(['project-dir' => $projDir]);
 
-        $pkg = \json_decode(\file_get_contents($projDir . '/package.json'), true);
-        $this->assertSame('bare-project', $pkg['name']);
-        $this->assertSame('0.0.1', $pkg['version']);
-        // dependencies should exist (empty or from template, depending on mirror behavior)
-        $this->assertArrayHasKey('dependencies', $pkg);
-        $this->assertArrayHasKey('devDependencies', $pkg);
+        $this->assertSame(1, $tester->getStatusCode());
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Missing required field', $output);
+        $this->assertStringContainsString('dependencies', $output);
     }
 
-    public function testUpgradeHandlesMissingNameKeyGracefully(): void
+    public function testUpgradeFailsWhenNameKeyMissing(): void
     {
         $projDir = $this->tmpDir . '/nonameproj';
         \mkdir($projDir, 0755, true);
@@ -225,8 +227,47 @@ class SlimVueUpgradeCommandTest extends TestCase
         $tester = $this->createUpgradeTester();
         $tester->execute(['project-dir' => $projDir]);
 
-        $pkg = \json_decode(\file_get_contents($projDir . '/package.json'), true);
-        // fallback to 'slimvue-template' via ?? operator
-        $this->assertSame('slimvue-template', $pkg['name']);
+        $this->assertSame(1, $tester->getStatusCode());
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Missing required field', $output);
+        $this->assertStringContainsString('name', $output);
+    }
+
+    public function testUpgradeFailsWhenVersionKeyMissing(): void
+    {
+        $projDir = $this->tmpDir . '/noverproj';
+        \mkdir($projDir, 0755, true);
+        \file_put_contents($projDir . '/package.json', \json_encode([
+            'name'            => 'test-project',
+            'dependencies'    => ['vue' => '^3'],
+            'devDependencies' => [],
+        ], \JSON_PRETTY_PRINT));
+
+        $tester = $this->createUpgradeTester();
+        $tester->execute(['project-dir' => $projDir]);
+
+        $this->assertSame(1, $tester->getStatusCode());
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Missing required field', $output);
+        $this->assertStringContainsString('version', $output);
+    }
+
+    public function testUpgradeFailsWhenDevDependenciesKeyMissing(): void
+    {
+        $projDir = $this->tmpDir . '/nodevdepproj';
+        \mkdir($projDir, 0755, true);
+        \file_put_contents($projDir . '/package.json', \json_encode([
+            'name'         => 'test-project',
+            'version'      => '1.0.0',
+            'dependencies' => ['vue' => '^3'],
+        ], \JSON_PRETTY_PRINT));
+
+        $tester = $this->createUpgradeTester();
+        $tester->execute(['project-dir' => $projDir]);
+
+        $this->assertSame(1, $tester->getStatusCode());
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Missing required field', $output);
+        $this->assertStringContainsString('devDependencies', $output);
     }
 }

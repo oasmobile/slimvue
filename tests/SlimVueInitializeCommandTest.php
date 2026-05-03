@@ -267,7 +267,8 @@ class SlimVueInitializeCommandTest extends TestCase
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString('npm install', $output);
-        $this->assertStringContainsString('npm run serve', $output);
+        $this->assertStringContainsString('npm run dev', $output);
+        $this->assertStringNotContainsString('npm run serve', $output);
         $this->assertStringContainsString('npm run build', $output);
         $this->assertStringContainsString('npm run release', $output);
     }
@@ -285,9 +286,12 @@ class SlimVueInitializeCommandTest extends TestCase
 
         $dir = $this->tmpDir . '/slimvue-mirrortest';
         $this->assertFileExists($dir . '/slimvue.js');
-        $this->assertFileExists($dir . '/vue.config.js');
         $this->assertDirectoryExists($dir . '/src');
-        $this->assertDirectoryExists($dir . '/build');
+        // Obsolete files should NOT be mirrored
+        $this->assertFileDoesNotExist($dir . '/vue.config.js');
+        $this->assertFileDoesNotExist($dir . '/babel.config.js');
+        $this->assertFileDoesNotExist($dir . '/jest.config.js');
+        $this->assertDirectoryDoesNotExist($dir . '/build');
     }
 
     public function testExecutePromptsWhenProjectNameInvalid(): void
