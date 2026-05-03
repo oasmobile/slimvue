@@ -1,5 +1,7 @@
 /vendor/
 /.idea/
+/.vscode/
+/web/
 /slimvue/
 /config/
 /assets/
