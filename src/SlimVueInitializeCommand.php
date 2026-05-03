@@ -18,11 +18,31 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 class SlimVueInitializeCommand extends Command
 {
     const SLIMVUE_DIR = __DIR__."/../slimvue-template";
+
+    /**
+     * Create a Finder iterator for SLIMVUE_DIR that excludes node_modules and coverage.
+     */
+    public static function templateIterator(): Finder
+    {
+        return Finder::create()
+            ->in(self::SLIMVUE_DIR)
+            ->exclude(['node_modules', 'coverage'])
+            ->ignoreDotFiles(false);
+    }
+
+    /**
+     * Pause for visual pacing in CLI output. Override in tests to skip delays.
+     */
+    protected function sleep(int $microseconds): void
+    {
+        \usleep($microseconds);
+    }
 
     public function __construct($name)
     {
@@ -115,7 +135,7 @@ class SlimVueInitializeCommand extends Command
                 $targetSlimvueDir
             )
         );
-        $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
+        $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir, self::templateIterator());
 //        $output->writeln(\sprintf("Will customize for this project by changing some generated file content"));
 //        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
 //        $content              = \file_get_contents($webpackDevConfigFile);
@@ -149,7 +169,7 @@ class SlimVueInitializeCommand extends Command
 //            $fs->symlink($fullProjectName, $targetSlimvueDir . "/~" . $fullProjectName);
 //        }
 //        $fs->symlink("$fullProjectName/assets", $targetSlimvueDir . "/~assets");
-        \usleep(200 * 1000);
+        $this->sleep(200 * 1000);
         $output->writeln(
             \sprintf(
                 "Will link twig directory to: <info>%s</info>, as <info>%s</info>",
@@ -161,13 +181,13 @@ class SlimVueInitializeCommand extends Command
             $twigAsDir,
             $twigToDir
         );
-        \usleep(200 * 1000);
+        $this->sleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
         foreach (['fonts', 'js', 'img', 'css', 'static'] as $subdir) {
             $fs->symlink($absoluteDistDir."/$subdir", $webDir."/$subdir");
 //            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/slimvue-$projectName/dist/$subdir");
         }
-        \usleep(200 * 1000);
+        $this->sleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
         $serviceYaml = <<<YAML
 services:
@@ -178,12 +198,12 @@ services:
 
 YAML;
         $fs->dumpFile($serviceFile, $serviceYaml);
-        \usleep(200 * 1000);
+        $this->sleep(200 * 1000);
 
         $output->writeln("");
-        \usleep(500 * 1000);
+        $this->sleep(500 * 1000);
         $output->writeln("<info>Slim Vue framework has been initialized for your project.</info> ");
-        \usleep(500 * 1000);
+        $this->sleep(500 * 1000);
         $output->writeln("");
         $output->writeln("<info>To use the twig template, render your page using the following statement:</info>");
         $renderSample = <<<PHP

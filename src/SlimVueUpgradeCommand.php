@@ -54,7 +54,7 @@ class SlimVueUpgradeCommand extends Command
                 $targetSlimvueDir
             )
         );
-        $fs->mirror(SlimVueInitializeCommand::SLIMVUE_DIR, $targetSlimvueDir);
+        $fs->mirror(SlimVueInitializeCommand::SLIMVUE_DIR, $targetSlimvueDir, SlimVueInitializeCommand::templateIterator());
 //        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
 //        $content              = \file_get_contents($webpackDevConfigFile);
 //        $content              = \str_replace(
@@ -74,8 +74,16 @@ class SlimVueUpgradeCommand extends Command
         $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies'] ?? []);
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         
-        \usleep(200 * 1000);
+        $this->sleep(200 * 1000);
         $output->writeln("Project upgraded, remember to check your git working-tree for detailed changes.");
+    }
+
+    /**
+     * Pause for visual pacing in CLI output. Override in tests to skip delays.
+     */
+    protected function sleep(int $microseconds): void
+    {
+        \usleep($microseconds);
     }
     
 }

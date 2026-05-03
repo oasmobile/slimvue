@@ -67,7 +67,10 @@ class SlimVueUpgradeCommandTest extends TestCase
     private function createUpgradeTester(): CommandTester
     {
         $app = new Application('slimvue', '1.4');
-        $app->add(new SlimVueUpgradeCommand('upgrade'));
+        $cmd = new class('upgrade') extends SlimVueUpgradeCommand {
+            protected function sleep(int $microseconds): void {}
+        };
+        $app->add($cmd);
         $command = $app->find('upgrade');
         return new CommandTester($command);
     }

@@ -51,7 +51,10 @@ class SlimVueInitializeCommandTest extends TestCase
     private function createCommandTester(): CommandTester
     {
         $app = new Application('slimvue', '1.4');
-        $app->add(new SlimVueInitializeCommand('initialize'));
+        $cmd = new class('initialize') extends SlimVueInitializeCommand {
+            protected function sleep(int $microseconds): void {}
+        };
+        $app->add($cmd);
         $command = $app->find('initialize');
         return new CommandTester($command);
     }
