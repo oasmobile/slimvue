@@ -116,7 +116,7 @@ SlimVue 当前技术栈版本严重滞后：
 
 ### 阶段顺序
 
-1. **升级依赖库**——修改版本约束，执行 install/update；此阶段允许测试 fail
+1. **升级依赖库**——修改版本约束，执行 install/update，更新项目文档；此阶段允许测试 fail
 2. **升级测试用例**——适配新测试框架 API（PHPUnit 13 / Vitest），使测试重新 green
 3. **升级语法**——全面采用新版语法特性（PHP 8.5 / Vue 3 + `<script setup>`），保持 green
 4. **增加 PBT + 覆盖率**——引入 Property-Based Testing，目标覆盖率（UT + PBT + Integration）> 90%
