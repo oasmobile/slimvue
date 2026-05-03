@@ -51,11 +51,14 @@ vendor/bin/slimvue initialize myapp --scope myorg --twig ./templates --web-dir .
 进入初始化后的前端项目目录：
 
 ```bash
-npm install       # 首次安装依赖
-npm run serve     # 启动开发服务器（端口 8090）
-npm run build     # 开发环境构建
-npm run watch     # 开发环境构建 + 文件监听
-npm run release   # 生产环境构建
+npm install           # 首次安装依赖
+npm run dev           # 启动 Vite 开发服务器
+npm run build         # 开发环境构建
+npm run release       # 生产环境构建
+npm run preview       # 预览构建产物
+npm run test          # 运行测试
+npm run test:watch    # 测试 watch 模式
+npm run lint          # ESLint 检查
 ```
 
 ---
@@ -68,7 +71,7 @@ npm run release   # 生产环境构建
 
 ```javascript
 import slimvue from "slimvue";
-import MyPage from "@/components/MyPage";
+import MyPage from "@/components/MyPage.vue";
 slimvue.mount(MyPage);
 ```
 
@@ -121,7 +124,7 @@ const userData = slimvue.bridge.user;
 const config = slimvue.bridge.config;
 ```
 
-开发模式下（`npm run serve`），bridge 数据从 `.env.serve` 的 `VUE_APP_BRIDGE` 环境变量读取。
+开发模式下（`npm run dev`），bridge 数据从 `.env.serve` 的 `VITE_BRIDGE` 环境变量读取。
 
 ---
 
@@ -134,3 +137,5 @@ vendor/bin/slimvue upgrade <project-dir>
 ```
 
 升级会用最新模板覆盖构建文件，同时保留项目的 `name`、`version` 和自定义依赖。升级后建议检查 git diff 确认变更。
+
+注意：目标项目的 `package.json` 必须包含 `name`、`version`、`dependencies`、`devDependencies` 四个字段，否则命令将中止并报错。

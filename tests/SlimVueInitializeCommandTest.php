@@ -2,6 +2,8 @@
 
 namespace Oasis\SlimVue\Tests;
 
+use Eris\Generators;
+use Eris\TestTrait;
 use Oasis\SlimVue\SlimVueInitializeCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
@@ -9,11 +11,9 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SlimVueInitializeCommandTest extends TestCase
 {
-    /** @var string */
-    private $originalCwd;
-
-    /** @var string */
-    private $tmpDir;
+    use TestTrait;
+    private string $originalCwd;
+    private string $tmpDir;
 
     protected function setUp(): void
     {
@@ -54,7 +54,7 @@ class SlimVueInitializeCommandTest extends TestCase
         $cmd = new class('initialize') extends SlimVueInitializeCommand {
             protected function sleep(int $microseconds): void {}
         };
-        $app->add($cmd);
+        $app->addCommand($cmd);
         $command = $app->find('initialize');
         return new CommandTester($command);
     }
@@ -270,7 +270,8 @@ class SlimVueInitializeCommandTest extends TestCase
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString('npm install', $output);
-        $this->assertStringContainsString('npm run serve', $output);
+        $this->assertStringContainsString('npm run dev', $output);
+        $this->assertStringNotContainsString('npm run serve', $output);
         $this->assertStringContainsString('npm run build', $output);
         $this->assertStringContainsString('npm run release', $output);
     }
@@ -288,9 +289,12 @@ class SlimVueInitializeCommandTest extends TestCase
 
         $dir = $this->tmpDir . '/slimvue-mirrortest';
         $this->assertFileExists($dir . '/slimvue.js');
-        $this->assertFileExists($dir . '/vue.config.js');
         $this->assertDirectoryExists($dir . '/src');
-        $this->assertDirectoryExists($dir . '/build');
+        // Obsolete files should NOT be mirrored
+        $this->assertFileDoesNotExist($dir . '/vue.config.js');
+        $this->assertFileDoesNotExist($dir . '/babel.config.js');
+        $this->assertFileDoesNotExist($dir . '/jest.config.js');
+        $this->assertDirectoryDoesNotExist($dir . '/build');
     }
 
     public function testExecutePromptsWhenProjectNameInvalid(): void
@@ -349,5 +353,94 @@ class SlimVueInitializeCommandTest extends TestCase
         }
         // If no exception, the symlink succeeded (unlikely but valid)
         $this->assertTrue(true);
+    }
+
+    // ── PBT: Feature: release-4.0 ──
+
+    /**
+     * Feature: release-4.0, Property 4: name+version invariant
+     *
+     * For any valid project name (matching /^[a-z_][a-z0-9_-]*$/),
+     * the generated package.json should contain that name and version 0.1.0.
+     *
+     * **Validates: Requirements 4.4**
+     */
+    public function testPbtNameVersionInvariant(): void
+    {
+        // Generate valid project names: first char [a-z_], rest [a-z0-9_-]{0,8}
+        $nameGen = Generators::map(
+            function (array $parts): string {
+                return $parts[0] . \implode('', $parts[1]);
+            },
+            Generators::tuple(
+                Generators::elements(\array_merge(\range('a', 'z'), ['_'])),
+                Generators::vector(
+                    4,
+                    Generators::elements(\array_merge(\range('a', 'z'), \range('0', '9'), ['_', '-'])),
+                ),
+            ),
+        );
+
+        $this->limitTo(10);
+        $this->forAll($nameGen)->then(function (string $projectName): void {
+            $dirName = 'slimvue-pbt-' . $projectName . '-' . \uniqid();
+            $tester = $this->createCommandTester();
+            $tester->execute([
+                'project-name' => $projectName,
+                '--directory'   => "./$dirName",
+                '--twig'        => './templates',
+                '--service-dir' => './config',
+                '--web-dir'     => './web-' . \uniqid(),
+            ]);
+
+            $pkgFile = $this->tmpDir . '/' . $dirName . '/package.json';
+            $this->assertFileExists($pkgFile);
+            $pkg = \json_decode(\file_get_contents($pkgFile), true);
+            $this->assertSame($projectName, $pkg['name']);
+            $this->assertSame('0.1.0', $pkg['version']);
+        });
+    }
+
+    /**
+     * Feature: release-4.0, Property 6: excludes obsolete files
+     *
+     * For any valid project name, the generated project directory should NOT
+     * contain build/, vue.config.js, babel.config.js, jest.config.js.
+     *
+     * **Validates: Requirements 12.2**
+     */
+    public function testPbtExcludesObsoleteFiles(): void
+    {
+        $nameGen = Generators::map(
+            function (array $parts): string {
+                return $parts[0] . \implode('', $parts[1]);
+            },
+            Generators::tuple(
+                Generators::elements(\array_merge(\range('a', 'z'), ['_'])),
+                Generators::vector(
+                    4,
+                    Generators::elements(\array_merge(\range('a', 'z'), \range('0', '9'), ['_', '-'])),
+                ),
+            ),
+        );
+
+        $this->limitTo(10);
+        $this->forAll($nameGen)->then(function (string $projectName): void {
+            $dirName = 'slimvue-obs-' . $projectName . '-' . \uniqid();
+            $tester = $this->createCommandTester();
+            $tester->execute([
+                'project-name' => $projectName,
+                '--directory'   => "./$dirName",
+                '--twig'        => './templates',
+                '--service-dir' => './config',
+                '--web-dir'     => './web-' . \uniqid(),
+            ]);
+
+            $projDir = $this->tmpDir . '/' . $dirName;
+            $this->assertFileDoesNotExist($projDir . '/vue.config.js');
+            $this->assertFileDoesNotExist($projDir . '/babel.config.js');
+            $this->assertFileDoesNotExist($projDir . '/jest.config.js');
+            $this->assertDirectoryDoesNotExist($projDir . '/build');
+        });
     }
 }

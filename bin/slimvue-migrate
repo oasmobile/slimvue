@@ -1,0 +1,75 @@
+#! /usr/bin/env php
+<?php
+
+use Oasis\SlimVue\MigrationScript;
+
+$autoloadFiles = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloaded = false;
+foreach ($autoloadFiles as $autoloadFile) {
+    if (file_exists($autoloadFile)) {
+        require_once $autoloadFile;
+        $autoloaded = true;
+        break;
+    }
+}
+
+if (!$autoloaded) {
+    fwrite(STDERR, "Error: No autoload file found. Run 'composer install' first.\n");
+    exit(1);
+}
+
+if ($argc < 2) {
+    fwrite(STDERR, "Usage: {$argv[0]} <project-dir>\n");
+    exit(1);
+}
+
+$projectDir = $argv[1];
+if (!is_dir($projectDir)) {
+    fwrite(STDERR, "Error: Directory '$projectDir' does not exist.\n");
+    exit(1);
+}
+
+$script = new MigrationScript();
+$log = $script->migrate($projectDir);
+
+// Output formatted results
+$hasErrors = false;
+foreach ($log as $entry) {
+    $icon = match ($entry['type']) {
+        'change'  => '✓',
+        'skip'    => '–',
+        'warning' => '⚠',
+        'error'   => '✗',
+        'manual'  => '→',
+        default   => ' ',
+    };
+    echo "$icon [{$entry['type']}] {$entry['action']}: {$entry['detail']}\n";
+    if ($entry['type'] === 'error') {
+        $hasErrors = true;
+    }
+}
+
+// Summary
+$changes  = count(array_filter($log, fn(array $e): bool => $e['type'] === 'change'));
+$skips    = count(array_filter($log, fn(array $e): bool => $e['type'] === 'skip'));
+$warnings = count(array_filter($log, fn(array $e): bool => $e['type'] === 'warning'));
+$errors   = count(array_filter($log, fn(array $e): bool => $e['type'] === 'error'));
+$manuals  = count(array_filter($log, fn(array $e): bool => $e['type'] === 'manual'));
+
+echo "\n";
+echo "Summary: $changes changes, $skips skipped, $warnings warnings, $errors errors, $manuals manual actions needed\n";
+
+if ($manuals > 0) {
+    echo "\nItems requiring manual attention:\n";
+    foreach ($log as $entry) {
+        if ($entry['type'] === 'manual') {
+            echo "  → {$entry['action']}: {$entry['detail']}\n";
+        }
+    }
+}
+
+exit($hasErrors ? 1 : 0);
