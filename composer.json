@@ -11,7 +11,8 @@
     },
     "require-dev": {
         "silex/silex": "^2.2",
-        "twig/twig"  : "^1.0"
+        "twig/twig"  : "^1.0",
+        "phpunit/phpunit": "^9.0"
     },
     "license"    : "MIT",
     "authors"    : [
