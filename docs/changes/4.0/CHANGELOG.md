@@ -50,7 +50,7 @@
 
 #### 迁移产出物
 
-- 迁移文档（docs/changes/4.0/MIGRATION.md）：完整的 v3→v4 breaking changes 和手动迁移步骤
+- 迁移文档（docs/manual/migration-v4.md）：完整的 v3→v4 breaking changes 和手动迁移步骤
 - 迁移验证脚本（bin/slimvue-migrate-check）：自动检查项目迁移完成度
 - 迁移脚本（bin/slimvue-migrate）：自动执行可自动化的迁移步骤（含 AST 转换）
 

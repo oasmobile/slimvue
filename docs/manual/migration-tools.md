@@ -152,4 +152,4 @@ Items requiring manual attention:
 4. **再次检测**：运行 `slimvue-migrate-check` 确认所有检查通过
 5. **验证**：运行构建和测试确保项目正常
 
-完整的 breaking changes 和手动迁移步骤参见 `docs/changes/4.0/MIGRATION.md`。
+完整的 breaking changes 和手动迁移步骤参见 `docs/manual/migration-v4.md`。
