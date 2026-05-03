@@ -36,7 +36,7 @@ ERROR;
     exit(1);
 }
 
-$app = new Application('slimvue', "1.4");
+$app = new Application('slimvue', "4.0");
 $app->addCommands(
     [
         new SlimVueInitializeCommand('initialize'),
