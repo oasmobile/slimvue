@@ -27,5 +27,13 @@ export default defineConfig(({ mode }) => {
             outDir: process.env.OUTPUT_DIR || 'dist',
         },
         base: process.env.PUBLIC_PATH || '/',
+        test: {
+            environment: 'jsdom',
+            globals: true,
+            coverage: {
+                provider: 'v8',
+                reporter: ['text', 'lcov', 'clover'],
+            },
+        },
     };
 });
