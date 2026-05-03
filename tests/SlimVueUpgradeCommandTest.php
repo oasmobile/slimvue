@@ -10,11 +10,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SlimVueUpgradeCommandTest extends TestCase
 {
-    /** @var string */
-    private $originalCwd;
-
-    /** @var string */
-    private $tmpDir;
+    private string $originalCwd;
+    private string $tmpDir;
 
     protected function setUp(): void
     {
@@ -70,7 +67,7 @@ class SlimVueUpgradeCommandTest extends TestCase
         $cmd = new class('upgrade') extends SlimVueUpgradeCommand {
             protected function sleep(int $microseconds): void {}
         };
-        $app->add($cmd);
+        $app->addCommand($cmd);
         $command = $app->find('upgrade');
         return new CommandTester($command);
     }

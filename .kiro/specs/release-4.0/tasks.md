@@ -10,8 +10,8 @@
 
 ### PHP 端 — 阶段 1: 升级依赖（允许 red）
 
-- [ ] 1. 升级 PHP 依赖与仓库清理
-  - [ ] 1.1 更新 `composer.json` 依赖声明
+- [x] 1. 升级 PHP 依赖与仓库清理
+  - [x] 1.1 更新 `composer.json` 依赖声明
     - 将 `require.php` 从 `>=7.0` 改为 `>=8.5`
     - 将 `symfony/console` 从 `^4.0` 升级到 `^8.0`
     - 将 `symfony/filesystem` 从 `^4.0` 升级到 `^8.0`
@@ -22,19 +22,19 @@
     - 在 `require-dev` 中将 `phpunit/phpunit` 从 `^9.0` 升级到 `^13.0`
     - 在 `require-dev` 中新增 `giorgiosironi/eris` `~1.1`
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9_
-  - [ ] 1.2 执行 `composer install` 并解决依赖冲突
+  - [x] 1.2 执行 `composer install` 并解决依赖冲突
     - 运行 `php $(which composer) install`，确保无依赖解析错误
     - 如有冲突，调整版本约束直到安装成功
     - _Requirements: 1.10_
-  - [ ] 1.3 清理覆盖率产物与 `.gitignore`
+  - [x] 1.3 清理覆盖率产物与 `.gitignore`
     - 确认 `.gitignore` 已包含 `slimvue-template/coverage/`（当前已有）
     - 执行 `git rm -r --cached slimvue-template/coverage/`（如仍被 git 跟踪）
     - _Requirements: 13.1, 13.2_
-  - [ ] 1.4 更新 `PROJECT.md` 中的 PHP 命令约定
+  - [x] 1.4 更新 `PROJECT.md` 中的 PHP 命令约定
     - 将所有 `php74` 引用替换为 `php`（Gatekeep Q3 决策）
     - 更新技术栈表格中的版本信息
     - _Requirements: Gatekeep Q3_
-  - [ ] 1.5 Checkpoint — 确认依赖安装成功
+  - [x] 1.5 Checkpoint — 确认依赖安装成功
     - 运行 `php $(which composer) install`，确认无错误
     - 此阶段允许测试 red（PHPUnit 13 API 不兼容）
     - 通过后 commit
@@ -42,8 +42,8 @@
 
 ### PHP 端 — 阶段 2: 升级测试（结束时必须 green）
 
-- [ ] 2. PHPUnit 13 适配与测试修复
-  - [ ] 2.1 编写 PHPUnit 13 兼容测试（RED）
+- [-] 2. PHPUnit 13 适配与测试修复
+  - [x] 2.1 编写 PHPUnit 13 兼容测试（RED）
     - 更新 `phpunit.xml`：移除 PHPUnit 13 不支持的属性（`verbose`、`forceCoversAnnotation`、`beStrictAboutCoversAnnotation`、`beStrictAboutTodoAnnotatedTests`），适配 PHPUnit 13 配置 schema
     - 更新 `tests/TwigBridgeInfoTest.php`：适配 PHPUnit 13 API（deprecated assertion methods、annotations）
     - 更新 `tests/SlimVueInitializeCommandTest.php`：适配 PHPUnit 13 API
@@ -51,12 +51,12 @@
     - 在所有测试文件中采用 PHP 8.5 语法（typed properties、constructor promotion、return types）
     - 此时测试可能因源码尚未升级而 fail
     - _Requirements: 3.1, 3.2, 3.3_
-  - [ ] 2.2 修复源码使测试通过（GREEN）
+  - [x] 2.2 修复源码使测试通过（GREEN）
     - 根据测试失败信息，对 `src/*.php` 做最小修改使测试通过
     - 重点关注 Symfony Console ^8 的 API 变更（`Command::execute()` 返回类型等）
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - _Requirements: 3.4_
-  - [ ] 2.3 Checkpoint — PHPUnit 13 测试全部通过
+  - [-] 2.3 Checkpoint — PHPUnit 13 测试全部通过
     - 运行 `php vendor/bin/phpunit`，确认 zero failures、zero errors
     - 确认输出无 deprecation warning
     - 通过后 commit
@@ -64,7 +64,7 @@
 
 ### PHP 端 — 阶段 3: 升级语法（保持 green）
 
-- [ ] 3. PHP 源码现代化
+- [~] 3. PHP 源码现代化
   - [ ] 3.1 升级 `SlimVueBridgeInterface`
     - 为所有方法参数和返回值添加类型声明（`string`、`mixed`、`void`）
     - 按 design.md 中的接口签名实现
@@ -123,7 +123,7 @@
 
 ### PHP 端 — 阶段 4: PBT + 覆盖率（保持 green，覆盖率 > 90%）
 
-- [ ] 4. PHP Property-Based Testing
+- [~] 4. PHP Property-Based Testing
   - [ ] 4.1 为 `TwigBridgeInfo` 编写 PBT（Property 1–3）
     - 在 `tests/TwigBridgeInfoTest.php` 中新增 PBT 测试方法
     - **Property 1: render round-trip** — 对任意合法 bridge 数据，`json_decode(render(), true)` 应与原始输入等价
@@ -163,7 +163,7 @@
 
 ### 前端 — 阶段 1: 升级依赖（允许 red）
 
-- [ ] 5. 升级前端依赖
+- [~] 5. 升级前端依赖
   - [ ] 5.1 更新 `slimvue-template/package.json` 依赖声明
     - 将 `vue` 从 `^2.6.11` 升级到 `^3`
     - 移除 `core-js`
@@ -211,7 +211,7 @@
 
 ### 前端 — 阶段 2: 升级测试（结束时必须 green）
 
-- [ ] 6. Jest → Vitest 迁移与测试修复
+- [~] 6. Jest → Vitest 迁移与测试修复
   - [ ] 6.1 编写 Vitest 配置（RED）
     - 在 `vite.config.js` 中添加 Vitest 配置（或创建独立 `vitest.config.js`）
     - 配置测试环境（jsdom）、覆盖率工具
@@ -249,7 +249,7 @@
 
 ### 前端 — 阶段 3: 升级语法与组件（保持 green）
 
-- [ ] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
+- [~] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
   - [ ] 7.1 重新设计 Vue 3 模板组件
     - 按 design.md 中的组件设计实现：
       - 重写 `App.vue`：使用 `<script setup>`、`computed`、bridge 数据展示
@@ -285,7 +285,7 @@
 
 ### 前端 — 阶段 4: PBT + 覆盖率（保持 green，覆盖率 > 90%）
 
-- [ ] 8. 前端 Property-Based Testing
+- [~] 8. 前端 Property-Based Testing
   - [ ] 8.1 为 `slimvue.js` 编写 PBT（Property 8–9）
     - 在 `tests/slimvue.test.js` 中新增 PBT 测试
     - **Property 8: bridge getter round-trip** — 对任意合法 JSON-serializable 对象，赋值给 `window.bridge` 后通过 getter 读取应返回等价对象

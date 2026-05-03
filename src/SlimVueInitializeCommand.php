@@ -49,7 +49,7 @@ class SlimVueInitializeCommand extends Command
         parent::__construct($name);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
@@ -97,10 +97,10 @@ class SlimVueInitializeCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectName = $input->getArgument('project-name');
-        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $projectName)) {
+        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', (string)$projectName)) {
             $q = new Question(
                 "Please provide a project name, which may conatin only lowercase letters, numbers and hyphen: "
             );
@@ -258,6 +258,8 @@ YAML;
             "\tnpm run release           <comment>(build for production/release environment)</comment>"
         );
         $output->writeln("");
+
+        return Command::SUCCESS;
     }
 
 }

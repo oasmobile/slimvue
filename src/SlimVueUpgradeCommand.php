@@ -21,14 +21,14 @@ class SlimVueUpgradeCommand extends Command
         parent::__construct($name);
     }
     
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
         $this->addArgument('project-dir', InputArgument::REQUIRED, "directory of existing project");
     }
     
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectDir = $input->getArgument('project-dir');
         
@@ -76,6 +76,8 @@ class SlimVueUpgradeCommand extends Command
         
         $this->sleep(200 * 1000);
         $output->writeln("Project upgraded, remember to check your git working-tree for detailed changes.");
+
+        return Command::SUCCESS;
     }
 
     /**

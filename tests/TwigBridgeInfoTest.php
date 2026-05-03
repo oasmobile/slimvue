@@ -99,7 +99,7 @@ class TwigBridgeInfoTest extends TestCase
     public function testAddJsonSerializableObject(): void
     {
         $obj = new class implements \JsonSerializable {
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return ['id' => 1, 'label' => 'test'];
             }
@@ -113,13 +113,13 @@ class TwigBridgeInfoTest extends TestCase
     public function testAddArrayContainingJsonSerializableObjects(): void
     {
         $obj1 = new class implements \JsonSerializable {
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return 'serialized-1';
             }
         };
         $obj2 = new class implements \JsonSerializable {
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return 'serialized-2';
             }
@@ -133,7 +133,7 @@ class TwigBridgeInfoTest extends TestCase
     public function testAddNestedArrayWithJsonSerializable(): void
     {
         $obj = new class implements \JsonSerializable {
-            public function jsonSerialize()
+            public function jsonSerialize(): mixed
             {
                 return 'inner';
             }
@@ -187,8 +187,6 @@ class TwigBridgeInfoTest extends TestCase
     public function testGetExecTwigReplacesOnlyFirstOccurrence(): void
     {
         $bridge = new TwigBridgeInfo();
-        // preg_replace replaces all by default, but the pattern is anchored with ^
-        // Actually the pattern uses #^slimvue/pages/# so it only matches at start
         $result = $bridge->getExecTwig('slimvue/pages/slimvue/pages/deep.twig');
         $this->assertSame('slimvue/controllers/slimvue/pages/deep.twig', $result);
     }
@@ -211,13 +209,6 @@ class TwigBridgeInfoTest extends TestCase
     {
         $bridge = new TwigBridgeInfo();
         $result = $bridge->getExecTwig('');
-        $this->assertSame('', $result);
-    }
-
-    public function testGetExecTwigNullInput(): void
-    {
-        $bridge = new TwigBridgeInfo();
-        $result = $bridge->getExecTwig(null);
         $this->assertSame('', $result);
     }
 

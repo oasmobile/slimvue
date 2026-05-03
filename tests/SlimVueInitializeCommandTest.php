@@ -9,11 +9,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SlimVueInitializeCommandTest extends TestCase
 {
-    /** @var string */
-    private $originalCwd;
-
-    /** @var string */
-    private $tmpDir;
+    private string $originalCwd;
+    private string $tmpDir;
 
     protected function setUp(): void
     {
@@ -54,7 +51,7 @@ class SlimVueInitializeCommandTest extends TestCase
         $cmd = new class('initialize') extends SlimVueInitializeCommand {
             protected function sleep(int $microseconds): void {}
         };
-        $app->add($cmd);
+        $app->addCommand($cmd);
         $command = $app->find('initialize');
         return new CommandTester($command);
     }
