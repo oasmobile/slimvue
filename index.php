@@ -1,46 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 19/09/2017
- * Time: 3:09 PM
- */
 
-use Oasis\SlimVue\TwigBridgeInfo;
-use Silex\Application;
-use Silex\Provider\TwigServiceProvider;
+use Oasis\Mlib\Http\MicroKernel;
 
 require 'vendor/autoload.php';
 
-$silex = new Application();
-$silex->register(
-    new TwigServiceProvider(),
-    [
-        'twig.path' => __DIR__ . "/templates",
-    ]
-);
-$silex->error(
-    function ($e) {
-        var_dump($e);
-    }
-);
-$silex->get(
-    '/',
-    function (Application $kernel) {
-        /** @var \Twig_Environment $twig */
-        $twig = $kernel['twig'];
-        
-        return $twig->render(
-            'slimvue/pages/index.twig',
-            [
-                'title'   => 'Zhang Xu Chang',
-                'bridge' => new TwigBridgeInfo(
-                    [
-                        'user' => 'yangyi',
-                    ]
-                ),
-            ]
-        );
-    }
-);
-$silex->run();
+$config = [
+    'routing' => [
+        'path'       => 'routes.yml',
+        'namespaces' => ['Oasis\\SlimVue\\Demo\\'],
+    ],
+    'twig' => [
+        'template_dir' => __DIR__ . '/templates',
+    ],
+    'error_handlers' => [
+        new \Oasis\SlimVue\Demo\DemoErrorHandler(),
+    ],
+];
+
+$kernel = new MicroKernel($config, isDebug: true);
+$kernel->run();

@@ -1,5 +1,7 @@
 /vendor/
 /.idea/
+/.vscode/
+/web/
 /slimvue/
 /config/
 /assets/
@@ -8,3 +10,21 @@
 /slimvue-zxdemo/
 *.DS_Store
 /slimvue-npmpp/
+
+# PHPUnit cache (PHPUnit 11+)
+.phpunit.cache/
+.phpunit.result.cache
+
+# Agent playbook export
+agent-playbook.zip
+
+# Graphify generated artifacts
+graphify-out/.graphify_python
+graphify-out/.graphify_detect.json
+graphify-out/cache/
+graphify-out/manifest.json
+
+# Test coverage reports
+/coverage-html/
+/coverage.xml
+slimvue-template/coverage/

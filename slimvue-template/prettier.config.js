@@ -1,4 +1,5 @@
-module.exports = {
+export default {
     tabWidth: 4,
-    htmlWhitespaceSensitivity: "ignore"
+    singleQuote: true,
+    htmlWhitespaceSensitivity: 'ignore',
 };

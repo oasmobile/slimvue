@@ -1,15 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 18/09/2017
- * Time: 2:08 PM
- */
 
 namespace Oasis\SlimVue;
 
-use Oasis\Mlib\FlysystemWrappers\ExtendedFilesystem;
-use Oasis\Mlib\FlysystemWrappers\ExtendedLocal;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,71 +10,82 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Finder\Finder;
 
 class SlimVueInitializeCommand extends Command
 {
-    const SLIMVUE_DIR = __DIR__."/../slimvue-template";
+    public const SLIMVUE_DIR = __DIR__ . '/../slimvue-template';
 
-    public function __construct($name)
+    public static function templateIterator(): Finder
+    {
+        return Finder::create()
+            ->in(self::SLIMVUE_DIR)
+            ->exclude(['node_modules', 'coverage', 'build'])
+            ->notName(['vue.config.js', 'babel.config.js', 'jest.config.js'])
+            ->ignoreDotFiles(false);
+    }
+
+    protected function sleep(int $microseconds): void
+    {
+        \usleep($microseconds);
+    }
+
+    public function __construct(string $name)
     {
         parent::__construct($name);
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
-        $this->addArgument('project-name', InputArgument::OPTIONAL, "name of project");
+        $this->addArgument('project-name', InputArgument::OPTIONAL, 'name of project');
         $this->addOption(
             'scope',
             null,
             InputOption::VALUE_REQUIRED,
             'scope of project',
-            null
         );
         $this->addOption(
             'directory',
             'd',
             InputOption::VALUE_REQUIRED,
             'directory to install slimvue framework',
-            null
         );
         $this->addOption(
             'twig',
             't',
             InputOption::VALUE_REQUIRED,
             'twig templates base directory',
-            './templates'
+            './templates',
         );
         $this->addOption(
             'service-dir',
             null,
             InputOption::VALUE_REQUIRED,
             'directory containing service files; a twig-bridge service file will be created here',
-            './config'
+            './config',
         );
         $this->addOption(
             'web-dir',
             'w',
             InputOption::VALUE_REQUIRED,
             'web directory into which project specific files will be linked;'
-            .\PHP_EOL
-            .' all project files will be put under a sub-directory named by project name;'
-            .\PHP_EOL
-            .'<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
-            .\PHP_EOL
-            ,
-            './web'
+            . \PHP_EOL
+            . ' all project files will be put under a sub-directory named by project name;'
+            . \PHP_EOL
+            . '<comment>e.g.</comment> project named <info>test</info> may have the following links created under web-dir: <comment>test/js, test/img, test/assets</comment>'
+            . \PHP_EOL,
+            './web',
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectName = $input->getArgument('project-name');
-        while (!\preg_match($pattern = '/^[a-z_][a-z0-9_-]*$/', $projectName)) {
+        while (!\preg_match('/^[a-z_][a-z0-9_-]*$/', (string) $projectName)) {
             $q = new Question(
-                "Please provide a project name, which may conatin only lowercase letters, numbers and hyphen: "
+                'Please provide a project name, which may conatin only lowercase letters, numbers and hyphen: '
             );
             /** @var QuestionHelper $helper */
             $helper      = $this->getHelper('question');
@@ -90,7 +93,7 @@ class SlimVueInitializeCommand extends Command
         }
         $projectDir          = $input->getOption('directory') ?: "./slimvue-$projectName";
         $scope               = $input->getOption('scope');
-        $fullProjectName     = ($scope ? "@$scope/" : "").$projectName;
+        $fullProjectName     = ($scope ? "@$scope/" : '') . $projectName;
         $twigTemplateBaseDir = $input->getOption('twig');
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
@@ -99,75 +102,48 @@ class SlimVueInitializeCommand extends Command
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
             $projectDir,
-            $cwd
+            $cwd,
         ) : $projectDir;
-        $relativeDistDir  = $targetSlimvueDir."/dist";
-        $absoluteDistDir  = $cwd."/".$targetSlimvueDir."/dist";
+        $relativeDistDir  = $targetSlimvueDir . '/dist';
+        $absoluteDistDir  = $cwd . '/' . $targetSlimvueDir . '/dist';
         $twigToDir        = $fs->isAbsolutePath($twigTemplateBaseDir) ?
             $fs->makePathRelative($twigTemplateBaseDir, $cwd)
-            : $twigTemplateBaseDir."/slimvue";
+            : $twigTemplateBaseDir . '/slimvue';
         $twigAsDir        = $fs->makePathRelative("{$cwd}{$relativeDistDir}/pages", dirname("{$cwd}{$twigToDir}"));
-        $serviceFile      = $serviceDir."/slimvue.services.yml";
-//        $webDir           = $webDir."/$projectName";
+        $serviceFile      = $serviceDir . '/slimvue.services.yml';
+
         $output->writeln(
             \sprintf(
-                "Will create slimvue directory at: <info>%s</info>",
-                $targetSlimvueDir
+                'Will create slimvue directory at: <info>%s</info>',
+                $targetSlimvueDir,
             )
         );
-        $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir);
-//        $output->writeln(\sprintf("Will customize for this project by changing some generated file content"));
-//        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
-//        $content              = \file_get_contents($webpackDevConfigFile);
-//        $content              = \str_replace(
-//            '/slimvue-template/dist/',
-//            '/slimvue-' . $projectName . '/dist/',
-//            $content
-//        );
-//        \file_put_contents($webpackDevConfigFile, $content);
-        $packageJsonFile        = $targetSlimvueDir."/package.json";
+        $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir, self::templateIterator());
+
+        $packageJsonFile        = $targetSlimvueDir . '/package.json';
         $content                = \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
         $packageJson['name']    = $fullProjectName;
         $packageJson['version'] = '0.1.0';
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
-//        $efs    = new ExtendedFilesystem(new ExtendedLocal($targetSlimvueDir));
-//        $finder = $efs->getFinder();
-//        $finder->path('src/')->files()->name('/\.(js|vue)$/');
-//        /** @var SplFileInfo $splFileInfo */
-//        foreach ($finder as $splFileInfo) {
-//            $path    = $splFileInfo->getRealPath();
-//            $content = \file_get_contents($path);
-//            $content = \preg_replace('#([\'"~])src/#', '$1' . $fullProjectName . "/", $content);
-//            \file_put_contents($path, $content);
-//        }
-//        $fs->rename($targetSlimvueDir . "/src", $targetSlimvueDir . "/" . $fullProjectName);
-//        if ($scope) {
-//            $fs->symlink("@" . $scope, $targetSlimvueDir . "/~@" . $scope);
-//        }
-//        else {
-//            $fs->symlink($fullProjectName, $targetSlimvueDir . "/~" . $fullProjectName);
-//        }
-//        $fs->symlink("$fullProjectName/assets", $targetSlimvueDir . "/~assets");
-        \usleep(200 * 1000);
+
+        $this->sleep(200 * 1000);
         $output->writeln(
             \sprintf(
-                "Will link twig directory to: <info>%s</info>, as <info>%s</info>",
+                'Will link twig directory to: <info>%s</info>, as <info>%s</info>',
                 $twigToDir,
-                $twigAsDir
+                $twigAsDir,
             )
         );
-        $fs->symlink(
-            $twigAsDir,
-            $twigToDir
-        );
-        \usleep(200 * 1000);
+        $fs->symlink($twigAsDir, $twigToDir);
+
+        $this->sleep(200 * 1000);
         $output->writeln("Will link resource directories to: <info>$webDir</info>");
         foreach (['fonts', 'js', 'img', 'css', 'static'] as $subdir) {
-            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/$subdir");
-//            $fs->symlink($absoluteDistDir."/$subdir", $webDir."/slimvue-$projectName/dist/$subdir");
+            $fs->symlink($absoluteDistDir . "/$subdir", $webDir . "/$subdir");
         }
-        \usleep(200 * 1000);
+
+        $this->sleep(200 * 1000);
         $output->writeln("Will create twig service file at: <info>$serviceFile</info>");
         $serviceYaml = <<<YAML
 services:
@@ -178,14 +154,14 @@ services:
 
 YAML;
         $fs->dumpFile($serviceFile, $serviceYaml);
-        \usleep(200 * 1000);
 
-        $output->writeln("");
-        \usleep(500 * 1000);
-        $output->writeln("<info>Slim Vue framework has been initialized for your project.</info> ");
-        \usleep(500 * 1000);
-        $output->writeln("");
-        $output->writeln("<info>To use the twig template, render your page using the following statement:</info>");
+        $this->sleep(200 * 1000);
+        $output->writeln('');
+        $this->sleep(500 * 1000);
+        $output->writeln('<info>Slim Vue framework has been initialized for your project.</info> ');
+        $this->sleep(500 * 1000);
+        $output->writeln('');
+        $output->writeln('<info>To use the twig template, render your page using the following statement:</info>');
         $renderSample = <<<PHP
     \$kernel->render(
         "slimvue/\$yourControllerName.twig",
@@ -196,20 +172,20 @@ YAML;
     );
     
 PHP;
-        $output->writeln("");
+        $output->writeln('');
         $output->writeln($renderSample);
-        $output->writeln("");
-        $output->writeln("<info>To import the bridge object, edit your services.yml:</info>");
+        $output->writeln('');
+        $output->writeln('<info>To import the bridge object, edit your services.yml:</info>');
         $serviceYamlImports = <<<YAML
     imports:
         - {resource: "slimvue.services.yml"} <comment># add this line</comment>
     
 YAML;
-        $output->writeln("");
+        $output->writeln('');
         $output->writeln($serviceYamlImports);
-        $output->writeln("");
-        $output->writeln("<info>To add the bridge object into global twig vars, edit your services.yml:</info>");
-        $output->writeln("");
+        $output->writeln('');
+        $output->writeln('<info>To add the bridge object into global twig vars, edit your services.yml:</info>');
+        $output->writeln('');
         $globalVarEdit = <<<YAML
     app:
         http:
@@ -218,15 +194,15 @@ YAML;
                     bridge: "@slimvue.bridge" <comment># add this line</comment>
 YAML;
         $output->writeln($globalVarEdit);
-        $output->writeln("");
+        $output->writeln('');
         $output->writeln("<info>To build your slimvue front-end, switch to $targetSlimvueDir, and run:</info>");
-        $output->writeln("");
+        $output->writeln('');
         $output->writeln(
             "\tnpm install               <comment>(RUN ONCE, install node packages accordingly)</comment>"
         );
-        $output->writeln("");
+        $output->writeln('');
         $output->writeln(
-            "\tnpm run serve               <comment>(use webpack dev server)</comment>"
+            "\tnpm run dev               <comment>(use Vite dev server)</comment>"
         );
         $output->writeln(
             "\tnpm run build             <comment>(build for debug environment)</comment>"
@@ -237,7 +213,8 @@ YAML;
         $output->writeln(
             "\tnpm run release           <comment>(build for production/release environment)</comment>"
         );
-        $output->writeln("");
-    }
+        $output->writeln('');
 
+        return Command::SUCCESS;
+    }
 }

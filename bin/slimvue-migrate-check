@@ -1,0 +1,52 @@
+#! /usr/bin/env php
+<?php
+
+use Oasis\SlimVue\MigrationValidator;
+
+$autoloadFiles = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloaded = false;
+foreach ($autoloadFiles as $autoloadFile) {
+    if (file_exists($autoloadFile)) {
+        require_once $autoloadFile;
+        $autoloaded = true;
+        break;
+    }
+}
+
+if (!$autoloaded) {
+    fwrite(STDERR, "Error: No autoload file found. Run 'composer install' first.\n");
+    exit(1);
+}
+
+if ($argc < 2) {
+    fwrite(STDERR, "Usage: {$argv[0]} <project-dir>\n");
+    exit(1);
+}
+
+$projectDir = $argv[1];
+if (!is_dir($projectDir)) {
+    fwrite(STDERR, "Error: Directory '$projectDir' does not exist.\n");
+    exit(1);
+}
+
+$validator = new MigrationValidator();
+$report = $validator->validate($projectDir);
+
+// Output results
+foreach ($report['checks'] as $check) {
+    $icon = $check['status'] === 'pass' ? '✓' : '✗';
+    echo "$icon {$check['name']}: {$check['detail']}\n";
+    if (isset($check['hint'])) {
+        echo "  → {$check['hint']}\n";
+    }
+}
+
+echo "\n";
+$s = $report['summary'];
+echo "Summary: {$s['total']} checks, {$s['passed']} passed, {$s['failed']} failed\n";
+
+exit($s['failed'] > 0 ? 1 : 0);

@@ -6,29 +6,28 @@
             project,
             <br />
             check out the
-            <a href="https://cli.vuejs.org" target="_blank" rel="noopener">
-                vue-cli documentation
-            </a>
-            .
+            <a href="https://vite.dev" target="_blank" rel="noopener">
+                Vite documentation </a
+            >.
         </p>
-        <h3>Installed CLI Plugins</h3>
+        <h3>Installed Plugins</h3>
         <ul>
             <li>
                 <a
-                    href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
+                    href="https://github.com/vitejs/vite-plugin-vue"
                     target="_blank"
                     rel="noopener"
                 >
-                    babel
+                    @vitejs/plugin-vue
                 </a>
             </li>
             <li>
                 <a
-                    href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
+                    href="https://vitest.dev"
                     target="_blank"
                     rel="noopener"
                 >
-                    eslint
+                    vitest
                 </a>
             </li>
         </ul>
@@ -53,20 +52,6 @@
                     Community Chat
                 </a>
             </li>
-            <li>
-                <a
-                    href="https://twitter.com/vuejs"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    Twitter
-                </a>
-            </li>
-            <li>
-                <a href="https://news.vuejs.org" target="_blank" rel="noopener">
-                    News
-                </a>
-            </li>
         </ul>
         <h3>Ecosystem</h3>
         <ul>
@@ -80,51 +65,36 @@
                 </a>
             </li>
             <li>
-                <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">
-                    vuex
+                <a
+                    href="https://pinia.vuejs.org"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    pinia
                 </a>
             </li>
             <li>
                 <a
-                    href="https://github.com/vuejs/vue-devtools#vue-devtools"
+                    href="https://devtools.vuejs.org"
                     target="_blank"
                     rel="noopener"
                 >
                     vue-devtools
                 </a>
             </li>
-            <li>
-                <a
-                    href="https://vue-loader.vuejs.org"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    vue-loader
-                </a>
-            </li>
-            <li>
-                <a
-                    href="https://github.com/vuejs/awesome-vue"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    awesome-vue
-                </a>
-            </li>
         </ul>
+        <button @click="emit('greet', 'World')">Say Hello</button>
     </div>
 </template>
 
-<script>
-export default {
-    name: "HelloWorld",
-    props: {
-        msg: String
-    }
-};
+<script setup>
+defineProps({
+    msg: { type: String, required: true },
+});
+
+const emit = defineEmits(['greet']);
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 h3 {
     margin: 40px 0 0;
@@ -139,5 +109,14 @@ li {
 }
 a {
     color: #42b983;
+}
+button {
+    margin-top: 20px;
+    padding: 8px 16px;
+    background-color: #42b983;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 </style>

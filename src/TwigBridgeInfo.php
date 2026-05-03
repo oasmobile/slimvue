@@ -1,62 +1,46 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 29/08/2017
- * Time: 3:55 PM
- */
 
 namespace Oasis\SlimVue;
 
 class TwigBridgeInfo implements SlimVueBridgeInterface
 {
-    private $data = [];
-    
-    public function __construct($data = [])
-    {
-        $this->data = $data;
-    }
-    
-    protected function getPlainValue($data)
-    {
-        if (is_array($data)) {
-            $list = [];
-            foreach ($data as $k => $item) {
-                $list[$k] = $this->getPlainValue($item);
-            }
+    public function __construct(
+        private array $data = [],
+    ) {}
 
-            return $list;
-        }
-        else {
-            if ($data instanceof \JsonSerializable) {
-                return $data->jsonSerialize();
-            }
-            else {
-                return $data;
-            }
-        }
-
-    }
-
-    public function add($key, $value)
+    public function add(string $key, mixed $value): void
     {
         $this->data[$key] = $this->getPlainValue($value);
     }
 
-    public function getExecTwig($pageTwig)
+    public function getExecTwig(string $pageTwig): string
     {
-        $exec = preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', (string)$pageTwig);
-        
-        return $exec;
+        return preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', $pageTwig);
     }
-    
-    public function render()
+
+    public function render(): string
     {
         $result = \json_encode($this->data);
         if ($result === false) {
             throw new \InvalidArgumentException(\json_last_error_msg());
         }
-        
+
         return $result;
+    }
+
+    private function getPlainValue(mixed $data): mixed
+    {
+        if (is_array($data)) {
+            return array_map(
+                fn(mixed $item): mixed => $this->getPlainValue($item),
+                $data,
+            );
+        }
+
+        if ($data instanceof \JsonSerializable) {
+            return $data->jsonSerialize();
+        }
+
+        return $data;
     }
 }

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 18/09/2017
- * Time: 2:08 PM
- */
 
 namespace Oasis\SlimVue;
 
@@ -16,66 +10,103 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class SlimVueUpgradeCommand extends Command
 {
-    public function __construct($name)
+    private const OBSOLETE_FILES = [
+        'build',
+        'vue.config.js',
+        'babel.config.js',
+        'jest.config.js',
+        '.eslintrc.js',
+    ];
+
+    private const REQUIRED_PACKAGE_FIELDS = [
+        'name',
+        'version',
+        'dependencies',
+        'devDependencies',
+    ];
+
+    public function __construct(string $name)
     {
         parent::__construct($name);
     }
-    
-    protected function configure()
+
+    protected function configure(): void
     {
         parent::configure();
-        $this->setDescription('Initialize the slimvue directory, and symlink needed files/directories');
-        $this->addArgument('project-dir', InputArgument::REQUIRED, "directory of existing project");
+        $this->setDescription('Upgrade an existing slimvue project to the latest template');
+        $this->addArgument('project-dir', InputArgument::REQUIRED, 'directory of existing project');
     }
-    
-    protected function execute(InputInterface $input, OutputInterface $output)
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectDir = $input->getArgument('project-dir');
-        
+
         $cwd              = \getcwd();
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
             $projectDir,
-            $cwd
+            $cwd,
         ) : $projectDir;
-        
-        // get old package info, which will be set back to package.json after upgrade
-        $packageJsonFile = $targetSlimvueDir . "/package.json";
+
+        // Read and validate existing package.json
+        $packageJsonFile = $targetSlimvueDir . '/package.json';
         $content         = \file_get_contents($packageJsonFile);
         $packageJson     = \json_decode($content, true);
-        $oldName         = $packageJson['name'] ?? 'slimvue-template';
-        $oldVersion      = $packageJson['version'] ?? '0.1.0';
-        $oldDep          = $packageJson['dependencies'] ?? [];
-        $oldDevDep       = $packageJson['devDependencies'] ?? [];
-        
+
+        // Validate required fields (Gatekeep Q1 decision)
+        foreach (self::REQUIRED_PACKAGE_FIELDS as $field) {
+            if (!\array_key_exists($field, $packageJson)) {
+                $output->writeln(
+                    "<error>Missing required field '$field' in package.json. Please fix manually and retry.</error>"
+                );
+
+                return Command::FAILURE;
+            }
+        }
+
+        $oldName   = $packageJson['name'];
+        $oldVersion = $packageJson['version'];
+        $oldDep    = $packageJson['dependencies'];
+        $oldDevDep = $packageJson['devDependencies'];
+
         $output->writeln(
             \sprintf(
-                "Will update slimvue directory at: <info>%s</info>",
-                $targetSlimvueDir
+                'Will update slimvue directory at: <info>%s</info>',
+                $targetSlimvueDir,
             )
         );
-        $fs->mirror(SlimVueInitializeCommand::SLIMVUE_DIR, $targetSlimvueDir);
-//        $webpackDevConfigFile = $targetSlimvueDir . "/build/webpack.dev.conf.js";
-//        $content              = \file_get_contents($webpackDevConfigFile);
-//        $content              = \str_replace(
-//            '/slimvue-template/dist/',
-//            '/' . $projectDir . '/dist/',
-//            $content
-//        );
-//
-//        // restore package.json name&version
-//        \file_put_contents($webpackDevConfigFile, $content);
-        $packageJsonFile                = $targetSlimvueDir . "/package.json";
+        $fs->mirror(
+            SlimVueInitializeCommand::SLIMVUE_DIR,
+            $targetSlimvueDir,
+            SlimVueInitializeCommand::templateIterator(),
+        );
+
+        // Remove obsolete files from target directory
+        foreach (self::OBSOLETE_FILES as $obsoleteFile) {
+            $path = $targetSlimvueDir . '/' . $obsoleteFile;
+            if ($fs->exists($path)) {
+                $fs->remove($path);
+            }
+        }
+
+        // Restore package.json with preserved fields
+        $packageJsonFile                = $targetSlimvueDir . '/package.json';
         $content                        = \file_get_contents($packageJsonFile);
         $packageJson                    = \json_decode($content, true);
         $packageJson['name']            = $oldName;
         $packageJson['version']         = $oldVersion;
-        $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies']);
-        $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies']);
+        $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies'] ?? []);
+        $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies'] ?? []);
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
-        
-        \usleep(200 * 1000);
-        $output->writeln("Project upgraded, remember to check your git working-tree for detailed changes.");
+
+        $this->sleep(200 * 1000);
+        $output->writeln('Project upgraded, remember to check your git working-tree for detailed changes.');
+
+        return Command::SUCCESS;
     }
-    
+
+    protected function sleep(int $microseconds): void
+    {
+        \usleep($microseconds);
+    }
 }
