@@ -24,11 +24,11 @@ class DemoController
             'profile' => ['name' => 'SlimVue', 'meta' => ['v' => 4]],
         ]);
 
-        // 演示 getExecTwig
+        // 演示 getExecTwig：将 pages 路径转换为 controllers 路径
         $controllerTwig = $bridge->getExecTwig('slimvue/pages/index.twig');
 
         return new Response(
-            $twig->render('slimvue/pages/index.twig', [
+            $twig->render($controllerTwig, [
                 'title'  => 'SlimVue Demo',
                 'bridge' => $bridge,
             ]),
