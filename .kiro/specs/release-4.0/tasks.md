@@ -335,7 +335,7 @@
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [-] 10. 迁移验证脚本
+- [x] 10. 迁移验证脚本
   - [x] 10.1 实现迁移验证脚本 `bin/slimvue-migrate-check`
     - 创建独立 PHP 脚本，接受项目目录作为参数
     - 实现检查项：PHP 版本约束、废弃依赖引用、PHP 废弃 API 模式、JS/Vue 废弃 API 模式、已移除文件检测
@@ -357,13 +357,13 @@
     - **Validates: Requirements 15.5**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 15.1–15.5_
-  - [-] 10.4 Checkpoint — 迁移验证脚本完成
+  - [x] 10.4 Checkpoint — 迁移验证脚本完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 11. 迁移脚本
-  - [ ] 11.1 实现迁移脚本 `bin/slimvue-migrate`
+- [-] 11. 迁移脚本
+  - [x] 11.1 实现迁移脚本 `bin/slimvue-migrate`
     - 创建独立 PHP 脚本，接受项目目录作为参数
     - 实现备份机制：对所有将修改的文件创建 `.bak` 备份
     - 实现 `composer.json` 更新：PHP 版本约束 → >= 8.5，替换废弃依赖
@@ -371,7 +371,7 @@
     - 实现 `package.json` scripts 更新：Vue CLI 命令 → Vite 命令
     - 输出变更日志：列出所有已执行的变更和需要手动处理的项目
     - _Requirements: 16.1, 16.2, 16.3, 16.5, 16.6, 16.7, 16.8_
-  - [ ] 11.2 实现 AST 转换脚本 `bin/transforms/vue2-to-vue3.js`
+  - [x] 11.2 实现 AST 转换脚本 `bin/transforms/vue2-to-vue3.js`
     - 创建 jscodeshift transform 脚本
     - 实现 `new Vue(` → `createApp(` 转换（仅实际代码，不影响注释和字符串）
     - 实现 `Vue.prototype` → `app.config.globalProperties` 转换
@@ -379,18 +379,18 @@
     - 在迁移脚本中通过 `exec()` 调用此 transform
     - 如目标环境无 Node.js，回退到正则替换并在日志中警告
     - _Requirements: 16.4, Gatekeep Q2_
-  - [ ] 11.3 为迁移脚本编写单元测试
+  - [x] 11.3 为迁移脚本编写单元测试
     - 在 `tests/MigrationScriptTest.php` 中编写测试
     - 覆盖各步骤的正常和异常场景（备份、配置更新、文件移除、scripts 更新）
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 16.1–16.7_
-  - [ ] 11.4 为 AST 转换编写测试（Property 18）
+  - [x] 11.4 为 AST 转换编写测试（Property 18）
     - 在 `slimvue-template/tests/migration-transform.test.js` 中编写测试（Design Gatekeep Q4 决策）
     - **Property 18: AST-based JS code transformation** — 对任意包含 Vue 2 API 调用的 JS 文件，正确替换实际代码中的调用，不修改注释和字符串，保持语法正确性
     - **Validates: Requirements 16.4**
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 16.4_
-  - [ ] 11.5 为迁移脚本编写 PBT（Property 16–17, 19）
+  - [x] 11.5 为迁移脚本编写 PBT（Property 16–17, 19）
     - 在 `tests/MigrationScriptTest.php` 中新增 PBT 测试
     - **Property 16: config file migration** — 对任意 `composer.json` 和 `package.json`，正确更新版本约束、替换依赖、更新 scripts
     - **Validates: Requirements 16.1, 16.2, 16.5**
@@ -400,7 +400,7 @@
     - **Validates: Requirements 16.6**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 16.1, 16.3, 16.6_
-  - [ ] 11.6 Checkpoint — 迁移脚本完成
+  - [-] 11.6 Checkpoint — 迁移脚本完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 在 `slimvue-template/` 下运行 `npx vitest run`，确认全部通过
     - 通过后 commit
