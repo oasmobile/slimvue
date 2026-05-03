@@ -43,8 +43,11 @@ PHP + Vue.js 前端脚手架库，为 Slim/Silex 等 PHP 框架提供 Vue.js 前
 
 ### PHP
 
+本项目依赖 PHP 7.4 运行环境，本机通过 `php74` alias 调用。所有 PHP 相关命令（composer、phpunit 等）均需通过该 alias 执行。
+
 ```bash
-composer install          # 安装 PHP 依赖
+php74 $(which composer) install                          # 安装 PHP 依赖
+php74 vendor/bin/phpunit                                 # 运行单元测试
 ```
 
 ### 前端（在 slimvue-template/ 或初始化后的项目目录下）
