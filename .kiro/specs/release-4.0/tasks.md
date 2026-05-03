@@ -285,7 +285,7 @@
 
 ### 前端 — 阶段 4: PBT + 覆盖率（保持 green，覆盖率 > 90%）
 
-- [-] 8. 前端 Property-Based Testing
+- [x] 8. 前端 Property-Based Testing
   - [x] 8.1 为 `slimvue.js` 编写 PBT（Property 8–9）
     - 在 `tests/slimvue.test.js` 中新增 PBT 测试
     - **Property 8: bridge getter round-trip** — 对任意合法 JSON-serializable 对象，赋值给 `window.bridge` 后通过 getter 读取应返回等价对象
@@ -313,7 +313,7 @@
     - 确认 `slimvue.js`、`scripts/` 构建模块、`src/components/` 的行覆盖率 > 90%
     - 如覆盖率不足，补充单元测试直到达标
     - _Requirements: 10.5, 10.6, 13.4, 13.6_
-  - [-] 8.5 Checkpoint — 前端全部完成
+  - [x] 8.5 Checkpoint — 前端全部完成
     - 运行 `npx vitest run`，确认全部通过
     - 运行 `npx vitest run --coverage`，确认覆盖率 > 90%
     - 运行 `npm run lint`，确认 zero errors
@@ -322,32 +322,32 @@
 
 ### 迁移产出物（PHP 端和前端升级全部完成后）
 
-- [ ] 9. 迁移文档
-  - [ ] 9.1 编写迁移文档 `docs/changes/4.0/MIGRATION.md`
+- [x] 9. 迁移文档
+  - [x] 9.1 编写迁移文档 `docs/changes/4.0/MIGRATION.md`
     - 列出所有 PHP breaking changes（PHP 版本、依赖替换、Symfony Console/Filesystem API 变更、Twig 版本变更、oasis/utils 和 oasis/flysystem-wrappers 变更）
     - 列出所有前端 breaking changes（Vue 2→3 API 变更、webpack→Vite 配置变更、Jest→Vitest 迁移、ESLint flat config 迁移）
     - 列出所有 `slimvue.js` API 变更（`Vue.prototype` → `globalProperties`、`new Vue()` → `createApp()`、mount 行为变更）
     - 列出所有 CLI 命令行为变更（新模板结构、移除文件、更新输出消息）
     - 提供每个 breaking change 的逐步手动迁移指南
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6_
-  - [ ] 9.2 Checkpoint — 迁移文档完成
+  - [x] 9.2 Checkpoint — 迁移文档完成
     - Review 文档完整性：确认覆盖所有 breaking changes
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 10. 迁移验证脚本
-  - [ ] 10.1 实现迁移验证脚本 `bin/slimvue-migrate-check`
+- [-] 10. 迁移验证脚本
+  - [x] 10.1 实现迁移验证脚本 `bin/slimvue-migrate-check`
     - 创建独立 PHP 脚本，接受项目目录作为参数
     - 实现检查项：PHP 版本约束、废弃依赖引用、PHP 废弃 API 模式、JS/Vue 废弃 API 模式、已移除文件检测
     - 输出格式：每项检查显示 ✓/✗ 状态 + 修复建议
     - 输出汇总报告（total/passed/failed）
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7_
-  - [ ] 10.2 为迁移验证脚本编写单元测试
+  - [x] 10.2 为迁移验证脚本编写单元测试
     - 在 `tests/MigrationValidatorTest.php` 中编写测试
     - 覆盖各检查项的 pass/fail 场景
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 15.1–15.6_
-  - [ ] 10.3 为迁移验证脚本编写 PBT（Property 13–15）
+  - [x] 10.3 为迁移验证脚本编写 PBT（Property 13–15）
     - 在 `tests/MigrationValidatorTest.php` 中新增 PBT 测试
     - **Property 13: dependency/version validation** — 对任意 `composer.json`，正确识别 PHP 版本约束和废弃依赖
     - **Validates: Requirements 15.1, 15.2**
@@ -357,12 +357,12 @@
     - **Validates: Requirements 15.5**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 15.1–15.5_
-  - [ ] 10.4 Checkpoint — 迁移验证脚本完成
+  - [-] 10.4 Checkpoint — 迁移验证脚本完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 11. 迁移脚本
+- [~] 11. 迁移脚本
   - [ ] 11.1 实现迁移脚本 `bin/slimvue-migrate`
     - 创建独立 PHP 脚本，接受项目目录作为参数
     - 实现备份机制：对所有将修改的文件创建 `.bak` 备份
@@ -408,7 +408,7 @@
 
 ### State 文档更新与最终验证
 
-- [ ] 12. 更新 State 文档
+- [~] 12. 更新 State 文档
   - [ ] 12.1 更新 `docs/state/architecture.md`
     - 更新技术选型表：PHP >= 8.5、Symfony ^8、Vue ^3、Vite、oasis/http
     - 更新 CLI 命令 — `upgrade` section：新增字段缺失检测行为
@@ -433,7 +433,7 @@
 
 ### 手工测试与 Code Review
 
-- [ ] 13. 手工测试
+- [~] 13. 手工测试
   - [ ] 13.1 Increment alpha tag
     - 查询已有 alpha tag，取最大序号 +1 打新 tag
   - [ ] 13.2 PHP 端集成验证
@@ -462,7 +462,7 @@
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 14. Code Review
+- [~] 14. Code Review
   - 委托给 `code-reviewer` sub-agent 执行
   - 基于当前分支的 diff 进行全面 code review
 
