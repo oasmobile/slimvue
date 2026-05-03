@@ -249,7 +249,7 @@
 
 ### 前端 — 阶段 3: 升级语法与组件（保持 green）
 
-- [-] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
+- [x] 7. Vue 3 组件重新设计与 ESLint/Prettier 升级
   - [x] 7.1 重新设计 Vue 3 模板组件
     - 按 design.md 中的组件设计实现：
       - 重写 `App.vue`：使用 `<script setup>`、`computed`、bridge 数据展示
@@ -277,7 +277,7 @@
   - [x] 7.5 运行 lint 并修复
     - 在 `slimvue-template/` 下运行 `npm run lint`，修复所有 lint 错误
     - _Requirements: 11.5_
-  - [-] 7.6 Checkpoint — 前端语法升级完成
+  - [x] 7.6 Checkpoint — 前端语法升级完成
     - 运行 `npx vitest run`，确认全部通过
     - 运行 `npm run lint`，确认 zero errors
     - 通过后 commit
@@ -285,8 +285,8 @@
 
 ### 前端 — 阶段 4: PBT + 覆盖率（保持 green，覆盖率 > 90%）
 
-- [~] 8. 前端 Property-Based Testing
-  - [ ] 8.1 为 `slimvue.js` 编写 PBT（Property 8–9）
+- [-] 8. 前端 Property-Based Testing
+  - [x] 8.1 为 `slimvue.js` 编写 PBT（Property 8–9）
     - 在 `tests/slimvue.test.js` 中新增 PBT 测试
     - **Property 8: bridge getter round-trip** — 对任意合法 JSON-serializable 对象，赋值给 `window.bridge` 后通过 getter 读取应返回等价对象
     - **Validates: Requirements 10.1**
@@ -294,7 +294,7 @@
     - **Validates: Requirements 10.2**
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 10.1, 10.2_
-  - [ ] 8.2 为入口扫描器编写 PBT（Property 10–11）
+  - [x] 8.2 为入口扫描器编写 PBT（Property 10–11）
     - 在 `tests/build-entries.test.js` 中新增 PBT 测试
     - **Property 10: entry scanner correctness** — 对任意入口文件集合和排除列表，扫描器应为每个未排除文件生成恰好一个页面配置，输出路径遵循命名约定
     - **Validates: Requirements 7.2, 7.6, 7.7**
@@ -302,18 +302,18 @@
     - **Validates: Requirements 10.3**
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 10.3_
-  - [ ] 8.3 为 TDK 注入编写 PBT（Property 12）
+  - [x] 8.3 为 TDK 注入编写 PBT（Property 12）
     - 在 `tests/build-tdk.test.js` 中新增 PBT 测试
     - **Property 12: TDK metadata injection invariant** — 对任意合法 TDK 对象，注入后的 HTML 应包含指定的 title、keywords、description
     - **Validates: Requirements 7.8, 10.4**
     - 运行 `npx vitest run` 确认 green
     - _Requirements: 10.4_
-  - [ ] 8.4 前端覆盖率验证
+  - [x] 8.4 前端覆盖率验证
     - 运行 `npx vitest run --coverage`
     - 确认 `slimvue.js`、`scripts/` 构建模块、`src/components/` 的行覆盖率 > 90%
     - 如覆盖率不足，补充单元测试直到达标
     - _Requirements: 10.5, 10.6, 13.4, 13.6_
-  - [ ] 8.5 Checkpoint — 前端全部完成
+  - [-] 8.5 Checkpoint — 前端全部完成
     - 运行 `npx vitest run`，确认全部通过
     - 运行 `npx vitest run --coverage`，确认覆盖率 > 90%
     - 运行 `npm run lint`，确认 zero errors

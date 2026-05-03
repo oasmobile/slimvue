@@ -10,6 +10,7 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import fc from 'fast-check';
 
 // We import slimvue as a singleton module. Since it's a plain object export
 // (not a class), we can reset mutable state (_logLevel) in beforeEach.
@@ -220,5 +221,40 @@ describe('logging methods', () => {
         slimvue.logLevel = 0;
         slimvue.log('a', 'b', 'c');
         expect(consoleSpy.log).toHaveBeenCalledWith('a', 'b', 'c');
+    });
+});
+
+// ── Property-Based Tests ──
+
+describe('PBT: Feature: release-4.0, Property 8: bridge getter round-trip', () => {
+    test('for any valid JSON-serializable object, setting window.bridge then reading slimvue.bridge returns an equivalent object', () => {
+        fc.assert(
+            fc.property(fc.jsonValue(), (value) => {
+                slimvue._logLevel = -1;
+                delete window.bridge;
+                delete window.slimvue;
+
+                window.bridge = value;
+                const result = slimvue.bridge;
+                expect(result).toEqual(value);
+            }),
+            { numRuns: 200 },
+        );
+    });
+});
+
+describe('PBT: Feature: release-4.0, Property 9: logLevel setter/getter round-trip', () => {
+    test('for any valid non-negative integer log level, setter then getter returns the same value', () => {
+        fc.assert(
+            fc.property(fc.nat({ max: 1000 }), (level) => {
+                slimvue._logLevel = -1;
+                delete window.bridge;
+                delete window.slimvue;
+
+                slimvue.logLevel = level;
+                expect(slimvue.logLevel).toBe(level);
+            }),
+            { numRuns: 200 },
+        );
     });
 });

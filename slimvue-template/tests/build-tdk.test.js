@@ -3,6 +3,7 @@
  */
 
 import { describe, test, expect } from 'vitest';
+import fc from 'fast-check';
 import { defaultTdkMap, tdkPlugin } from '../scripts/tdk.js';
 
 // ── defaultTdkMap ──
@@ -88,5 +89,52 @@ describe('tdkPlugin()', () => {
         const html = '<html></html>';
         const result = plugin.transformIndexHtml(html, {});
         expect(result).toBe(html);
+    });
+});
+
+// ── Property-Based Tests ──
+
+/**
+ * Arbitrary for non-empty printable strings without HTML special chars
+ * (to avoid breaking the HTML structure in assertions).
+ */
+const safeStringArb = fc.stringMatching(/^[a-zA-Z0-9 ,.\-_]{1,60}$/);
+
+describe('PBT: Feature: release-4.0, Property 12: TDK metadata injection invariant', () => {
+    test('for any valid TDK object, injected HTML contains the specified title, keywords, and description', () => {
+        fc.assert(
+            fc.property(
+                safeStringArb,
+                safeStringArb,
+                safeStringArb,
+                (title, keywords, description) => {
+                    const entryName = 'testpage';
+                    const plugin = tdkPlugin({
+                        [entryName]: { title, keywords, description },
+                    });
+
+                    const html = [
+                        '<html><head>',
+                        '<title></title>',
+                        '<!-- TDK_KEYWORDS -->',
+                        '<!-- TDK_DESCRIPTION -->',
+                        '</head><body></body></html>',
+                    ].join('');
+
+                    const result = plugin.transformIndexHtml(html, {
+                        chunk: { name: entryName },
+                    });
+
+                    expect(result).toContain(`<title>${title}</title>`);
+                    expect(result).toContain(
+                        `<meta name="keywords" content="${keywords}">`,
+                    );
+                    expect(result).toContain(
+                        `<meta name="description" content="${description}">`,
+                    );
+                },
+            ),
+            { numRuns: 200 },
+        );
     });
 });
