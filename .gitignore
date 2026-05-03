@@ -8,3 +8,15 @@
 /slimvue-zxdemo/
 *.DS_Store
 /slimvue-npmpp/
+
+# PHPUnit cache (PHPUnit 11+)
+.phpunit.cache/
+.phpunit.result.cache
+
+# Agent playbook export
+agent-playbook.zip
+
+# Graphify generated artifacts
+graphify-out/.graphify_python
+graphify-out/cache/
+graphify-out/manifest.json
