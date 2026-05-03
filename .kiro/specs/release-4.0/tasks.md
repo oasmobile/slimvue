@@ -433,7 +433,7 @@
 
 ### 手工测试与 Code Review
 
-- [-] 13. 手工测试
+- [x] 13. 手工测试
   - [x] 13.1 Increment alpha tag
     - 查询已有 alpha tag，取最大序号 +1 打新 tag
   - [x] 13.2 PHP 端集成验证
@@ -457,12 +457,12 @@
     - [脚本] 运行 `bin/slimvue-migrate` 验证迁移功能
     - [脚本] 再次运行 `bin/slimvue-migrate-check` 确认迁移后全部通过
     - _Requirements: 15.7, 16.8_
-  - [-] 13.5 Checkpoint — 手工测试完成
+  - [x] 13.5 Checkpoint — 手工测试完成
     - 汇总所有测试结果
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 14. Code Review
+- [x] 14. Code Review
   - 委托给 `code-reviewer` sub-agent 执行
   - 基于当前分支的 diff 进行全面 code review
 
