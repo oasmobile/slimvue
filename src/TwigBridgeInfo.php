@@ -30,10 +30,17 @@ class TwigBridgeInfo implements SlimVueBridgeInterface
 
     private function getPlainValue(mixed $data): mixed
     {
-        return match (true) {
-            is_array($data) => array_map(fn(mixed $item): mixed => $this->getPlainValue($item), $data),
-            $data instanceof \JsonSerializable => $data->jsonSerialize(),
-            default => $data,
-        };
+        if (is_array($data)) {
+            return array_map(
+                fn(mixed $item): mixed => $this->getPlainValue($item),
+                $data,
+            );
+        }
+
+        if ($data instanceof \JsonSerializable) {
+            return $data->jsonSerialize();
+        }
+
+        return $data;
     }
 }

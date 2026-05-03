@@ -2,12 +2,15 @@
 
 namespace Oasis\SlimVue\Tests;
 
+use Eris\Generators;
+use Eris\TestTrait;
 use Oasis\SlimVue\SlimVueBridgeInterface;
 use Oasis\SlimVue\TwigBridgeInfo;
 use PHPUnit\Framework\TestCase;
 
 class TwigBridgeInfoTest extends TestCase
 {
+    use TestTrait;
     // ── constructor & interface ──
 
     public function testImplementsBridgeInterface(): void
@@ -261,5 +264,135 @@ class TwigBridgeInfoTest extends TestCase
         $bridge->add('y', 2);
         $decoded = \json_decode($bridge->render(), true);
         $this->assertSame(['init' => true, 'x' => 1, 'y' => 2], $decoded);
+    }
+
+    // ── PBT: Feature: release-4.0 ──
+
+    /**
+     * Feature: release-4.0, Property 1: render round-trip
+     *
+     * For any valid bridge data, json_decode(render(), true) should produce
+     * a value equivalent to the original input.
+     *
+     * **Validates: Requirements 4.1**
+     */
+    public function testPbtRenderRoundTrip(): void
+    {
+        // Generate associative arrays with JSON-safe scalar values
+        $scalarGen = Generators::oneOf(
+            Generators::string(),
+            Generators::int(),
+            Generators::float(),
+            Generators::bool(),
+            Generators::constant(null),
+        );
+
+        // Generate a flat associative array of scalars
+        $dataGen = Generators::associative([
+            'str' => Generators::string(),
+            'num' => Generators::int(),
+            'flt' => Generators::float(),
+            'flg' => Generators::bool(),
+            'nil' => Generators::constant(null),
+            'arr' => Generators::vector(3, $scalarGen),
+        ]);
+
+        $this->limitTo(50);
+        $this->forAll($dataGen)->then(function (array $data): void {
+            // Filter out NAN/INF floats which are not JSON-serializable
+            $data = \array_map(function (mixed $v): mixed {
+                if (\is_float($v) && (\is_nan($v) || \is_infinite($v))) {
+                    return 0.0;
+                }
+                if (\is_array($v)) {
+                    return \array_map(fn(mixed $item): mixed => \is_float($item) && (\is_nan($item) || \is_infinite($item)) ? 0.0 : $item, $v);
+                }
+                return $v;
+            }, $data);
+
+            $bridge = new TwigBridgeInfo($data);
+            $decoded = \json_decode($bridge->render(), true);
+            // Use assertEquals (not assertSame) because JSON round-trip may
+            // convert 0.0 to int 0 — json_encode(0.0) produces "0", and
+            // json_decode("0") returns int 0. This is expected JSON behavior.
+            $this->assertEquals($data, $decoded);
+        });
+    }
+
+    /**
+     * Feature: release-4.0, Property 2: add() idempotence
+     *
+     * For the same key-value pair, calling add() twice should produce
+     * the same render() output as calling it once.
+     *
+     * **Validates: Requirements 4.2**
+     */
+    public function testPbtAddIdempotence(): void
+    {
+        $keyGen = Generators::suchThat(
+            fn(string $s): bool => $s !== '',
+            Generators::string(),
+        );
+        $valueGen = Generators::oneOf(
+            Generators::string(),
+            Generators::int(),
+            Generators::bool(),
+            Generators::constant(null),
+        );
+
+        $this->limitTo(50);
+        $this->forAll($keyGen, $valueGen)->then(function (string $key, mixed $value): void {
+            // Single add
+            $bridgeOnce = new TwigBridgeInfo();
+            $bridgeOnce->add($key, $value);
+            $renderOnce = $bridgeOnce->render();
+
+            // Double add with same key-value
+            $bridgeTwice = new TwigBridgeInfo();
+            $bridgeTwice->add($key, $value);
+            $bridgeTwice->add($key, $value);
+            $renderTwice = $bridgeTwice->render();
+
+            $this->assertSame($renderOnce, $renderTwice);
+        });
+    }
+
+    /**
+     * Feature: release-4.0, Property 3: getExecTwig() metamorphic length
+     *
+     * The output length minus input length should be 6 when the input starts
+     * with 'slimvue/pages/', and 0 otherwise.
+     * strlen("controllers") - strlen("pages") = 11 - 5 = 6
+     *
+     * **Validates: Requirements 4.3**
+     */
+    public function testPbtGetExecTwigMetamorphicLength(): void
+    {
+        $suffixGen = Generators::string();
+        $pathGen = Generators::oneOf(
+            // Paths with the prefix
+            Generators::map(
+                fn(string $suffix): string => 'slimvue/pages/' . $suffix,
+                $suffixGen,
+            ),
+            // Paths without the prefix
+            Generators::suchThat(
+                fn(string $s): bool => !\str_starts_with($s, 'slimvue/pages/'),
+                Generators::string(),
+            ),
+        );
+
+        $this->limitTo(50);
+        $this->forAll($pathGen)->then(function (string $path): void {
+            $bridge = new TwigBridgeInfo();
+            $result = $bridge->getExecTwig($path);
+            $lengthDiff = \strlen($result) - \strlen($path);
+
+            if (\str_starts_with($path, 'slimvue/pages/')) {
+                $this->assertSame(6, $lengthDiff, "Expected length diff of 6 for prefixed path '$path', got $lengthDiff");
+            } else {
+                $this->assertSame(0, $lengthDiff, "Expected length diff of 0 for non-prefixed path '$path', got $lengthDiff");
+            }
+        });
     }
 }

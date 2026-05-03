@@ -2,6 +2,8 @@
 
 namespace Oasis\SlimVue\Tests;
 
+use Eris\Generators;
+use Eris\TestTrait;
 use Oasis\SlimVue\SlimVueInitializeCommand;
 use Oasis\SlimVue\SlimVueUpgradeCommand;
 use PHPUnit\Framework\TestCase;
@@ -10,6 +12,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class SlimVueUpgradeCommandTest extends TestCase
 {
+    use TestTrait;
     private string $originalCwd;
     private string $tmpDir;
 
@@ -269,5 +272,99 @@ class SlimVueUpgradeCommandTest extends TestCase
         $output = $tester->getDisplay();
         $this->assertStringContainsString('Missing required field', $output);
         $this->assertStringContainsString('devDependencies', $output);
+    }
+
+    // ── PBT: Feature: release-4.0 ──
+
+    /**
+     * Feature: release-4.0, Property 5: name+version preservation
+     *
+     * For any existing project (with name, version, dependencies, devDependencies),
+     * after upgrade, package.json name and version should be preserved.
+     *
+     * **Validates: Requirements 4.5**
+     */
+    public function testPbtNameVersionPreservation(): void
+    {
+        // Generate random project names
+        $nameGen = Generators::map(
+            function (array $parts): string {
+                return '@scope/' . $parts[0] . \implode('', $parts[1]);
+            },
+            Generators::tuple(
+                Generators::elements(\array_merge(\range('a', 'z'), ['_'])),
+                Generators::vector(
+                    4,
+                    Generators::elements(\array_merge(\range('a', 'z'), \range('0', '9'), ['_', '-'])),
+                ),
+            ),
+        );
+
+        // Generate random semver-like versions
+        $versionGen = Generators::map(
+            fn(array $parts): string => \implode('.', $parts),
+            Generators::vector(3, Generators::choose(0, 99)),
+        );
+
+        $this->limitTo(10);
+        $this->forAll($nameGen, $versionGen)->then(function (string $name, string $version): void {
+            $projDir = $this->tmpDir . '/pbt-upgrade-' . \uniqid();
+            $this->createFakeProject($projDir, [
+                'name'    => $name,
+                'version' => $version,
+            ]);
+
+            $tester = $this->createUpgradeTester();
+            $tester->execute(['project-dir' => $projDir]);
+
+            $this->assertSame(0, $tester->getStatusCode());
+            $pkg = \json_decode(\file_get_contents($projDir . '/package.json'), true);
+            $this->assertSame($name, $pkg['name']);
+            $this->assertSame($version, $pkg['version']);
+        });
+    }
+
+    /**
+     * Feature: release-4.0, Property 7: removes obsolete files
+     *
+     * For any project containing obsolete files (build/, vue.config.js,
+     * babel.config.js, jest.config.js, .eslintrc.js), after upgrade,
+     * those files should be removed.
+     *
+     * **Validates: Requirements 12.4**
+     */
+    public function testPbtRemovesObsoleteFiles(): void
+    {
+        $obsoleteFiles = ['vue.config.js', 'babel.config.js', 'jest.config.js', '.eslintrc.js'];
+
+        // Generate random subsets of obsolete files to place in the project
+        $subsetGen = Generators::subset($obsoleteFiles);
+
+        $this->limitTo(10);
+        $this->forAll($subsetGen)->then(function (array $filesToPlace) use ($obsoleteFiles): void {
+            $projDir = $this->tmpDir . '/pbt-obsolete-' . \uniqid();
+            $this->createFakeProject($projDir);
+
+            // Place the selected obsolete files
+            foreach ($filesToPlace as $file) {
+                \file_put_contents($projDir . '/' . $file, '// obsolete');
+            }
+            // Always also create build/ directory
+            if (!\is_dir($projDir . '/build')) {
+                \mkdir($projDir . '/build', 0755, true);
+                \file_put_contents($projDir . '/build/dummy.js', '// obsolete');
+            }
+
+            $tester = $this->createUpgradeTester();
+            $tester->execute(['project-dir' => $projDir]);
+
+            $this->assertSame(0, $tester->getStatusCode());
+
+            // All obsolete files should be removed after upgrade
+            foreach ($obsoleteFiles as $file) {
+                $this->assertFileDoesNotExist($projDir . '/' . $file, "Obsolete file '$file' should be removed after upgrade");
+            }
+            $this->assertDirectoryDoesNotExist($projDir . '/build', "Obsolete directory 'build/' should be removed after upgrade");
+        });
     }
 }
