@@ -70,8 +70,8 @@ class SlimVueUpgradeCommand extends Command
         $packageJson                    = \json_decode($content, true);
         $packageJson['name']            = $oldName;
         $packageJson['version']         = $oldVersion;
-        $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies']);
-        $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies']);
+        $packageJson['dependencies']    = \array_merge($oldDep, $packageJson['dependencies'] ?? []);
+        $packageJson['devDependencies'] = \array_merge($oldDevDep, $packageJson['devDependencies'] ?? []);
         \file_put_contents($packageJsonFile, \json_encode($packageJson, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES));
         
         \usleep(200 * 1000);
