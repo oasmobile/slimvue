@@ -362,7 +362,7 @@
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [-] 11. 迁移脚本
+- [x] 11. 迁移脚本
   - [x] 11.1 实现迁移脚本 `bin/slimvue-migrate`
     - 创建独立 PHP 脚本，接受项目目录作为参数
     - 实现备份机制：对所有将修改的文件创建 `.bak` 备份
@@ -400,7 +400,7 @@
     - **Validates: Requirements 16.6**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 16.1, 16.3, 16.6_
-  - [-] 11.6 Checkpoint — 迁移脚本完成
+  - [x] 11.6 Checkpoint — 迁移脚本完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 在 `slimvue-template/` 下运行 `npx vitest run`，确认全部通过
     - 通过后 commit
@@ -408,35 +408,35 @@
 
 ### State 文档更新与最终验证
 
-- [~] 12. 更新 State 文档
-  - [ ] 12.1 更新 `docs/state/architecture.md`
+- [x] 12. 更新 State 文档
+  - [x] 12.1 更新 `docs/state/architecture.md`
     - 更新技术选型表：PHP >= 8.5、Symfony ^8、Vue ^3、Vite、oasis/http
     - 更新 CLI 命令 — `upgrade` section：新增字段缺失检测行为
     - 更新多页面入口机制：webpack → Vite
     - 更新分层结构图
     - _Requirements: Impact Analysis_
-  - [ ] 12.2 更新 `docs/state/data-model.md`
+  - [x] 12.2 更新 `docs/state/data-model.md`
     - 更新 PHP 接口：所有方法添加类型声明
     - 更新前端核心模块：bridge getter 环境变量前缀、mount() API
     - 更新构建配置：环境变量前缀变更、Node.js 版本检查
     - _Requirements: Impact Analysis_
-  - [ ] 12.3 更新 `PROJECT.md`
+  - [x] 12.3 更新 `PROJECT.md`
     - 更新技术栈表格：PHP 版本、依赖版本、前端框架版本
     - 更新构建与运行命令：`php74` → `php`、`npm run serve` → `npm run dev`、新增 Vitest 命令
     - 更新运行入口：`index.php` 从 Silex 改为 oasis/http
     - 更新目录结构概览：`build/` → `scripts/`、新增 `demo/`
     - _Requirements: Impact Analysis_
-  - [ ] 12.4 Checkpoint — State 文档更新完成
+  - [x] 12.4 Checkpoint — State 文档更新完成
     - Review 文档一致性：确认 state 文档与实际代码一致
     - 通过后 commit
     - 如有问题请向用户确认
 
 ### 手工测试与 Code Review
 
-- [~] 13. 手工测试
-  - [ ] 13.1 Increment alpha tag
+- [-] 13. 手工测试
+  - [x] 13.1 Increment alpha tag
     - 查询已有 alpha tag，取最大序号 +1 打新 tag
-  - [ ] 13.2 PHP 端集成验证
+  - [x] 13.2 PHP 端集成验证
     - [脚本] 运行 `php $(which composer) install`，确认无错误
     - [脚本] 运行 `php vendor/bin/phpunit`，确认全部通过
     - [脚本] 运行 `php vendor/bin/phpunit --coverage-text`，确认覆盖率 > 90%
@@ -444,20 +444,20 @@
     - [脚本] 验证生成的项目不包含过时文件（`build/`、`vue.config.js` 等）
     - [脚本] 运行 `bin/slimvue upgrade /tmp/slimvue-test`，确认升级成功且保留 name/version
     - _Requirements: 1.10, 3.4, 4.6, 12.6, 12.7, 13.3, 13.5_
-  - [ ] 13.3 前端集成验证
+  - [x] 13.3 前端集成验证
     - [脚本] 在 `slimvue-template/` 下运行 `npm install`，确认无错误
     - [脚本] 运行 `npx vitest run`，确认全部通过
     - [脚本] 运行 `npx vitest run --coverage`，确认覆盖率 > 90%
     - [脚本] 运行 `npm run build`，确认构建产出在 `dist/` 下且多页面结构正确
     - [脚本] 运行 `npm run lint`，确认 zero errors
     - _Requirements: 6.13, 7.12, 9.5, 10.5, 10.6, 11.5, 13.4, 13.6_
-  - [ ] 13.4 迁移工具验证
+  - [x] 13.4 迁移工具验证
     - [脚本] 创建模拟 v3 项目目录
     - [脚本] 运行 `bin/slimvue-migrate-check` 验证检测功能
     - [脚本] 运行 `bin/slimvue-migrate` 验证迁移功能
     - [脚本] 再次运行 `bin/slimvue-migrate-check` 确认迁移后全部通过
     - _Requirements: 15.7, 16.8_
-  - [ ] 13.5 Checkpoint — 手工测试完成
+  - [-] 13.5 Checkpoint — 手工测试完成
     - 汇总所有测试结果
     - 通过后 commit
     - 如有问题请向用户确认
