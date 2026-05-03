@@ -42,7 +42,7 @@
 
 ### PHP 端 — 阶段 2: 升级测试（结束时必须 green）
 
-- [-] 2. PHPUnit 13 适配与测试修复
+- [x] 2. PHPUnit 13 适配与测试修复
   - [x] 2.1 编写 PHPUnit 13 兼容测试（RED）
     - 更新 `phpunit.xml`：移除 PHPUnit 13 不支持的属性（`verbose`、`forceCoversAnnotation`、`beStrictAboutCoversAnnotation`、`beStrictAboutTodoAnnotatedTests`），适配 PHPUnit 13 配置 schema
     - 更新 `tests/TwigBridgeInfoTest.php`：适配 PHPUnit 13 API（deprecated assertion methods、annotations）
@@ -56,7 +56,7 @@
     - 重点关注 Symfony Console ^8 的 API 变更（`Command::execute()` 返回类型等）
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - _Requirements: 3.4_
-  - [-] 2.3 Checkpoint — PHPUnit 13 测试全部通过
+  - [x] 2.3 Checkpoint — PHPUnit 13 测试全部通过
     - 运行 `php vendor/bin/phpunit`，确认 zero failures、zero errors
     - 确认输出无 deprecation warning
     - 通过后 commit
@@ -64,13 +64,13 @@
 
 ### PHP 端 — 阶段 3: 升级语法（保持 green）
 
-- [~] 3. PHP 源码现代化
-  - [ ] 3.1 升级 `SlimVueBridgeInterface`
+- [x] 3. PHP 源码现代化
+  - [x] 3.1 升级 `SlimVueBridgeInterface`
     - 为所有方法参数和返回值添加类型声明（`string`、`mixed`、`void`）
     - 按 design.md 中的接口签名实现
     - 移除冗余 PHPDoc
     - _Requirements: 2.3, 2.7_
-  - [ ] 3.2 升级 `TwigBridgeInfo`
+  - [x] 3.2 升级 `TwigBridgeInfo`
     - 使用 constructor promotion（`private array $data`）
     - 添加 typed properties、typed parameters、return types
     - 使用 `match` 表达式替代 `if-else`（`getPlainValue` 方法）
@@ -78,7 +78,7 @@
     - 移除冗余 PHPDoc
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.7_
-  - [ ] 3.3 升级 `SlimVueInitializeCommand`
+  - [x] 3.3 升级 `SlimVueInitializeCommand`
     - 使用 constructor promotion、typed properties
     - 添加 return types、parameter types
     - 更新输出消息：`npm run serve` → `npm run dev`
@@ -87,7 +87,7 @@
     - 移除冗余 PHPDoc
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 12.2, 12.3, 12.5_
-  - [ ] 3.4 升级 `SlimVueUpgradeCommand`
+  - [x] 3.4 升级 `SlimVueUpgradeCommand`
     - 使用 constructor promotion、typed properties
     - 添加 return types、parameter types
     - 新增字段缺失检测逻辑：当 `package.json` 缺少 `name`、`version`、`dependencies`、`devDependencies` 时中止并报错（Gatekeep Q1 决策）
@@ -96,11 +96,11 @@
     - 移除冗余 PHPDoc
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 2.1, 2.2, 2.3, 2.5, 2.6, 2.7, 12.4, 12.5, 12.7_
-  - [ ] 3.5 升级 `bin/slimvue` CLI 入口
+  - [x] 3.5 升级 `bin/slimvue` CLI 入口
     - 适配 Symfony Console ^8 API
     - 确认版本号为 `4.0`
     - _Requirements: 12.1_
-  - [ ] 3.6 实现 `index.php` 替换（Silex → oasis/http）
+  - [x] 3.6 实现 `index.php` 替换（Silex → oasis/http）
     - 按 design.md 中的具体设计实现：
       - 创建 `index.php`：使用 `Oasis\Mlib\Http\MicroKernel`，配置 routing、twig、error_handlers
       - 创建 `routes.yml`：定义 home、subpage、error_demo 三个路由
@@ -108,14 +108,14 @@
       - 创建 `demo/DemoErrorHandler.php`：框架级错误处理（404/500）
     - 在 `composer.json` 的 `autoload-dev` 中添加 demo 命名空间
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
-  - [ ] 3.7 补充 `SlimVueUpgradeCommand` 字段缺失检测的单元测试
+  - [x] 3.7 补充 `SlimVueUpgradeCommand` 字段缺失检测的单元测试
     - 测试 `package.json` 缺少 `name` 时中止并报错
     - 测试 `package.json` 缺少 `version` 时中止并报错
     - 测试 `package.json` 缺少 `dependencies` 时中止并报错
     - 测试 `package.json` 缺少 `devDependencies` 时中止并报错
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 12.4, Gatekeep Q1_
-  - [ ] 3.8 Checkpoint — PHP 源码现代化完成
+  - [x] 3.8 Checkpoint — PHP 源码现代化完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 确认输出无 deprecation warning
     - 通过后 commit
@@ -123,8 +123,8 @@
 
 ### PHP 端 — 阶段 4: PBT + 覆盖率（保持 green，覆盖率 > 90%）
 
-- [~] 4. PHP Property-Based Testing
-  - [ ] 4.1 为 `TwigBridgeInfo` 编写 PBT（Property 1–3）
+- [x] 4. PHP Property-Based Testing
+  - [x] 4.1 为 `TwigBridgeInfo` 编写 PBT（Property 1–3）
     - 在 `tests/TwigBridgeInfoTest.php` 中新增 PBT 测试方法
     - **Property 1: render round-trip** — 对任意合法 bridge 数据，`json_decode(render(), true)` 应与原始输入等价
     - **Validates: Requirements 4.1**
@@ -134,7 +134,7 @@
     - **Validates: Requirements 4.3**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 4.1, 4.2, 4.3_
-  - [ ] 4.2 为 `SlimVueInitializeCommand` 编写 PBT（Property 4, 6）
+  - [x] 4.2 为 `SlimVueInitializeCommand` 编写 PBT（Property 4, 6）
     - 在 `tests/SlimVueInitializeCommandTest.php` 中新增 PBT 测试方法
     - **Property 4: name+version invariant** — 对任意合法项目名称，生成的 `package.json` 应包含该名称且 version 为 `0.1.0`
     - **Validates: Requirements 4.4**
@@ -142,7 +142,7 @@
     - **Validates: Requirements 12.2**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 4.4, 12.2_
-  - [ ] 4.3 为 `SlimVueUpgradeCommand` 编写 PBT（Property 5, 7）
+  - [x] 4.3 为 `SlimVueUpgradeCommand` 编写 PBT（Property 5, 7）
     - 在 `tests/SlimVueUpgradeCommandTest.php` 中新增 PBT 测试方法
     - **Property 5: name+version preservation** — 对任意已存在项目，upgrade 后 `package.json` 的 name 和 version 应与升级前一致
     - **Validates: Requirements 4.5**
@@ -150,12 +150,12 @@
     - **Validates: Requirements 12.4**
     - 运行 `php vendor/bin/phpunit` 确认 green
     - _Requirements: 4.5, 12.4_
-  - [ ] 4.4 PHP 覆盖率验证
+  - [x] 4.4 PHP 覆盖率验证
     - 运行 `php vendor/bin/phpunit --coverage-text`
     - 确认 `src/` 下所有文件的行覆盖率 > 90%
     - 如覆盖率不足，补充单元测试直到达标
     - _Requirements: 4.6, 4.7, 13.3, 13.5_
-  - [ ] 4.5 Checkpoint — PHP 端全部完成
+  - [x] 4.5 Checkpoint — PHP 端全部完成
     - 运行 `php vendor/bin/phpunit`，确认全部通过
     - 运行 `php vendor/bin/phpunit --coverage-text`，确认覆盖率 > 90%
     - 通过后 commit
@@ -163,8 +163,8 @@
 
 ### 前端 — 阶段 1: 升级依赖（允许 red）
 
-- [~] 5. 升级前端依赖
-  - [ ] 5.1 更新 `slimvue-template/package.json` 依赖声明
+- [-] 5. 升级前端依赖
+  - [x] 5.1 更新 `slimvue-template/package.json` 依赖声明
     - 将 `vue` 从 `^2.6.11` 升级到 `^3`
     - 移除 `core-js`
     - 移除所有 Vue CLI 相关包（`@vue/cli-service`、`@vue/cli-plugin-babel`、`@vue/cli-plugin-eslint`）
@@ -178,23 +178,23 @@
     - 添加 `"engines": { "node": ">=24" }`
     - 更新 `scripts`：按 design.md Data Models 中的 scripts 变更表更新（`dev`、`build`、`release`、`preview`、`lint`、`test`、`test:watch`、`test:coverage`）
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10, 6.11, 7.10, 9.4_
-  - [ ] 5.2 执行 `npm install` 并解决依赖冲突
+  - [x] 5.2 执行 `npm install` 并解决依赖冲突
     - 在 `slimvue-template/` 下运行 `npm install`
     - 如有冲突，调整版本约束直到安装成功
     - _Requirements: 6.13_
-  - [ ] 5.3 移除过时配置文件
+  - [x] 5.3 移除过时配置文件
     - 删除 `slimvue-template/vue.config.js`
     - 删除 `slimvue-template/babel.config.js`
     - 删除 `slimvue-template/jest.config.js`
     - 删除 `slimvue-template/.eslintrc.js`
     - 删除整个 `slimvue-template/build/` 目录
     - _Requirements: 7.9_
-  - [ ] 5.4 创建 `scripts/` 目录与构建辅助模块
+  - [x] 5.4 创建 `scripts/` 目录与构建辅助模块
     - 创建 `slimvue-template/scripts/entries.js`（ESM）：从 `build/entries.js` 迁移，实现多页面入口扫描（保持相同的扫描逻辑和命名约定）
     - 创建 `slimvue-template/scripts/check-node.js`（ESM）：Node.js 版本检查，同时支持独立脚本执行和模块导入
     - 创建 `slimvue-template/scripts/tdk.js`（ESM）：TDK 元数据注入 Vite 插件（`transformIndexHtml` 钩子）
     - _Requirements: 6.12, 7.2, 7.8, 7.11, Design Gatekeep Q1_
-  - [ ] 5.5 创建 `vite.config.js`
+  - [x] 5.5 创建 `vite.config.js`
     - 按 design.md 中的配置结构实现
     - 集成 `@vitejs/plugin-vue`
     - 集成 `scripts/entries.js` 多页面入口扫描
@@ -203,7 +203,7 @@
     - 支持 `BUILD_FILE_TYPE`、`PUBLIC_PATH`、`OUTPUT_DIR`、`EXCLUED_ENTRIES` 环境变量
     - 配置 resolve alias（`@`、`slimvue`、`assets`）
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8_
-  - [ ] 5.6 Checkpoint — 前端依赖安装成功
+  - [-] 5.6 Checkpoint — 前端依赖安装成功
     - 在 `slimvue-template/` 下运行 `npm install`，确认无错误
     - 此阶段允许测试 red（Vitest 尚未配置、源码尚未迁移）
     - 通过后 commit
