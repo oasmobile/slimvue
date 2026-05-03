@@ -555,6 +555,17 @@ export function useClock() {
 
 ---
 
+## Migration Tools
+
+SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并检测迁移完成度：
+
+- `vendor/bin/slimvue-migrate <project-dir>` — 自动执行可自动化的迁移步骤（composer.json 更新、过时文件清理、Vue 2→3 代码转换、npm scripts 替换）
+- `vendor/bin/slimvue-migrate-check <project-dir>` — 检测项目的 v4 迁移完成度，不修改任何文件
+
+详细用法参见 `docs/manual/migration-tools.md`。
+
+---
+
 ## Summary Checklist
 
 迁移完成后，使用以下清单验证：
