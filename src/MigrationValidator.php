@@ -67,7 +67,7 @@ class MigrationValidator
             return;
         }
 
-        $data = json_decode(file_get_contents($composerPath), true);
+        $data = json_decode((string) file_get_contents($composerPath), true);
         if (!is_array($data)) {
             $this->addCheck(
                 name: 'PHP version constraint',
@@ -121,7 +121,7 @@ class MigrationValidator
             return;
         }
 
-        $data = json_decode(file_get_contents($composerPath), true);
+        $data = json_decode((string) file_get_contents($composerPath), true);
         if (!is_array($data)) {
             $this->addCheck(
                 name: 'Deprecated dependencies',
@@ -150,7 +150,7 @@ class MigrationValidator
 
         $packageJsonPath = $projectDir . '/package.json';
         if (file_exists($packageJsonPath)) {
-            $pkgData = json_decode(file_get_contents($packageJsonPath), true);
+            $pkgData = json_decode((string) file_get_contents($packageJsonPath), true);
             if (is_array($pkgData)) {
                 $deprecatedNpm = [
                     'vue'                      => ['^2', 'Upgrade to vue ^3'],
@@ -438,15 +438,15 @@ class MigrationValidator
     private function stripJsCommentsAndStrings(string $content): string
     {
         // Remove multi-line comments /* ... */
-        $content = preg_replace('/\/\*[\s\S]*?\*\//', '', $content);
+        $content = preg_replace('/\/\*[\s\S]*?\*\//', '', $content) ?? $content;
         // Remove single-line comments // ...
-        $content = preg_replace('/\/\/[^\n]*/', '', $content);
+        $content = preg_replace('/\/\/[^\n]*/', '', $content) ?? $content;
         // Remove template literals ` ... `
-        $content = preg_replace('/`[^`]*`/', '""', $content);
+        $content = preg_replace('/`[^`]*`/', '""', $content) ?? $content;
         // Remove double-quoted strings
-        $content = preg_replace('/"(?:[^"\\\\]|\\\\.)*"/', '""', $content);
+        $content = preg_replace('/"(?:[^"\\\\]|\\\\.)*"/', '""', $content) ?? $content;
         // Remove single-quoted strings
-        $content = preg_replace("/\'(?:[^\'\\\\]|\\\\.)*\'/", "''", $content);
+        $content = preg_replace("/\'(?:[^\'\\\\]|\\\\.)*\'/", "''", $content) ?? $content;
 
         return $content;
     }

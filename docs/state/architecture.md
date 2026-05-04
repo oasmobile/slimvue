@@ -47,7 +47,8 @@ SlimVue 是一个 PHP Composer 库，提供：
 | PHP CLI 框架 | Symfony Console | ^8.0 |
 | 文件系统操作 | Symfony Filesystem | ^8.0 |
 | 模板引擎 | Twig | ^3.0（dev） |
-| 演示框架 | oasis/http | ^3.0（dev） |
+| HTTP 框架 | oasis/http | ^3.1 |
+| 静态分析 | PHPStan | ^2.0（dev） |
 | 前端框架 | Vue.js | ^3.5 |
 | 构建工具 | Vite | ^7 |
 | CSS 预处理 | Sass | ^1.92 |

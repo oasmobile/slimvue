@@ -1,5 +1,9 @@
 # Changelog
 
+## v4.0.2
+
+依赖修正与代码质量强化：oasis/http 移至 require 并升级至 ^3.1，新增 PHPStan level 8，ESLint 加入严格规则。详见 [4.0.2/CHANGELOG.md](4.0.2/CHANGELOG.md)。
+
 ## v4.0.1
 
 文档补全：新增迁移工具使用文档，迁移指南移至 manual 层。详见 [4.0.1/CHANGELOG.md](4.0.1/CHANGELOG.md)。

@@ -13,8 +13,8 @@ PHP + Vue.js 前端脚手架库，为 Slim / oasis/http 等 PHP 框架提供 Vue
 | 包名 | `oasis/slimvue` |
 | 命名空间 | `Oasis\SlimVue` |
 | PHP 版本 | >= 8.5 |
-| 依赖 | `oasis/utils` ^3.0, `symfony/console` ^8.0, `symfony/filesystem` ^8.0 |
-| 开发依赖 | `oasis/http` ^3.0, `twig/twig` ^3.0, `phpunit/phpunit` ^13.0, `giorgiosironi/eris` ~1.1 |
+| 依赖 | `oasis/http` ^3.1, `oasis/utils` ^3.0, `symfony/console` ^8.0, `symfony/filesystem` ^8.0 |
+| 开发依赖 | `phpstan/phpstan` ^2.0, `phpunit/phpunit` ^13.0, `twig/twig` ^3.0, `giorgiosironi/eris` ~1.1 |
 | 自动加载 | PSR-4: `Oasis\SlimVue\` → `src/` |
 
 ### 前端模板（slimvue-template）
@@ -52,6 +52,7 @@ PHP + Vue.js 前端脚手架库，为 Slim / oasis/http 等 PHP 框架提供 Vue
 php $(which composer) install                          # 安装 PHP 依赖
 php vendor/bin/phpunit                                 # 运行单元测试
 php vendor/bin/phpunit --coverage-text                 # 运行测试并输出覆盖率
+php vendor/bin/phpstan analyse                         # 静态分析（level 8）
 ```
 
 ### 前端（在 slimvue-template/ 或初始化后的项目目录下）

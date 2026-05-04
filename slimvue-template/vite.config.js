@@ -8,7 +8,7 @@ import { checkNodeVersion } from './scripts/check-node.js';
 // Node.js version check
 checkNodeVersion(24);
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode: _mode }) => {
     const { inputMap } = scanEntries({ tdkMap: defaultTdkMap });
 
     return {

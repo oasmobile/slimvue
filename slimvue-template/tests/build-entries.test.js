@@ -2,7 +2,7 @@
  * Tests for scripts/entries.js — multi-page entry scanner (ESM / Vite).
  */
 
-import { describe, test, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import fc from 'fast-check';
 import { scanEntries } from '../scripts/entries.js';
 import fs from 'fs';
@@ -11,8 +11,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const entryDir = path.resolve(__dirname, '../src/entries');
-const templateDir = path.resolve(__dirname, '../template');
+const _entryDir = path.resolve(__dirname, '../src/entries');
+const _templateDir = path.resolve(__dirname, '../template');
 
 beforeEach(() => {
     // Reset env vars that affect scanning

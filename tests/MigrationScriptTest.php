@@ -112,7 +112,7 @@ class MigrationScriptTest extends TestCase
 
         $data = json_decode(file_get_contents($this->tmpDir . '/composer.json'), true);
         $this->assertArrayNotHasKey('silex/silex', $data['require-dev']);
-        $this->assertSame('^3.0', $data['require-dev']['oasis/http']);
+        $this->assertSame('^3.1', $data['require']['oasis/http']);
 
         $log = $this->script->getLog();
         $silexEntries = array_filter($log, fn(array $e): bool =>
@@ -524,7 +524,7 @@ JS);
         $composerData = json_decode(file_get_contents($this->tmpDir . '/composer.json'), true);
         $this->assertSame('>=8.5', $composerData['require']['php']);
         $this->assertArrayNotHasKey('silex/silex', $composerData['require-dev']);
-        $this->assertSame('^3.0', $composerData['require-dev']['oasis/http']);
+        $this->assertSame('^3.1', $composerData['require']['oasis/http']);
 
         // Verify obsolete files removed
         $this->assertFileDoesNotExist($this->tmpDir . '/vue.config.js');
@@ -694,9 +694,9 @@ JS);
                         'silex/silex should be removed',
                     );
                     $this->assertSame(
-                        '^3.0',
-                        $updatedComposer['require-dev']['oasis/http'] ?? null,
-                        'oasis/http should be added',
+                        '^3.1',
+                        $updatedComposer['require']['oasis/http'] ?? null,
+                        'oasis/http should be added to require',
                     );
                 }
 

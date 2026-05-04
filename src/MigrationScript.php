@@ -77,7 +77,7 @@ class MigrationScript
             return;
         }
 
-        $data = json_decode(file_get_contents($composerPath), true);
+        $data = json_decode((string) file_get_contents($composerPath), true);
         if (!is_array($data)) {
             $this->addLog(
                 action: 'Update composer.json',
@@ -112,14 +112,17 @@ class MigrationScript
             $changed = true;
         }
 
-        // Replace silex/silex with oasis/http in require-dev
+        // Replace silex/silex with oasis/http in require
         if (isset($data['require-dev']['silex/silex'])) {
             $oldVersion = $data['require-dev']['silex/silex'];
             unset($data['require-dev']['silex/silex']);
-            $data['require-dev']['oasis/http'] = '^3.0';
+            if (!isset($data['require'])) {
+                $data['require'] = [];
+            }
+            $data['require']['oasis/http'] = '^3.1';
             $this->addLog(
                 action: 'Replace silex/silex',
-                detail: "Removed silex/silex ($oldVersion) from require-dev, added oasis/http ^3.0",
+                detail: "Removed silex/silex ($oldVersion) from require-dev, added oasis/http ^3.1 to require",
                 type: 'change',
             );
             $changed = true;
@@ -252,7 +255,7 @@ class MigrationScript
             return;
         }
 
-        $data = json_decode(file_get_contents($packagePath), true);
+        $data = json_decode((string) file_get_contents($packagePath), true);
         if (!is_array($data)) {
             $this->addLog(
                 action: 'Update package.json scripts',
@@ -496,7 +499,11 @@ class MigrationScript
             $fileChanges = [];
             foreach ($patterns as $p) {
                 $count = 0;
-                $newContent = preg_replace($p['pattern'], $p['replacement'], $newContent, -1, $count);
+                $result = preg_replace($p['pattern'], $p['replacement'], $newContent, -1, $count);
+                if ($result === null) {
+                    continue;
+                }
+                $newContent = $result;
                 if ($count > 0) {
                     $fileChanges[] = $p['description'] . " ($count occurrence" . ($count > 1 ? 's' : '') . ')';
                 }

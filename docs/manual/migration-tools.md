@@ -70,7 +70,7 @@ vendor/bin/slimvue-migrate <project-dir>
 **1. 更新 `composer.json`**
 
 - 将 `require.php` 更新为 `>=8.5`
-- 将 `silex/silex` 替换为 `oasis/http ^3.0`
+- 将 `silex/silex` 替换为 `oasis/http ^3.1`
 
 **2. 删除过时文件**
 
@@ -124,7 +124,7 @@ vendor/bin/slimvue-migrate <project-dir>
 ```
 ✓ [change] Backup composer.json: Created backup: /path/to/composer.json.bak
 ✓ [change] Update PHP constraint: Changed require.php from '>=7.0' to '>=8.5'
-✓ [change] Replace silex/silex: Removed silex/silex (^2.2) from require-dev, added oasis/http ^3.0
+✓ [change] Replace silex/silex: Removed silex/silex (^2.2) from require-dev, added oasis/http ^3.1 to require
 ✓ [change] Remove obsolete file: Removed vue.config.js
 ✓ [change] Remove obsolete file: Removed babel.config.js
 – [skip] Remove obsolete file: jest.config.js not found, skipping

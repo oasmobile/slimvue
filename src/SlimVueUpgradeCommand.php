@@ -41,7 +41,7 @@ class SlimVueUpgradeCommand extends Command
     {
         $projectDir = $input->getArgument('project-dir');
 
-        $cwd              = \getcwd();
+        $cwd              = \getcwd() ?: '.';
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
             $projectDir,
@@ -50,7 +50,7 @@ class SlimVueUpgradeCommand extends Command
 
         // Read and validate existing package.json
         $packageJsonFile = $targetSlimvueDir . '/package.json';
-        $content         = \file_get_contents($packageJsonFile);
+        $content         = (string) \file_get_contents($packageJsonFile);
         $packageJson     = \json_decode($content, true);
 
         // Validate required fields (Gatekeep Q1 decision)
@@ -91,7 +91,7 @@ class SlimVueUpgradeCommand extends Command
 
         // Restore package.json with preserved fields
         $packageJsonFile                = $targetSlimvueDir . '/package.json';
-        $content                        = \file_get_contents($packageJsonFile);
+        $content                        = (string) \file_get_contents($packageJsonFile);
         $packageJson                    = \json_decode($content, true);
         $packageJson['name']            = $oldName;
         $packageJson['version']         = $oldVersion;
