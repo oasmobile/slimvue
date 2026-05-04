@@ -4,6 +4,7 @@ namespace Oasis\SlimVue;
 
 class TwigBridgeInfo implements SlimVueBridgeInterface
 {
+    /** @param array<string, mixed> $data */
     public function __construct(
         private array $data = [],
     ) {}
@@ -15,7 +16,7 @@ class TwigBridgeInfo implements SlimVueBridgeInterface
 
     public function getExecTwig(string $pageTwig): string
     {
-        return preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', $pageTwig);
+        return preg_replace('#^slimvue/pages/#', 'slimvue/controllers/', $pageTwig) ?? $pageTwig;
     }
 
     public function render(): string
