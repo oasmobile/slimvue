@@ -15,7 +15,6 @@ import SubPage from '@/components/SubPage.vue';
 import {
     prefixDateNum,
     formatDateTime,
-    useClock,
 } from '@/composables/useClock';
 
 // ── App ──
