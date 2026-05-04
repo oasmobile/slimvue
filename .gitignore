@@ -11,6 +11,9 @@
 *.DS_Store
 /slimvue-npmpp/
 
+# PHPStan cache
+.phpstan-cache/
+
 # PHPUnit cache (PHPUnit 11+)
 .phpunit.cache/
 .phpunit.result.cache

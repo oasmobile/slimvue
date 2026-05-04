@@ -98,7 +98,7 @@ class SlimVueInitializeCommand extends Command
         $serviceDir          = $input->getOption('service-dir');
         $webDir              = $input->getOption('web-dir');
 
-        $cwd              = \getcwd();
+        $cwd              = \getcwd() ?: '.';
         $fs               = new Filesystem();
         $targetSlimvueDir = $fs->isAbsolutePath($projectDir) ? $fs->makePathRelative(
             $projectDir,
@@ -121,7 +121,7 @@ class SlimVueInitializeCommand extends Command
         $fs->mirror(self::SLIMVUE_DIR, $targetSlimvueDir, self::templateIterator());
 
         $packageJsonFile        = $targetSlimvueDir . '/package.json';
-        $content                = \file_get_contents($packageJsonFile);
+        $content                = (string) \file_get_contents($packageJsonFile);
         $packageJson            = \json_decode($content, true);
         $packageJson['name']    = $fullProjectName;
         $packageJson['version'] = '0.1.0';

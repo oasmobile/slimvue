@@ -8,7 +8,7 @@
  * 3. Test the config structure by reading and evaluating key aspects
  */
 
-import { describe, test, expect, beforeEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

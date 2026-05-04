@@ -27,7 +27,7 @@
 | `oasis/utils` | ^1.7 | ^3.0 | require |
 | `oasis/flysystem-wrappers` | ^1.3 | 已移除 | require |
 | `silex/silex` | ^2.2 | 已移除 | require-dev |
-| `oasis/http` | — | ^3.0（新增） | require-dev |
+| `oasis/http` | — | ^3.1（新增） | require |
 | `twig/twig` | ^1.0 | ^3.0 | require-dev |
 | `phpunit/phpunit` | ^9.0 | ^13.0 | require-dev |
 | `giorgiosironi/eris` | — | ~1.1（新增） | require-dev |

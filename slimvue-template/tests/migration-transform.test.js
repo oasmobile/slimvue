@@ -221,7 +221,7 @@ describe('Property 18: AST-based JS code transformation', () => {
 
     it('should only transform code, never comments or strings (new Vue)', () => {
         fc.assert(
-            fc.property(identArb, safeStringArb, (ident, safeStr) => {
+            fc.property(identArb, safeStringArb, (ident, _safeStr) => {
                 // Pattern in code
                 const codeSource = `const ${ident} = new Vue({});`;
                 const codeResult = transformSource(codeSource);
@@ -264,7 +264,7 @@ describe('Property 18: AST-based JS code transformation', () => {
 
     it('should only transform code, never comments or strings (Vue.prototype)', () => {
         fc.assert(
-            fc.property(identArb, safeStringArb, (ident, safeStr) => {
+            fc.property(identArb, safeStringArb, (ident, _safeStr) => {
                 // Pattern in code
                 const codeSource = `Vue.prototype.${ident} = 1;`;
                 const codeResult = transformSource(codeSource);
