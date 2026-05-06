@@ -141,7 +141,7 @@ Design CR 关键决策：
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [-] 8. 手工测试
+- [x] 8. 手工测试
   - [x] 8.1 Increment alpha tag
     - 查询已有 alpha tag，取最大序号 +1 打新 tag
   - [x] 8.2 前端构建链集成验证
@@ -161,12 +161,12 @@ Design CR 关键决策：
     - [脚本] 读取 `package.json`，确认各包版本符合目标（vite ^8、vitest ^4、@vitest/coverage-v8 ^4、eslint ^10）
     - [脚本] 读取 `docs/state/architecture.md`，确认版本号已更新
     - _Requirements: 1.1, 1.2, 1.3, 3.1, 5.1–5.9, 7.1, 7.2, 7.3_
-  - [-] 8.5 Checkpoint — 手工测试完成
+  - [x] 8.5 Checkpoint — 手工测试完成
     - 汇总所有测试结果
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 9. Code Review
+- [x] 9. Code Review
   - 委托给 `code-reviewer` sub-agent 执行
   - 基于当前分支的 diff 进行全面 code review
 
