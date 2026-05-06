@@ -1,5 +1,9 @@
 # Changelog
 
+## v4.1
+
+前端工具链大版本升级：Vite ^8（Rolldown）、Vitest ^4、ESLint ^10，其余依赖同步更新。详见 [4.1/CHANGELOG.md](4.1/CHANGELOG.md)。
+
 ## v4.0.2
 
 依赖修正与代码质量强化：oasis/http 移至 require 并升级至 ^3.1，新增 PHPStan level 8，ESLint 加入严格规则。详见 [4.0.2/CHANGELOG.md](4.0.2/CHANGELOG.md)。
