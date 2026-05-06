@@ -4,6 +4,19 @@
 
 ---
 
+## 推荐迁移顺序
+
+建议按以下顺序分步迁移，每步完成后可独立验证：
+
+1. **PHP 端**：升级 PHP 版本、更新 Composer 依赖、适配 API 变更 → 验证：`php $(which composer) install` 成功
+2. **前端基础设施**：删除旧文件、创建 `vite.config.js` 和 `eslint.config.js`、更新 `package.json`（依赖 + scripts + type + engines） → 验证：`npm install` 成功
+3. **前端代码**：迁移 `slimvue.js`、环境变量、Vue 组件、测试 → 验证：`npm run build` + `npm run test` 通过
+4. **最终验证**：对照末尾 Summary Checklist 逐项确认
+
+> 也可以使用迁移工具自动完成部分步骤，参见末尾 [Migration Tools](#migration-tools) 章节。
+
+---
+
 ## PHP Breaking Changes
 
 ### PHP 版本要求
@@ -186,10 +199,55 @@ $kernel->run();
 
 1. 删除 `vue.config.js`、`babel.config.js`、`jest.config.js`、`.eslintrc.js`
 2. 删除整个 `build/` 目录
-3. 创建 `vite.config.js`，参考模板项目的配置
+3. 创建 `vite.config.js`（示例见下方）
 4. 将 `build/entries.js` 中的自定义入口扫描逻辑迁移到 `scripts/entries.js`（ESM 格式）
 5. 将 `build/tdk.js` 中的 TDK 逻辑迁移到 `scripts/tdk.js`（使用 Vite `transformIndexHtml` 钩子）
 6. 在 `package.json` 中添加 `"type": "module"`
+
+`vite.config.js` 参考模板：
+
+```javascript
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+import { scanEntries } from './scripts/entries.js';
+import { tdkPlugin, defaultTdkMap } from './scripts/tdk.js';
+import { checkNodeVersion } from './scripts/check-node.js';
+
+checkNodeVersion(24);
+
+export default defineConfig(({ mode: _mode }) => {
+    const { inputMap } = scanEntries({ tdkMap: defaultTdkMap });
+
+    return {
+        plugins: [vue(), tdkPlugin(defaultTdkMap)],
+        resolve: {
+            alias: {
+                '@': resolve(__dirname, 'src'),
+                slimvue: resolve(__dirname, 'slimvue.js'),
+                assets: resolve(__dirname, 'src/assets'),
+            },
+        },
+        build: {
+            rollupOptions: {
+                input: inputMap,
+            },
+            outDir: process.env.OUTPUT_DIR || 'dist',
+        },
+        base: process.env.PUBLIC_PATH || '/',
+        test: {
+            environment: 'jsdom',
+            globals: true,
+            coverage: {
+                provider: 'v8',
+                reporter: ['text', 'lcov', 'clover'],
+            },
+        },
+    };
+});
+```
+
+根据项目实际情况调整 `alias`、`build.rollupOptions.input` 和 `scripts/` 下的辅助模块。
 
 ### npm 依赖变更
 
