@@ -53,7 +53,7 @@ Design CR 关键决策：
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [-] 3. 测试代码适配
+- [x] 3. 测试代码适配
   - [x] 3.1 更新 `tests/build-config.test.js`
     - 检查测试文件中是否有对 `rollupOptions` 的字符串断言，如有则更新为 `rolldownOptions`
     - 检查是否有其他因 Vite 8 / Vitest 4 变更而需要适配的断言
@@ -62,31 +62,31 @@ Design CR 关键决策：
     - 逐一运行各测试文件，确认无因 Vitest 4 行为变更（如 `vi.restoreAllMocks` 行为变更）导致的失败
     - 如有失败立即修复
     - _Requirements: 1.4, 2.5_
-  - [-] 3.3 Checkpoint — 测试代码适配完成
+  - [x] 3.3 Checkpoint — 测试代码适配完成
     - 运行 `npm run test`，确认全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 4. 批次 2：Lint 链升级（ESLint 10）
-  - [ ] 4.1 更新 `package.json` ESLint 版本
+- [x] 4. 批次 2：Lint 链升级（ESLint 10）
+  - [x] 4.1 更新 `package.json` ESLint 版本
     - 将 `eslint` 从 `^9` 升级到 `^10`
     - 运行 `npm install` 更新依赖
     - _Requirements: 3.1_
-  - [ ] 4.2 适配 `eslint.config.js` — ESLint 10 推荐写法
+  - [x] 4.2 适配 `eslint.config.js` — ESLint 10 推荐写法
     - 为各配置块添加 `name` 字段（`slimvue/ignores`、`slimvue/base-rules`、`slimvue/node-scripts`、`slimvue/browser-source`、`slimvue/test-files`）
     - 检查源码中是否有 `/* eslint-env */` 注释，如有则移除
     - _Requirements: 4.1, 4.2_
-  - [ ] 4.3 验证 Lint 链升级
+  - [x] 4.3 验证 Lint 链升级
     - 运行 `npm run lint`，确认零新增错误且无运行时异常
     - 如有新规则触发的报错，立即修复代码或调整规则配置
     - _Requirements: 3.2, 3.3, 4.3, 4.4_
-  - [ ] 4.4 Checkpoint — Lint 链升级完成
+  - [x] 4.4 Checkpoint — Lint 链升级完成
     - 确认 lint 通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 5. 其余小版本依赖更新
-  - [ ] 5.1 更新 `package.json` 中其余依赖版本
+- [-] 5. 其余小版本依赖更新
+  - [x] 5.1 更新 `package.json` 中其余依赖版本
     - 确认 `@vitejs/plugin-vue` 为最新 ^6 小版本
     - 确认 `eslint-config-prettier` 为最新 ^10 小版本
     - 确认 `eslint-plugin-vue` 为最新 ^10 小版本
@@ -98,18 +98,18 @@ Design CR 关键决策：
     - 确认 `autoprefixer` 为最新 ^10 小版本
     - 运行 `npm install` 更新依赖（lock 文件会自动更新）
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9_
-  - [ ] 5.2 验证小版本更新后的整体状态
+  - [x] 5.2 验证小版本更新后的整体状态
     - 运行 `npm run test`，确认全部通过
     - 运行 `npm run build`，确认构建正常
     - 运行 `npm run lint`，确认零新增错误
     - 如有兼容性问题，仍保持最新版本并作为 bug 修复处理（CR Q3 决策）
     - _Requirements: 5.10, 5.11, 5.12_
-  - [ ] 5.3 Checkpoint — 小版本依赖更新完成
+  - [-] 5.3 Checkpoint — 小版本依赖更新完成
     - 确认 test/build/lint 全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 6. Composer 依赖更新
+- [~] 6. Composer 依赖更新
   - [ ] 6.1 运行 `composer update` 更新 PHP 依赖
     - 运行 `composer update`，将所有依赖更新到约束范围内的最新版本
     - 确认无依赖解析错误
@@ -125,7 +125,7 @@ Design CR 关键决策：
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 7. State 文档更新
+- [~] 7. State 文档更新
   - [ ] 7.1 更新 `docs/state/architecture.md` 技术选型表
     - 将构建工具行从 `Vite | ^7` 更新为 `Vite（Rolldown）| ^8`
     - 将前端测试行从 `Vitest | ^3` 更新为 `Vitest | ^4`
