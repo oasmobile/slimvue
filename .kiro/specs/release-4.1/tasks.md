@@ -12,25 +12,25 @@ Design CR 关键决策：
 
 ## Tasks
 
-- [ ] 1. 删除 lock 文件并重新生成
-  - [ ] 1.1 删除 `slimvue-template/package-lock.json`
+- [-] 1. 删除 lock 文件并重新生成
+  - [x] 1.1 删除 `slimvue-template/package-lock.json`
     - 删除现有 lock 文件
     - _Requirements: 6.1_
-  - [ ] 1.2 执行 `npm install` 重新生成 lock 文件
+  - [x] 1.2 执行 `npm install` 重新生成 lock 文件
     - 在 `slimvue-template/` 下运行 `npm install`
     - 确认无依赖解析错误
     - 确认生成了新的 `package-lock.json`
     - _Requirements: 6.2_
-  - [ ] 1.3 执行 `npm audit` 安全审计
+  - [x] 1.3 执行 `npm audit` 安全审计
     - 运行 `npm audit`，确认零 critical/high 漏洞
     - 如有漏洞，尝试升级相关依赖解决；如无修复版本，记录为已知风险
     - _Requirements: 6.3_
-  - [ ] 1.4 Checkpoint — lock 文件重新生成完成
+  - [-] 1.4 Checkpoint — lock 文件重新生成完成
     - 确认 `package-lock.json` 存在且 `npm install` 无错误
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 2. 批次 1：构建链升级（Vite 8 + Vitest 4 + @vitest/coverage-v8）
+- [~] 2. 批次 1：构建链升级（Vite 8 + Vitest 4 + @vitest/coverage-v8）
   - [ ] 2.1 更新 `package.json` 构建链依赖版本
     - 将 `vite` 从 `^7` 升级到 `^8`
     - 将 `vitest` 从 `^3` 升级到 `^4`
