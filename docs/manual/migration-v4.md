@@ -4,6 +4,47 @@
 
 ---
 
+## 升级步骤总览
+
+按顺序执行。每步标注了对应的详细说明章节和验证方式。
+
+**PHP 端：**
+
+1. 确认 PHP >=8.5（→ [PHP 版本要求](#php-版本要求)）
+2. 更新 `composer.json` 依赖版本（→ [Composer 依赖替换](#composer-依赖替换)）
+3. `php $(which composer) install` — 验证依赖安装成功
+4. 替换 Silex → `oasis/http`（→ [Silex → oasis/http 替换](#silex--oasishttp-替换)）
+5. 适配 `SlimVueBridgeInterface` 类型声明（→ [SlimVueBridgeInterface 类型声明变更](#slimvuebridgeinterface-类型声明变更)）
+
+**前端基础设施：**
+
+6. 删除过时文件：`vue.config.js`、`babel.config.js`、`jest.config.js`、`.eslintrc.js`、`build/`（→ [webpack → Vite](#webpack-vue-cli--vite)）
+7. 创建 `vite.config.js`（→ [webpack → Vite](#webpack-vue-cli--vite)）
+8. 更新 `package.json` 依赖（→ [npm 依赖变更](#npm-依赖变更)）
+9. 整体替换 `package.json` scripts（→ [package.json scripts 变更](#packagejson-scripts-变更)）
+10. 添加 `"type": "module"` 和 `"engines": { "node": ">=24" }`（→ [Node.js 版本约束](#nodejs-版本约束)）
+11. 创建 `eslint.config.js`（→ [ESLint flat config 迁移](#eslint-flat-config-迁移)）
+12. `npm install` — 验证依赖安装成功
+
+**前端代码：**
+
+13. 迁移 `slimvue.js`（→ [slimvue.js API Changes](#slimvuejs-api-changes)）
+14. 替换环境变量前缀 `VUE_APP_*` → `VITE_*`（→ [环境变量前缀变更](#环境变量前缀变更)）
+15. 迁移 Vue 组件到 Composition API（→ [Vue 3 Component Migration](#vue-3-component-migration)）
+16. 迁移测试 Jest → Vitest（→ [Jest → Vitest](#jest--vitest)）
+
+**验证：**
+
+17. `npm run build` — 构建成功
+18. `npm run release` — 生产构建成功
+19. `npm run lint` — 无错误
+20. `npm run test` — 全部通过
+21. 对照末尾 [Summary Checklist](#summary-checklist) 逐项确认
+
+> 也可以使用迁移工具自动完成步骤 2–9 中的部分工作，参见末尾 [Migration Tools](#migration-tools) 章节。
+
+---
+
 ## PHP Breaking Changes
 
 ### PHP 版本要求
@@ -137,6 +178,8 @@ $kernel->run();
 4. 更新 `index.php` 使用 `MicroKernel` 启动
 5. 在 `composer.json` 的 `autoload-dev` 中注册 Controller 命名空间
 
+**自查**：`grep -rn 'Silex' src/` — 应无匹配
+
 ### PHP 命令约定变更
 
 | 项目 | v3 | v4 |
@@ -166,7 +209,7 @@ $kernel->run();
 
 | 项目 | v3 | v4 |
 |------|-----|-----|
-| 构建工具 | Vue CLI 4 (webpack) | Vite 7 |
+| 构建工具 | Vue CLI 4 (webpack) | Vite 8 |
 | 配置文件 | `vue.config.js` | `vite.config.js` |
 | 构建辅助模块目录 | `build/` | `scripts/` |
 | 入口扫描器 | `build/entries.js`（CommonJS） | `scripts/entries.js`（ESM） |
@@ -186,10 +229,56 @@ $kernel->run();
 
 1. 删除 `vue.config.js`、`babel.config.js`、`jest.config.js`、`.eslintrc.js`
 2. 删除整个 `build/` 目录
-3. 创建 `vite.config.js`，参考模板项目的配置
+3. 创建 `vite.config.js`（示例见下方）
 4. 将 `build/entries.js` 中的自定义入口扫描逻辑迁移到 `scripts/entries.js`（ESM 格式）
 5. 将 `build/tdk.js` 中的 TDK 逻辑迁移到 `scripts/tdk.js`（使用 Vite `transformIndexHtml` 钩子）
 6. 在 `package.json` 中添加 `"type": "module"`
+
+`vite.config.js` 参考模板：
+
+```javascript
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+import { scanEntries } from './scripts/entries.js';
+import { tdkPlugin, defaultTdkMap } from './scripts/tdk.js';
+import { checkNodeVersion } from './scripts/check-node.js';
+
+checkNodeVersion(24);
+
+export default defineConfig(({ mode: _mode }) => {
+    const { inputMap } = scanEntries({ tdkMap: defaultTdkMap });
+
+    return {
+        plugins: [vue(), tdkPlugin(defaultTdkMap)],
+        resolve: {
+            alias: {
+                '@': resolve(__dirname, 'src'),
+                slimvue: resolve(__dirname, 'slimvue.js'),
+                assets: resolve(__dirname, 'src/assets'),
+            },
+        },
+        build: {
+            rolldownOptions: {
+                input: inputMap,
+            },
+            outDir: process.env.OUTPUT_DIR || 'dist',
+        },
+        base: process.env.PUBLIC_PATH || '/',
+        test: {
+            environment: 'jsdom',
+            globals: true,
+            coverage: {
+                provider: 'v8',
+                include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js'],
+                reporter: ['text', 'lcov', 'clover'],
+            },
+        },
+    };
+});
+```
+
+根据项目实际情况调整 `alias`、`build.rollupOptions.input` 和 `scripts/` 下的辅助模块。
 
 ### npm 依赖变更
 
@@ -212,14 +301,15 @@ $kernel->run();
 
 | 依赖 | 版本 | 说明 |
 |------|------|------|
-| `vite` | ^7 | 构建工具 |
+| `vite` | ^8 | 构建工具 |
 | `@vitejs/plugin-vue` | ^6 | Vite Vue 插件 |
-| `vitest` | ^3 | 测试框架 |
+| `vitest` | ^4 | 测试框架 |
 | `@vue/test-utils` | ^2.4 | Vue 3 测试工具 |
-| `@vitest/coverage-v8` | ^3 | 覆盖率工具 |
+| `@vitest/coverage-v8` | ^4 | 覆盖率工具 |
 | `fast-check` | ^4 | Property-Based Testing |
 | `jsdom` | ^29 | 测试环境 |
-| `eslint` | ^9 | ESLint（flat config） |
+| `eslint` | ^10 | ESLint（flat config） |
+| `@eslint/js` | ^10 | ESLint 核心规则包 |
 | `eslint-plugin-vue` | ^10 | Vue 3 ESLint 插件 |
 | `eslint-config-prettier` | ^10 | Prettier 兼容 |
 | `prettier` | ^3.6 | 代码格式化 |
@@ -232,20 +322,42 @@ $kernel->run();
 
 ### `package.json` scripts 变更
 
-| Script | v3 | v4 |
-|--------|-----|-----|
-| `dev` | `vue-cli-service serve --mode serve` | `vite` |
-| `build` | `vue-cli-service build --mode development` | `node scripts/check-node.js && vite build --mode development` |
-| `release` | `vue-cli-service build --modern` | `node scripts/check-node.js && vite build` |
-| `preview` | — | `vite preview`（新增） |
-| `lint` | `vue-cli-service lint` | `eslint .` |
-| `test` | `jest --no-cache` | `vitest run` |
-| `test:watch` | — | `vitest`（新增） |
-| `test:coverage` | `jest --no-cache --coverage` | `vitest run --coverage` |
+v3 脚手架生成的 scripts 与 v4 的对应关系如下。注意 v3 → v4 不仅是值的替换，还涉及 **key 重命名**、**新增** 和 **删除**：
+
+| v3 key | v3 值 | v4 key | v4 值 | 变更类型 |
+|--------|-------|--------|-------|----------|
+| `serve` | `vue-cli-service serve --mode serve` | `dev` | `vite` | 重命名 + 替换值 |
+| `build` | `vue-cli-service build --mode development` | `build` | `node scripts/check-node.js && vite build --mode development` | 替换值 |
+| `release` | `vue-cli-service build --modern` | `release` | `node scripts/check-node.js && vite build` | 替换值 |
+| — | — | `preview` | `vite preview` | 新增 |
+| `lint` | `vue-cli-service lint` | `lint` | `eslint .` | 替换值 |
+| — | — | `test` | `vitest run` | 新增 |
+| — | — | `test:watch` | `vitest` | 新增 |
+| — | — | `test:coverage` | `vitest run --coverage` | 新增 |
+| `watch` | `vue-cli-service build --mode development --watch` | — | — | 删除 |
+| `lib` | `vue-cli-service build --target lib ...` | — | — | 删除 |
+| `inspect` | `vue-cli-service inspect` | — | — | 删除 |
+
+> 如果你的 v3 项目中有 Jest 相关 scripts（如 `"test": "jest --no-cache"`），同样需要替换为 Vitest 命令。
 
 **迁移步骤：**
 
-更新 `package.json` 中的 `scripts` 字段，按上表替换。
+将 `package.json` 的 `scripts` 字段**整体替换**为以下内容（而非逐条修改，避免遗漏）：
+
+```json
+"scripts": {
+    "dev": "vite",
+    "build": "node scripts/check-node.js && vite build --mode development",
+    "release": "node scripts/check-node.js && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+}
+```
+
+删除 v3 中已废弃的 scripts（`serve`、`watch`、`lib`、`inspect`）。如果项目有自定义 scripts（非脚手架生成的），按需保留。
 
 ### Node.js 版本约束
 
@@ -264,7 +376,7 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
 
 | 项目 | v3 | v4 |
 |------|-----|-----|
-| 测试框架 | Jest ^26.6 | Vitest ^3 |
+| 测试框架 | Jest（如项目使用） | Vitest ^4 |
 | 配置文件 | `jest.config.js` | `vite.config.js` 内 `test` 字段 |
 | Mock API | `jest.fn()` / `jest.spyOn()` | `vi.fn()` / `vi.spyOn()` |
 | 测试环境 | jsdom（Jest 内置） | jsdom（需显式配置） |
@@ -279,6 +391,7 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
        globals: true,
        coverage: {
            provider: 'v8',
+           include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js'],
            reporter: ['text', 'lcov', 'clover'],
        },
    },
@@ -291,6 +404,8 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
    - `jest.clearAllMocks()` → `vi.clearAllMocks()`
 4. 更新 `import` 语句（如需要从 `vitest` 导入 `describe`、`it`、`expect` 等）
 
+**自查**：`grep -rn 'jest\.' tests/` — 应无匹配
+
 ### ESLint flat config 迁移
 
 | 项目 | v3 | v4 |
@@ -298,27 +413,41 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
 | 配置文件 | `.eslintrc.js`（CommonJS，extends 模式） | `eslint.config.js`（ESM，flat config 数组模式） |
 | Vue 插件 | `eslint-plugin-vue`（Vue 2 config） | `eslint-plugin-vue`（Vue 3 `flat/recommended`） |
 | Prettier 集成 | `eslint-plugin-prettier` | `eslint-config-prettier` |
+| 核心规则包 | 内置 | `@eslint/js`（需显式导入） |
 
-v4 配置示例：
+v4 配置示例（简化版，完整版参见模板项目 `eslint.config.js`）：
 
 ```javascript
+import js from '@eslint/js';
 import pluginVue from 'eslint-plugin-vue';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
-    { ignores: ['coverage/**', 'dist/**', 'node_modules/**'] },
+    { name: 'app/ignores', ignores: ['coverage/**', 'dist/**', 'node_modules/**'] },
+    js.configs.recommended,
     ...pluginVue.configs['flat/recommended'],
     eslintConfigPrettier,
-    { rules: { 'vue/multi-word-component-names': 'off' } },
+    {
+        name: 'app/rules',
+        rules: {
+            'vue/multi-word-component-names': 'off',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+            eqeqeq: ['error', 'always'],
+            'no-var': 'error',
+            'prefer-const': 'error',
+        },
+    },
 ];
 ```
 
 **迁移步骤：**
 
 1. 删除 `.eslintrc.js`
-2. 创建 `eslint.config.js`，使用 ESM flat config 格式
-3. 将 `extends` 配置转换为数组展开形式
-4. 更新 Vue 插件配置为 Vue 3 recommended
+2. 安装 `@eslint/js`（v4.1+ 需要显式依赖）
+3. 创建 `eslint.config.js`，使用 ESM flat config 格式
+4. 将 `extends` 配置转换为数组展开形式
+5. 更新 Vue 插件配置为 Vue 3 recommended
+6. 为每个配置块添加 `name` 字段（便于调试）
 
 ### 环境变量前缀变更
 
@@ -333,6 +462,8 @@ export default [
 1. 将 `.env` 文件中所有 `VUE_APP_` 前缀替换为 `VITE_`
 2. 将代码中 `process.env.VUE_APP_*` 替换为 `import.meta.env.VITE_*`
 3. 将 `process.env.NODE_ENV` 替换为 `import.meta.env.MODE`
+
+**自查**：`grep -rn 'VUE_APP_\|process\.env' src/ *.js` — 应无匹配
 
 ---
 
@@ -387,6 +518,8 @@ mount(vueComponent) {
 2. 将 `new Vue({ render: h => h(component) }).$mount('#app')` 替换为 `createApp(component).mount('#app')`
 3. 将 `Vue.prototype.$xxx = ...` 移入 `mount()` 内部，改为 `app.config.globalProperties.$xxx = ...`
 4. 移除 `Vue.config.productionTip = false`
+
+**自查**：`grep -rn 'new Vue\|Vue\.prototype\|Vue\.config' src/ *.js` — 应无匹配
 
 ### `bridge` getter
 
@@ -566,6 +699,24 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 
 ---
 
+## 常见报错速查
+
+| 报错信息 | 原因 | 解决 |
+|----------|------|------|
+| `Cannot use import statement outside a module` | `package.json` 缺少 `"type": "module"` | → [webpack → Vite](#webpack-vue-cli--vite) 步骤 6 |
+| `vite: command not found` | 未安装 `vite` 依赖 | → [npm 依赖变更](#npm-依赖变更)，运行 `npm install` |
+| `Unknown option '--modern'` | `release` script 仍为 Vue CLI 命令 | → [package.json scripts 变更](#packagejson-scripts-变更) |
+| `vue-cli-service: command not found` | 已移除 `@vue/cli-service` 但 scripts 未更新 | → [package.json scripts 变更](#packagejson-scripts-变更) |
+| `createApp is not a function` | 仍在使用 `import Vue from 'vue'` | → [mount() 方法](#mount-方法) |
+| `process is not defined` | 代码中仍使用 `process.env.*` | → [环境变量前缀变更](#环境变量前缀变更) |
+| `ReferenceError: jest is not defined` | 测试文件仍使用 Jest API | → [Jest → Vitest](#jest--vitest) |
+| `eslint: This appears to be an eslintrc config` | `.eslintrc.js` 未删除或 ESLint 版本冲突 | → [ESLint flat config 迁移](#eslint-flat-config-迁移) |
+| `Missing script: "serve"` | v4 中 `serve` 已重命名为 `dev` | → [package.json scripts 变更](#packagejson-scripts-变更)，使用 `npm run dev` |
+| `Node.js version check failed` | Node.js < 24 | → [Node.js 版本约束](#nodejs-版本约束) |
+| `ERR_REQUIRE_ESM` | 项目未设置 `"type": "module"` 或仍有 CommonJS 文件 | → [webpack → Vite](#webpack-vue-cli--vite) 步骤 6 |
+
+---
+
 ## Summary Checklist
 
 迁移完成后，使用以下清单验证：
@@ -577,6 +728,9 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 - [ ] `SlimVueBridgeInterface` 实现类已适配类型声明
 - [ ] Node.js >= 24 已安装
 - [ ] `package.json` 依赖已更新，`npm install` 成功
+- [ ] `package.json` 已添加 `"type": "module"`
+- [ ] `package.json` scripts 已按 v4 标准整体替换（含 `release`、`preview`、`test:watch` 等）
+- [ ] v3 废弃的 scripts（`serve`、`watch`、`lib`、`inspect`）已删除
 - [ ] `vue.config.js`、`babel.config.js`、`jest.config.js`、`.eslintrc.js`、`build/` 已删除
 - [ ] `vite.config.js` 已创建
 - [ ] `eslint.config.js`（flat config）已创建
@@ -585,5 +739,6 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 - [ ] 所有组件已迁移到 `<script setup>` + Composition API
 - [ ] 所有测试已从 Jest 迁移到 Vitest
 - [ ] `npm run build` 构建成功
+- [ ] `npm run release` 构建成功
 - [ ] `npm run lint` 无错误
 - [ ] `npm run test` 全部通过
