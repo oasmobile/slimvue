@@ -179,7 +179,7 @@ $kernel->run();
 
 | 项目 | v3 | v4 |
 |------|-----|-----|
-| 构建工具 | Vue CLI 4 (webpack) | Vite 7 |
+| 构建工具 | Vue CLI 4 (webpack) | Vite 8 |
 | 配置文件 | `vue.config.js` | `vite.config.js` |
 | 构建辅助模块目录 | `build/` | `scripts/` |
 | 入口扫描器 | `build/entries.js`（CommonJS） | `scripts/entries.js`（ESM） |
@@ -229,7 +229,7 @@ export default defineConfig(({ mode: _mode }) => {
             },
         },
         build: {
-            rollupOptions: {
+            rolldownOptions: {
                 input: inputMap,
             },
             outDir: process.env.OUTPUT_DIR || 'dist',
@@ -240,6 +240,7 @@ export default defineConfig(({ mode: _mode }) => {
             globals: true,
             coverage: {
                 provider: 'v8',
+                include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js'],
                 reporter: ['text', 'lcov', 'clover'],
             },
         },
@@ -270,14 +271,15 @@ export default defineConfig(({ mode: _mode }) => {
 
 | 依赖 | 版本 | 说明 |
 |------|------|------|
-| `vite` | ^7 | 构建工具 |
+| `vite` | ^8 | 构建工具 |
 | `@vitejs/plugin-vue` | ^6 | Vite Vue 插件 |
-| `vitest` | ^3 | 测试框架 |
+| `vitest` | ^4 | 测试框架 |
 | `@vue/test-utils` | ^2.4 | Vue 3 测试工具 |
-| `@vitest/coverage-v8` | ^3 | 覆盖率工具 |
+| `@vitest/coverage-v8` | ^4 | 覆盖率工具 |
 | `fast-check` | ^4 | Property-Based Testing |
 | `jsdom` | ^29 | 测试环境 |
-| `eslint` | ^9 | ESLint（flat config） |
+| `eslint` | ^10 | ESLint（flat config） |
+| `@eslint/js` | ^10 | ESLint 核心规则包 |
 | `eslint-plugin-vue` | ^10 | Vue 3 ESLint 插件 |
 | `eslint-config-prettier` | ^10 | Prettier 兼容 |
 | `prettier` | ^3.6 | 代码格式化 |
@@ -344,7 +346,7 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
 
 | 项目 | v3 | v4 |
 |------|-----|-----|
-| 测试框架 | Jest（如项目使用） | Vitest ^3 |
+| 测试框架 | Jest（如项目使用） | Vitest ^4 |
 | 配置文件 | `jest.config.js` | `vite.config.js` 内 `test` 字段 |
 | Mock API | `jest.fn()` / `jest.spyOn()` | `vi.fn()` / `vi.spyOn()` |
 | 测试环境 | jsdom（Jest 内置） | jsdom（需显式配置） |
@@ -359,6 +361,7 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
        globals: true,
        coverage: {
            provider: 'v8',
+           include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js'],
            reporter: ['text', 'lcov', 'clover'],
        },
    },
@@ -378,27 +381,41 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
 | 配置文件 | `.eslintrc.js`（CommonJS，extends 模式） | `eslint.config.js`（ESM，flat config 数组模式） |
 | Vue 插件 | `eslint-plugin-vue`（Vue 2 config） | `eslint-plugin-vue`（Vue 3 `flat/recommended`） |
 | Prettier 集成 | `eslint-plugin-prettier` | `eslint-config-prettier` |
+| 核心规则包 | 内置 | `@eslint/js`（需显式导入） |
 
-v4 配置示例：
+v4 配置示例（简化版，完整版参见模板项目 `eslint.config.js`）：
 
 ```javascript
+import js from '@eslint/js';
 import pluginVue from 'eslint-plugin-vue';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
-    { ignores: ['coverage/**', 'dist/**', 'node_modules/**'] },
+    { name: 'app/ignores', ignores: ['coverage/**', 'dist/**', 'node_modules/**'] },
+    js.configs.recommended,
     ...pluginVue.configs['flat/recommended'],
     eslintConfigPrettier,
-    { rules: { 'vue/multi-word-component-names': 'off' } },
+    {
+        name: 'app/rules',
+        rules: {
+            'vue/multi-word-component-names': 'off',
+            'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+            eqeqeq: ['error', 'always'],
+            'no-var': 'error',
+            'prefer-const': 'error',
+        },
+    },
 ];
 ```
 
 **迁移步骤：**
 
 1. 删除 `.eslintrc.js`
-2. 创建 `eslint.config.js`，使用 ESM flat config 格式
-3. 将 `extends` 配置转换为数组展开形式
-4. 更新 Vue 插件配置为 Vue 3 recommended
+2. 安装 `@eslint/js`（v4.1+ 需要显式依赖）
+3. 创建 `eslint.config.js`，使用 ESM flat config 格式
+4. 将 `extends` 配置转换为数组展开形式
+5. 更新 Vue 插件配置为 Vue 3 recommended
+6. 为每个配置块添加 `name` 字段（便于调试）
 
 ### 环境变量前缀变更
 
