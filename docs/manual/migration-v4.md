@@ -232,20 +232,42 @@ $kernel->run();
 
 ### `package.json` scripts 变更
 
-| Script | v3 | v4 |
-|--------|-----|-----|
-| `dev` | `vue-cli-service serve --mode serve` | `vite` |
-| `build` | `vue-cli-service build --mode development` | `node scripts/check-node.js && vite build --mode development` |
-| `release` | `vue-cli-service build --modern` | `node scripts/check-node.js && vite build` |
-| `preview` | — | `vite preview`（新增） |
-| `lint` | `vue-cli-service lint` | `eslint .` |
-| `test` | `jest --no-cache` | `vitest run` |
-| `test:watch` | — | `vitest`（新增） |
-| `test:coverage` | `jest --no-cache --coverage` | `vitest run --coverage` |
+v3 脚手架生成的 scripts 与 v4 的对应关系如下。注意 v3 → v4 不仅是值的替换，还涉及 **key 重命名**、**新增** 和 **删除**：
+
+| v3 key | v3 值 | v4 key | v4 值 | 变更类型 |
+|--------|-------|--------|-------|----------|
+| `serve` | `vue-cli-service serve --mode serve` | `dev` | `vite` | 重命名 + 替换值 |
+| `build` | `vue-cli-service build --mode development` | `build` | `node scripts/check-node.js && vite build --mode development` | 替换值 |
+| `release` | `vue-cli-service build --modern` | `release` | `node scripts/check-node.js && vite build` | 替换值 |
+| — | — | `preview` | `vite preview` | 新增 |
+| `lint` | `vue-cli-service lint` | `lint` | `eslint .` | 替换值 |
+| — | — | `test` | `vitest run` | 新增 |
+| — | — | `test:watch` | `vitest` | 新增 |
+| — | — | `test:coverage` | `vitest run --coverage` | 新增 |
+| `watch` | `vue-cli-service build --mode development --watch` | — | — | 删除 |
+| `lib` | `vue-cli-service build --target lib ...` | — | — | 删除 |
+| `inspect` | `vue-cli-service inspect` | — | — | 删除 |
+
+> 如果你的 v3 项目中有 Jest 相关 scripts（如 `"test": "jest --no-cache"`），同样需要替换为 Vitest 命令。
 
 **迁移步骤：**
 
-更新 `package.json` 中的 `scripts` 字段，按上表替换。
+将 `package.json` 的 `scripts` 字段**整体替换**为以下内容（而非逐条修改，避免遗漏）：
+
+```json
+"scripts": {
+    "dev": "vite",
+    "build": "node scripts/check-node.js && vite build --mode development",
+    "release": "node scripts/check-node.js && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+}
+```
+
+删除 v3 中已废弃的 scripts（`serve`、`watch`、`lib`、`inspect`）。如果项目有自定义 scripts（非脚手架生成的），按需保留。
 
 ### Node.js 版本约束
 
