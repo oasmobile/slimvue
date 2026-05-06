@@ -85,7 +85,7 @@ Design CR 关键决策：
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [-] 5. 其余小版本依赖更新
+- [x] 5. 其余小版本依赖更新
   - [x] 5.1 更新 `package.json` 中其余依赖版本
     - 确认 `@vitejs/plugin-vue` 为最新 ^6 小版本
     - 确认 `eslint-config-prettier` 为最新 ^10 小版本
@@ -104,47 +104,47 @@ Design CR 关键决策：
     - 运行 `npm run lint`，确认零新增错误
     - 如有兼容性问题，仍保持最新版本并作为 bug 修复处理（CR Q3 决策）
     - _Requirements: 5.10, 5.11, 5.12_
-  - [-] 5.3 Checkpoint — 小版本依赖更新完成
+  - [x] 5.3 Checkpoint — 小版本依赖更新完成
     - 确认 test/build/lint 全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 6. Composer 依赖更新
-  - [ ] 6.1 运行 `composer update` 更新 PHP 依赖
+- [x] 6. Composer 依赖更新
+  - [x] 6.1 运行 `composer update` 更新 PHP 依赖
     - 运行 `composer update`，将所有依赖更新到约束范围内的最新版本
     - 确认无依赖解析错误
     - 提交更新后的 `composer.lock`
     - _Requirements: Design — PHP 依赖更新_
-  - [ ] 6.2 验证 PHP 测试和静态分析
+  - [x] 6.2 验证 PHP 测试和静态分析
     - 运行 `vendor/bin/phpunit`，确认所有 PHP 测试通过
     - 运行 `vendor/bin/phpstan analyse`，确认静态分析通过
     - 如有问题立即修复
     - _Requirements: Design — PHP 依赖更新_
-  - [ ] 6.3 Checkpoint — Composer 依赖更新完成
+  - [x] 6.3 Checkpoint — Composer 依赖更新完成
     - 确认 phpunit 和 phpstan 全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 7. State 文档更新
-  - [ ] 7.1 更新 `docs/state/architecture.md` 技术选型表
+- [x] 7. State 文档更新
+  - [x] 7.1 更新 `docs/state/architecture.md` 技术选型表
     - 将构建工具行从 `Vite | ^7` 更新为 `Vite（Rolldown）| ^8`
     - 将前端测试行从 `Vitest | ^3` 更新为 `Vitest | ^4`
     - 将代码规范行从 `ESLint（flat config）+ Prettier | ^9 / ^3.6` 更新为 `ESLint（flat config）+ Prettier | ^10 / ^3`
     - _Requirements: 7.1, 7.2, 7.3_
-  - [ ] 7.2 更新 `docs/state/architecture.md` 工具描述
+  - [x] 7.2 更新 `docs/state/architecture.md` 工具描述
     - 检查文档中是否有提及 esbuild 或 Rollup 作为 Vite 打包器的描述
     - 如有，更新为 Rolldown（Vite 8 统一打包器）
     - 如无相关描述，此条件不成立，AC 自动视为通过（CR Q1 决策）
     - _Requirements: 7.4, 7.5_
-  - [ ] 7.3 Checkpoint — State 文档更新完成
+  - [x] 7.3 Checkpoint — State 文档更新完成
     - Review 文档一致性：确认版本号和描述与实际代码一致
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 8. 手工测试
-  - [ ] 8.1 Increment alpha tag
+- [-] 8. 手工测试
+  - [x] 8.1 Increment alpha tag
     - 查询已有 alpha tag，取最大序号 +1 打新 tag
-  - [ ] 8.2 前端构建链集成验证
+  - [x] 8.2 前端构建链集成验证
     - [脚本] 在 `slimvue-template/` 下运行 `npm install`，确认无错误
     - [脚本] 运行 `npm run test`，确认全部通过
     - [脚本] 运行 `npm run build`，确认构建产出在 `dist/` 下
@@ -152,21 +152,21 @@ Design CR 关键决策：
     - [脚本] 运行 `npm run lint`，确认零错误
     - [脚本] 运行 `npm audit`，确认零 critical/high 漏洞
     - _Requirements: 1.4, 1.5, 1.6, 2.5, 2.6, 3.2, 3.3, 4.3, 4.4, 5.10, 5.11, 5.12, 6.2, 6.3_
-  - [ ] 8.3 PHP 端集成验证
+  - [x] 8.3 PHP 端集成验证
     - [脚本] 运行 `php $(which composer) install`，确认无错误
     - [脚本] 运行 `vendor/bin/phpunit`，确认全部通过
     - [脚本] 运行 `vendor/bin/phpstan analyse`，确认静态分析通过
     - _Requirements: Design — PHP 依赖更新_
-  - [ ] 8.4 版本声明验证
+  - [x] 8.4 版本声明验证
     - [脚本] 读取 `package.json`，确认各包版本符合目标（vite ^8、vitest ^4、@vitest/coverage-v8 ^4、eslint ^10）
     - [脚本] 读取 `docs/state/architecture.md`，确认版本号已更新
     - _Requirements: 1.1, 1.2, 1.3, 3.1, 5.1–5.9, 7.1, 7.2, 7.3_
-  - [ ] 8.5 Checkpoint — 手工测试完成
+  - [-] 8.5 Checkpoint — 手工测试完成
     - 汇总所有测试结果
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 9. Code Review
+- [~] 9. Code Review
   - 委托给 `code-reviewer` sub-agent 执行
   - 基于当前分支的 diff 进行全面 code review
 
