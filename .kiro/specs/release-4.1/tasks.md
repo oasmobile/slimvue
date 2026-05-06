@@ -12,7 +12,7 @@ Design CR 关键决策：
 
 ## Tasks
 
-- [-] 1. 删除 lock 文件并重新生成
+- [x] 1. 删除 lock 文件并重新生成
   - [x] 1.1 删除 `slimvue-template/package-lock.json`
     - 删除现有 lock 文件
     - _Requirements: 6.1_
@@ -25,49 +25,49 @@ Design CR 关键决策：
     - 运行 `npm audit`，确认零 critical/high 漏洞
     - 如有漏洞，尝试升级相关依赖解决；如无修复版本，记录为已知风险
     - _Requirements: 6.3_
-  - [-] 1.4 Checkpoint — lock 文件重新生成完成
+  - [x] 1.4 Checkpoint — lock 文件重新生成完成
     - 确认 `package-lock.json` 存在且 `npm install` 无错误
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [~] 2. 批次 1：构建链升级（Vite 8 + Vitest 4 + @vitest/coverage-v8）
-  - [ ] 2.1 更新 `package.json` 构建链依赖版本
+- [x] 2. 批次 1：构建链升级（Vite 8 + Vitest 4 + @vitest/coverage-v8）
+  - [x] 2.1 更新 `package.json` 构建链依赖版本
     - 将 `vite` 从 `^7` 升级到 `^8`
     - 将 `vitest` 从 `^3` 升级到 `^4`
     - 将 `@vitest/coverage-v8` 从 `^3.2.4` 升级到 `^4`
     - 运行 `npm install` 更新依赖
     - _Requirements: 1.1, 1.2, 1.3_
-  - [ ] 2.2 适配 `vite.config.js` — breaking changes 修复 + 推荐写法
+  - [x] 2.2 适配 `vite.config.js` — breaking changes 修复 + 推荐写法
     - 将 `build.rollupOptions` 重命名为 `build.rolldownOptions`（Vite 8 breaking change，同时也是 Vite 8 推荐写法）
     - _Requirements: 2.1, 2.2_
-  - [ ] 2.3 适配 `vite.config.js` — Vitest 4 推荐写法
+  - [x] 2.3 适配 `vite.config.js` — Vitest 4 推荐写法
     - 在 `test.coverage` 中添加 `include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js']`（Vitest 4 推荐显式声明）
     - _Requirements: 2.3, 2.4_
-  - [ ] 2.4 验证构建链升级
+  - [x] 2.4 验证构建链升级
     - 运行 `npm run test`，确认所有测试通过（如有失败立即修复）
     - 运行 `npm run build`，确认构建产出正常
     - 运行 `npm run release`，确认生产构建正常
     - _Requirements: 1.4, 1.5, 1.6, 2.5, 2.6_
-  - [ ] 2.5 Checkpoint — 构建链升级完成
+  - [x] 2.5 Checkpoint — 构建链升级完成
     - 确认 test/build/release 全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 3. 测试代码适配
-  - [ ] 3.1 更新 `tests/build-config.test.js`
+- [-] 3. 测试代码适配
+  - [x] 3.1 更新 `tests/build-config.test.js`
     - 检查测试文件中是否有对 `rollupOptions` 的字符串断言，如有则更新为 `rolldownOptions`
     - 检查是否有其他因 Vite 8 / Vitest 4 变更而需要适配的断言
     - _Requirements: 2.5_
-  - [ ] 3.2 检查并修复其他测试文件
+  - [x] 3.2 检查并修复其他测试文件
     - 逐一运行各测试文件，确认无因 Vitest 4 行为变更（如 `vi.restoreAllMocks` 行为变更）导致的失败
     - 如有失败立即修复
     - _Requirements: 1.4, 2.5_
-  - [ ] 3.3 Checkpoint — 测试代码适配完成
+  - [-] 3.3 Checkpoint — 测试代码适配完成
     - 运行 `npm run test`，确认全部通过
     - 通过后 commit
     - 如有问题请向用户确认
 
-- [ ] 4. 批次 2：Lint 链升级（ESLint 10）
+- [~] 4. 批次 2：Lint 链升级（ESLint 10）
   - [ ] 4.1 更新 `package.json` ESLint 版本
     - 将 `eslint` 从 `^9` 升级到 `^10`
     - 运行 `npm install` 更新依赖
