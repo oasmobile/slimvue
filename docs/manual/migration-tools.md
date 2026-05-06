@@ -96,7 +96,7 @@ vendor/bin/slimvue-migrate <project-dir>
 
 **4. 更新 `package.json` scripts**
 
-将 Vue CLI 命令替换为 Vite 命令：
+遍历项目 `package.json` 中已有的 scripts，按值匹配并替换：
 
 | 原值 | 替换为 |
 |------|--------|
@@ -108,6 +108,8 @@ vendor/bin/slimvue-migrate <project-dir>
 | `jest --no-cache` | `vitest run` |
 
 同时标记过时的 NPM 依赖（如 `vue` ^2、`@vue/cli-*`、`babel-*`、`sass-loader` 等）为需要手动处理。
+
+> **工具局限性：** 此步骤仅替换已有 script 的值，不会重命名 key（如 `serve` → `dev`）、不会添加新 scripts（如 `preview`、`test:watch`、`test:coverage`）、也不会删除已废弃的 scripts（如 `watch`、`lib`、`inspect`）。这些变更需要手动完成，参见 `docs/manual/migration-v4.md` 中的 scripts 变更表。
 
 ### 日志类型
 
