@@ -4,12 +4,14 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default [
     {
+        name: 'slimvue/ignores',
         ignores: ['coverage/**', 'dist/**', 'node_modules/**'],
     },
     js.configs.recommended,
     ...pluginVue.configs['flat/recommended'],
     eslintConfigPrettier,
     {
+        name: 'slimvue/base-rules',
         rules: {
             'vue/multi-word-component-names': 'off',
             'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
@@ -23,6 +25,7 @@ export default [
     },
     // Node.js scripts & config files
     {
+        name: 'slimvue/node-scripts',
         files: ['scripts/**/*.js', 'vite.config.js', 'postcss.config.cjs'],
         languageOptions: {
             globals: {
@@ -40,6 +43,7 @@ export default [
     },
     // Browser source files
     {
+        name: 'slimvue/browser-source',
         files: ['src/**/*.js', 'src/**/*.vue', 'slimvue.js'],
         languageOptions: {
             globals: {
@@ -55,6 +59,7 @@ export default [
     },
     // Test files (vitest globals + browser/node)
     {
+        name: 'slimvue/test-files',
         files: ['tests/**/*.js'],
         languageOptions: {
             globals: {
