@@ -21,7 +21,7 @@ export default defineConfig(({ mode: _mode }) => {
             },
         },
         build: {
-            rollupOptions: {
+            rolldownOptions: {
                 input: inputMap,
             },
             outDir: process.env.OUTPUT_DIR || 'dist',
@@ -32,6 +32,7 @@ export default defineConfig(({ mode: _mode }) => {
             globals: true,
             coverage: {
                 provider: 'v8',
+                include: ['src/**/*.{js,vue}', 'slimvue.js', 'scripts/**/*.js'],
                 reporter: ['text', 'lcov', 'clover'],
             },
         },

@@ -50,10 +50,10 @@ SlimVue 是一个 PHP Composer 库，提供：
 | HTTP 框架 | oasis/http | ^3.1 |
 | 静态分析 | PHPStan | ^2.0（dev） |
 | 前端框架 | Vue.js | ^3.5 |
-| 构建工具 | Vite | ^7 |
+| 构建工具 | Vite（Rolldown） | ^8 |
 | CSS 预处理 | Sass | ^1.92 |
-| 代码规范 | ESLint（flat config）+ Prettier | ^9 / ^3.6 |
-| 前端测试 | Vitest | ^3 |
+| 代码规范 | ESLint（flat config）+ Prettier | ^10 / ^3 |
+| 前端测试 | Vitest | ^4 |
 | Node.js | — | >= 24 |
 
 ---
