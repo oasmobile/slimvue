@@ -286,7 +286,7 @@ v4 在 `package.json` 中声明 `"engines": { "node": ">=24" }`，并在 `build`
 
 | 项目 | v3 | v4 |
 |------|-----|-----|
-| 测试框架 | Jest ^26.6 | Vitest ^3 |
+| 测试框架 | Jest（如项目使用） | Vitest ^3 |
 | 配置文件 | `jest.config.js` | `vite.config.js` 内 `test` 字段 |
 | Mock API | `jest.fn()` / `jest.spyOn()` | `vi.fn()` / `vi.spyOn()` |
 | 测试环境 | jsdom（Jest 内置） | jsdom（需显式配置） |
@@ -599,6 +599,9 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 - [ ] `SlimVueBridgeInterface` 实现类已适配类型声明
 - [ ] Node.js >= 24 已安装
 - [ ] `package.json` 依赖已更新，`npm install` 成功
+- [ ] `package.json` 已添加 `"type": "module"`
+- [ ] `package.json` scripts 已按 v4 标准整体替换（含 `release`、`preview`、`test:watch` 等）
+- [ ] v3 废弃的 scripts（`serve`、`watch`、`lib`、`inspect`）已删除
 - [ ] `vue.config.js`、`babel.config.js`、`jest.config.js`、`.eslintrc.js`、`build/` 已删除
 - [ ] `vite.config.js` 已创建
 - [ ] `eslint.config.js`（flat config）已创建
@@ -607,5 +610,6 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 - [ ] 所有组件已迁移到 `<script setup>` + Composition API
 - [ ] 所有测试已从 Jest 迁移到 Vitest
 - [ ] `npm run build` 构建成功
+- [ ] `npm run release` 构建成功
 - [ ] `npm run lint` 无错误
 - [ ] `npm run test` 全部通过
