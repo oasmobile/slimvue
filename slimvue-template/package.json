@@ -21,7 +21,7 @@
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^6",
-        "@vitest/coverage-v8": "^3.2.4",
+        "@vitest/coverage-v8": "^4",
         "@vue/test-utils": "^2.4",
         "autoprefixer": "^10.5.0",
         "eslint": "^9",
@@ -31,7 +31,7 @@
         "jsdom": "^29.1.1",
         "prettier": "^3.6",
         "sass": "^1.92",
-        "vite": "^7",
-        "vitest": "^3"
+        "vite": "^8",
+        "vitest": "^4"
     }
 }
