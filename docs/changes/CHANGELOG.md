@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.1.3
+
+迁移文档补充：Element Plus 踩坑章节追加 `el-select` 默认宽度、`el-switch` 颜色 prop 废弃、反义布尔值绑定问题。详见 [4.1.3/CHANGELOG.md](4.1.3/CHANGELOG.md)。
+
+## v4.1.2
+
+迁移文档补充：新增「Element Plus 迁移踩坑（下游实战经验）」章节，涵盖 Dialog 不居中、Icon 不显示、Flex 容器压缩。详见 [4.1.2/CHANGELOG.md](4.1.2/CHANGELOG.md)。
+
 ## v4.1.1
 
 迁移文档改进：新增升级步骤总览、迁移顺序引导、完整配置示例、常见报错速查，同步 v4.1 配置变更。详见 [4.1.1/CHANGELOG.md](4.1.1/CHANGELOG.md)。
