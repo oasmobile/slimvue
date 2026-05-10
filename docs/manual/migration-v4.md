@@ -746,6 +746,47 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 }
 ```
 
+### `el-select` 默认宽度不再是 100%
+
+**根因**：Element Plus 中 `el-select` 默认宽度为 `auto`（由内容撑开），不再像 Element UI 那样默认占满父容器。
+
+**修复**：在 `el-select` 上显式设置 `style="width: 100%"`，或通过全局样式统一处理：
+
+```css
+.el-form-item .el-select {
+    width: 100%;
+}
+```
+
+### `el-switch` 的 `active-color` / `inactive-color` 失效
+
+**根因**：Element Plus 废弃了 `active-color` 和 `inactive-color` prop，改为 CSS 变量控制。
+
+**修复**：
+
+```vue
+<!-- 旧写法（Element UI） -->
+<el-switch active-color="#ff4949" inactive-color="#67C23A" />
+
+<!-- 新写法（Element Plus） -->
+<el-switch style="--el-switch-on-color: #ff4949; --el-switch-off-color: #67C23A" />
+```
+
+### `el-switch` 绑定反义布尔值时方向相反
+
+**根因**：`el-switch` 中 `model-value=true` 时为打开态（圆球在右）。若绑定的字段语义为负面（如 `disabled`），则 `disabled=true` 时开关打开，视觉上与用户直觉相反。
+
+**修复**：对绑定值取反：
+
+```vue
+<el-switch
+    :model-value="!row.disabled"
+    @change="row.disabled = !row.disabled"
+/>
+```
+
+> 这不是 Element Plus 的 bug，而是业务字段命名与 UI 语义的冲突。建议统一约定：switch 绑定的字段语义应为正面（如 `enabled`），避免取反逻辑。
+
 ---
 
 ## 常见报错速查
