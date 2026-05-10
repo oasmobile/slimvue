@@ -699,6 +699,55 @@ SlimVue v4 提供两个 CLI 工具辅助迁移，可自动完成部分步骤并�
 
 ---
 
+## Element Plus 迁移踩坑（下游实战经验）
+
+使用 Element Plus 的下游项目在升级过程中遇到的典型问题及修复方案。
+
+### Dialog 不居中
+
+**根因**：`el-dialog` 的 `top` 属性传入无单位数值（如 `top="10"`）会生成无效 CSS 变量 `--el-dialog-margin-top: 10`；若 dialog 在非 static 定位的父容器内渲染，还会叠加定位偏移。
+
+**修复**：
+
+1. `top` 属性使用有效 CSS 值（如 `top="10vh"`），或移除该属性使用默认值
+2. 所有 dialog 添加 `append-to-body`，使其渲染到 `<body>` 下，避免受父容器定位影响
+
+### Icon 不显示
+
+**根因**：Element Plus 2.x 不再支持 `icon="el-icon-xxx"` 字符串语法和 `<i class="el-icon-xxx">` 写法。
+
+**修复**：
+
+1. 安装 `@element-plus/icons-vue`
+2. 在 `slimvue.js` 的 `mount()` 中全局注册所有 icon 组件：
+   ```javascript
+   import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+
+   // 在 mount() 内部
+   for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+       app.component(key, component);
+   }
+   ```
+3. 模板中 `icon` prop 改为传组件引用：`:icon="Edit"`
+4. `<i class="el-icon-xxx">` 改为 `<el-icon><Xxx /></el-icon>` 组件写法
+
+> 全局注册会失去 tree-shaking 优势。如对包体积敏感，可改为按需 import。
+
+### Flex 容器内元素被压缩为窄条
+
+**根因**：flex 容器中子元素未设置 `flex-shrink: 0`，被相邻弹性元素挤压。
+
+**修复**：需要固定尺寸的元素显式声明 `flex-shrink: 0`，并配合 `width` 或 `min-width`：
+
+```css
+.fixed-width-element {
+    width: 245px;
+    flex-shrink: 0;
+}
+```
+
+---
+
 ## 常见报错速查
 
 | 报错信息 | 原因 | 解决 |
